@@ -10,20 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <readline/readline.h>
-#include <readline/history.h>
-
-
-typedef struct s_cmd {
-    char            **argv;       // Lista de argumentos: ["ls", "-l", NULL]
-    char            *infile;      // archivo de entrada si hay redirección: "< input.txt"
-    char            *outfile;     // archivo de salida: "> out.txt" o ">> out.txt"
-    int             append;       // 1 si >>, 0 si >
-    int             heredoc;      // 1 si heredoc, 0 si no
-    char            *heredoc_delim; // delimitador del heredoc: "<< EOF"
-    struct s_cmd    *next;        // siguiente comando en el pipe
-} t_cmd;
-
 // un nodo por comando. fin de comando si hay pipe
 // para crear la lista se guardaran los tokens argv hasta encontrar un pipe. Si es un operador:
 // >  guarda como outfile con append = 0
