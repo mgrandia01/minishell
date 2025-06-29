@@ -10,4 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
 
+void	ft_add_history(char *input);
+char	*ft_tokenize(char *input);
+struct s_cmd	*ft_parse(char *tokens);

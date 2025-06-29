@@ -38,7 +38,7 @@ DIR_SRC = srcs/
 # ─────────────────────────────────────────────────────────────
 # ARCHIVOS
 # ─────────────────────────────────────────────────────────────
-SRC = main.c
+SRC = main.c lexer.c execute.c minishell_utils.c
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a
@@ -56,9 +56,9 @@ all: libft $(NAME)
 libft:
 	@make -C ./libft
 
-# Compilar pipex, que depende de objetos y libft.a
+# Compilar minishell, que depende de objetos y libft.a
 $(NAME): $(DIR_OBJS) $(OBJS) $(LIBFT)
-	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) $(LIBFT)
+	@$(CC) $(FLAGS) $(OBJS) -lreadline -o $(NAME) $(LIBFT)
 	@echo
 	@echo "$(GREEN)✅ Ejecutable $(NAME) creado correctamente!$(RESET)"
 	@echo

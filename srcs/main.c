@@ -10,50 +10,74 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// un nodo por comando. fin de comando si hay pipe
-// para crear la lista se guardaran los tokens argv hasta encontrar un pipe. Si es un operador:
-// >  guarda como outfile con append = 0
-// >> outfile con append = 1
-// <  infile
-// << heredoc = 1 y guarda heredoc_delim
-// |  termina el comando actual y comienza uno nuevo en next
+#include "../includes/minishell.h"
 
-
-int	main(int argc, char *argv[], )
+int	main(int argc, char *argv[], char *envp[])
 {
-    char	*input;
-    char	*tokens;
-    t_cmd	*cmds;
+	char	*input = NULL;
+	char	*tokens;
+	t_cmd	*cmds;
 
-    // cambio el estado de las senyales que luego devolvere si hago forks
-    ft_ setup_signals();
-    while (1)
-    {
-        input = readline("minishell \u25B8 ");
-        if (!input)
-            break;
-        ft_add_history(input);
+	(void) argc;
+	(void) argv;
+	// cambio el estado de las senyales que luego devolvere si hago forks
+    	ft_setup_signals();
+    	while (1)
+    	{
+        	input = readline("minishell \u25B8 ");
 
-        //parser and store cmds
-        tokens = tokenize(input);
-        free(tokens);
-        
-        // create list of nodes representing cmds
-        cmds = parse(tokens);
-
-        // iterate list and execute cmds
-       	execute(cmds);
-       	// en los forks de las ejeciones, si son hijos hay que restarurar el estado
-       	// de las senales
-       	//if (pid == 0)
-       	//{
-    	//  signal(SIGINT, SIG_DFL);
-	//    signal(SIGQUIT, SIG_DFL);
-	//    ...
-	//}
-
-        
-        free(input);
-    }
-    return 0;
+		// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
+		ft_printf("TEST1.................");
+		cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
+		// comando forzado : ls -la
+		// Lista splitteada esperada: {"/usr/bin/ls", "-la", NULL}
+		cmds->argv = ft_split("/usr/bin/ls -la", 32);       
+		cmds->infile = -1;
+		cmds->outfile = -1;
+		cmds->heredoc = -1;
+		cmds->heredoc_delim = NULL;
+		cmds->next = NULL;
+		ft_execute(cmds, envp);
+		for(int j=0; j<2; j++)
+			free (cmds->argv[j]);
+		free (cmds->argv);
+		free (cmds);
+		// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
+		// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
+		ft_printf("TEST2.................");
+		cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
+		// comando forzado : grep -r --include="*.c" "main" .
+		// Lista splitteada esperada: {"/usr/bin/grep", "-r", "--include="*.c"", ""main"", ".", NULL}
+		cmds->argv = ft_split("/usr/bin/grep -r --include=\"*.c\" \"main\" .", 32); 
+		cmds->infile = -1;
+		cmds->outfile = -1;
+		cmds->heredoc = -1;
+		cmds->heredoc_delim = NULL;
+		cmds->next = NULL;
+		ft_execute(cmds, envp);
+		for(int j=0; j<5; j++)
+			free (cmds->argv[j]);
+		free (cmds->argv);
+		free (cmds);
+		// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
+		
+		if (!input)
+			break;
+		ft_add_history(input);
+		//parser and store cmds
+		tokens = ft_tokenize(input);
+		free(input);
+		if (!tokens)
+			break ;
+		// create list of nodes representing cmds
+		cmds = ft_parse(tokens);
+		free(tokens);
+		if (!cmds)
+			break ;
+		// iterate list and execute cmds
+		ft_execute(cmds, envp);
+		ft_free_cmds(cmds);
+       	}
+	rl_clear_history();
+       	return (0);
 }
