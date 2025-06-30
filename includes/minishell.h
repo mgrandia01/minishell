@@ -30,6 +30,25 @@
 // << heredoc = 1 y guarda heredoc_delim
 // |  termina el comando actual y comienza uno nuevo en next
 
+typedef enum e_token_type
+{
+  TOKEN_WORD,
+  TOKEN_PIPE,
+  TOKEN_REDIR_IN,
+  TOKEN_REDIR_OUT,
+  TOKEN_REDIR_APPEND,
+  TOKEN_HEREDOC,
+  TOKEN_STRING,
+  TOKEN_EOF
+} t_token_type;
+
+typedef struct s_token
+{
+  t_token_type  type;
+  char  *value;
+  struct s_token  *next;
+} t_token;
+
 typedef struct s_cmd {
     char            **argv;       // Lista de argumentos: ["ls", "-l", NULL]
     int             infile;       // fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
@@ -42,8 +61,8 @@ typedef struct s_cmd {
 void	ft_add_history(char *input);
 void	ft_setup_signals(void);
 void	ft_execute(t_cmd *cmds, char *envp[]);
-char	*ft_tokenize(char *input);
-struct s_cmd	*ft_parse(char *tokens);
+t_token	*ft_tokenize(char *input);
+struct s_cmd	*ft_parse(t_token *tokens);
 void	ft_execute(t_cmd *cmds, char *envp[]);
 void	ft_free_cmds(t_cmd *cmds);
 

@@ -15,7 +15,7 @@
 int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input = NULL;
-	char	*tokens;
+	t_token	*tokens;
 	t_cmd	*cmds;
 
 	(void) argc;

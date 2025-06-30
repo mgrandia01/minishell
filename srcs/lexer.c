@@ -13,5 +13,15 @@
 #include "../includes/minishell.h"
 
 void	ft_add_history(char *input);
-char	*ft_tokenize(char *input);
-struct s_cmd	*ft_parse(char *tokens);
+t_token	*ft_tokenize(char *input);
+struct s_cmd	*ft_parse(t_token *tokens);
+
+/*
+char  *read_input(void)
+{
+  char  *input;
+
+  input = readline("minishell> ");
+  if (input && )
+
+}*/

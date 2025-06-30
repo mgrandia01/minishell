@@ -27,14 +27,14 @@ void	ft_setup_signals()
 
 }
 
-char	*ft_tokenize(char *input)
+t_token	*ft_tokenize(char *input)
 {
 	(void) input;
 	
 	return (NULL);
 }
 
-struct s_cmd	*ft_parse(char *tokens)
+struct s_cmd	*ft_parse(t_token *tokens)
 {
 	t_cmd	*cmds;
 	
