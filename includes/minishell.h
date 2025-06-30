@@ -46,6 +46,7 @@ typedef struct s_token
 {
   t_token_type  type;
   char  *value;
+  int	quote; // 0 = normal, 1 = '', 2 = ""
   struct s_token  *next;
 } t_token;
 
