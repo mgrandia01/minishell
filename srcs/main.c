@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/06/28 16:29:27 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/02 12:06:19 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	main(int argc, char *argv[], char *envp[])
     	while (1)
     	{
         	input = readline("minishell \u25B8 ");
-
+		/*
 		// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
 		ft_printf("TEST1.................");
 		cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
@@ -60,7 +60,7 @@ int	main(int argc, char *argv[], char *envp[])
 		free (cmds->argv);
 		free (cmds);
 		// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
-		
+		*/
 		if (!input)
 			break;
 		ft_add_history(input);
