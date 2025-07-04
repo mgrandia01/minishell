@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:15:18 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 14:53:44 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:58:17 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	ft_add_history(char *input);
 //TODO Tu lexer no debe crashear ni crear tokens vacíos si el input es vacío o contiene solo espacios.
 //TODO echo hola"mundo"adio esto en bash es holamundoadios
 
-
+//TODO No permitir cosas como | | o > sin un archivo después.
+//TODO Manejo de variables y expansión
 // Función auxiliar para procesar caracteres especiales
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 {
