@@ -16,7 +16,7 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input = NULL;
 	char	*tokens;
-	t_cmd	*cmds, *cmd1, *cmd2;
+	t_cmd	*cmds, *cmd1;
 	int	fd;
 
 	(void) argc;
@@ -74,7 +74,6 @@ int	main(int argc, char *argv[], char *envp[])
 		// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 		ft_printf("\n TEST3.................");
 		cmd1 = (t_cmd *)malloc(1 * sizeof(t_cmd));
-		cmd2 = (t_cmd *)malloc(1 * sizeof(t_cmd));
 		fd = open("1.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
 		// Comando introducido por el usuario : echo "pepito" > 1.txt
 		// Si van comillas dentro del comando, anyadir otra " delante para escaparlas
@@ -90,21 +89,11 @@ int	main(int argc, char *argv[], char *envp[])
 		cmd1->err_outfile = 0;
 		cmd1->heredoc = -1;
 		cmd1->heredoc_delim = NULL;
-		cmd1->next = cmd2;
-		cmd2->argv = NULL;
-		cmd2->infile = -1;
-		cmd2->err_infile = 0;
-		cmd2->outfile = fd;
-		cmd2->err_outfile = 0;
-		cmd2->heredoc = -1;
-		cmd2->heredoc_delim = NULL;
-		cmd2->next = NULL;
 		ft_execute(cmds, envp);
 		for(int j=0; j<2; j++)
 			free (cmd1->argv[j]);
 		free (cmd1->argv);
 		free (cmd1);
-		free (cmd2);
 		// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 		
 		if (!input)
