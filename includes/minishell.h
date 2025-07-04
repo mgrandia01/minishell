@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/06/28 15:01:10 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/04 12:24:22 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef enum e_token_type
   TOKEN_REDIR_OUT,
   TOKEN_REDIR_APPEND,
   TOKEN_HEREDOC,
-  TOKEN_STRING,
   TOKEN_EOF
 } t_token_type;
 

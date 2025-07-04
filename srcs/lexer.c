@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:15:18 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/02 13:14:54 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/04 12:38:20 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,34 +55,118 @@ t_token	*ft_tokenize(char *input)
 	int		start;
 	t_token	*list;
 	char	*val;
+	char	quote;
 
 	state = 0;
 	pos = 0;
 	start = 0;
 	list = NULL;
 	val = NULL;
+	quote = input[pos];
 	while (input[pos])
 	{
 		if ((input[pos] == '\'') || (input[pos] == '\"'))
+		{
+			//en bash "hola""mundo" = holamundo?
 			state = ft_get_state(input[pos], state);
+			quote = input[pos];
+			pos ++;
+			start = pos;
+			while(input[pos] && input[pos] != quote)
+				pos ++;
+			if (!input[pos])
+			{
+
+				//TODO Gestionar que pasa si no se cierran las comillas
+				ft_printf("no se han cerrado las comillas");
+				free(val);
+				return (NULL);
+			}
+			val = ft_substr(input, start, pos - start);
+			add_token(&list, TOKEN_WORD, val, state);
+			if (input[pos] == quote)
+			{
+				state = ft_get_state(input[pos], state);
+				pos ++;
+			}
+			start = pos;
+			continue ;
+
+		}
 		if (state == 0 && (input[pos] == ' ' || input[pos] == '\t' || input[pos] == '\0'))
 		{
-			//solo detecta espacios si no hay "" ni ''
 			val = ft_substr(input, start, pos - start);
-			if (start != pos) //hay texto previo
+			if (start != pos) //hay texto previo FIXME
 				add_token(&list, TOKEN_WORD, val, state);
-			//free(val);
 			while (input[pos] == ' ' || input[pos] == '\t')
 				pos ++;
 			start = pos;
 			continue ;
 		}
-		pos ++;
+		
+		else if (input[pos] == '>') //i si tenemos >>>?
+		{
+			if (start != pos) //hay texto previo FIXME
+			{	
+				val = ft_substr(input, start, pos - start);
+				add_token(&list, TOKEN_WORD, val, state);
+			}
+
+			if (input[pos+1] == '>')
+			{
+				add_token(&list, TOKEN_REDIR_APPEND, ft_strdup(">>"), state);
+				pos = pos + 2;
+			}
+			else
+			{
+				add_token(&list, TOKEN_REDIR_OUT, ft_strdup(">"), state);
+				pos ++;
+			}
+			start = pos;
+		}
+		else if (input[pos] == '<')
+		{
+			if (start != pos) //hay texto previo FIXME
+			{	
+				val = ft_substr(input, start, pos - start);
+				add_token(&list, TOKEN_WORD, val, state);
+			}
+
+			if (input[pos+1] == '<')
+			{
+				add_token(&list, TOKEN_HEREDOC, ft_strdup("<<"), state);
+				pos = pos + 2;
+			}
+			else
+			{
+				add_token(&list, TOKEN_REDIR_IN, ft_strdup("<"), state);
+				pos ++;
+			}
+			start = pos;
+		}
+		else if (input[pos] == '|')
+		{
+			if (start != pos) //hay texto previo FIXME
+			{	
+				val = ft_substr(input, start, pos - start);
+				add_token(&list, TOKEN_WORD, val, state);
+			}
+
+				add_token(&list, TOKEN_PIPE, ft_strdup("|"), state);
+				pos ++;
+				start = pos;
+		}
+
+		else
+			pos ++;
 	}
-	if (start != pos) //hay texto previo
-	{	val = ft_substr(input, start, pos - start);
+	if (start != pos) //hay texto previo FIXME
+	{	
+		val = ft_substr(input, start, pos - start);
 		add_token(&list, TOKEN_WORD, val, state);
 	}
+	//free(val)?
+	add_token(&list, TOKEN_EOF, "EOF", 0);
 	return (list);
 }
 
