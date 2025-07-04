@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 12:24:22 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:09:13 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,14 @@
 // <  infile
 // << heredoc = 1 y guarda heredoc_delim
 // |  termina el comando actual y comienza uno nuevo en next
+
+// Estructura para pasar parámetros de posición
+typedef struct s_pos_data
+{
+	int	start;
+	int	pos;
+	int	state;
+}	t_pos_data;
 
 typedef enum e_token_type
 {
@@ -58,11 +66,37 @@ typedef struct s_cmd {
     struct s_cmd    *next;        // siguiente comando en el pipe
 }	t_cmd;
 
+//-------------redirections.c--------------------
+
+void	handle_output_redir(char *input, t_token **list, int *pos, int state);
+void	handle_input_redir(char *input, t_token **list, int *pos, int state);
+void	handle_pipe(t_token **list, int *pos, int state);
+void	process_operator(char *input, t_token **list, t_pos_data *data);
+void	handle_operators(char *input, t_token **list, t_pos_data *data);
+
+//---------token_list.c------------
+
+int	add_token(t_token **lst, t_token_type type, char *val, int quote);
+int	ft_get_state(char input, int state);
+int	process_quote_content(char *input, int *pos, char quote);
+int	handle_quotes(char *input, t_token **list, int *pos, int *state);
+void	process_previous_word(char *input, t_token **list, t_pos_data *data);
+
+//---------white_space.c-----------
+
+void	skip_whitespace(char *input, t_pos_data *data);
+void	handle_whitespace(char *input, t_token **list, t_pos_data *data);
+void	init_tokenizer_data(t_pos_data *data, t_token **list);
+void	finalize_tokenization(char *input, t_token **list, t_pos_data *data);
+
+//------------lexer.c-------------
 void	ft_add_history(char *input);
-void	ft_setup_signals(void);
-void	ft_execute(t_cmd *cmds, char *envp[]);
 t_token	*ft_tokenize(char *input);
 struct s_cmd	*ft_parse(t_token *tokens);
+
+
+void	ft_setup_signals(void);
+void	ft_execute(t_cmd *cmds, char *envp[]);
 void	ft_execute(t_cmd *cmds, char *envp[]);
 void	ft_free_cmds(t_cmd *cmds);
 
