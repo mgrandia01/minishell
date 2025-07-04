@@ -6,13 +6,19 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:15:18 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 14:10:02 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:53:44 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 void	ft_add_history(char *input);
+
+//TODO Tu lexer debe detectar cadenas consecutivas entre comillas y concatenarlas si no hay espacios entre ellas.
+//TODO  Tu lexer debería gestionar correctamente los escapes solo dentro de comillas dobles, y tratarlos como parte del string.
+//TODO Tu lexer no debe crashear ni crear tokens vacíos si el input es vacío o contiene solo espacios.
+//TODO echo hola"mundo"adio esto en bash es holamundoadios
+
 
 // Función auxiliar para procesar caracteres especiales
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
