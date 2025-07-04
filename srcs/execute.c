@@ -28,16 +28,12 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 {
 	pid_t pid;
 	
+	(void)envp;
 	pid = fork();
 	if (pid == 0)
 	{
-		
-		if (cmds->outfile >= 3)
-		{
-			dup2(cmds->outfile, STDOUT_FILENO);
-            		close(cmds->outfile);
-            	}
-            	ft_printf("\n");
+        	printf("\nHijo------------------------ %s %d--------------------------", cmds->argv[0], cmds->outfile);fflush(0);
+		ft_printf("\n");
             	for(int j=0; j<5; j++)
             	{
 			if (!cmds->argv[j])
@@ -45,9 +41,14 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 			ft_printf("%s\t", cmds->argv[j]);
 		}
 		ft_printf("\n");
+		if (cmds->outfile >= 3)
+		{
+			dup2(cmds->outfile, STDOUT_FILENO);
+            		close(cmds->outfile);
+            	}
             	if (execve(cmds->argv[0], cmds->argv, envp) == -1)
 		{
-			printf("%s: %s %s \n", strerror(errno), cmds->argv[0], cmds->argv[1]); // valorar la posiblidad de customiziar ftprintf a la STDERR
+			ft_printf("%s: %s %s \n", strerror(errno), cmds->argv[0], cmds->argv[1]); // valorar la posiblidad de customiziar ftprintf a la STDERR
 			for(int j=0; j<5; j++)
 			{
 				if (!cmds->argv[j])
@@ -58,10 +59,14 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 			free (cmds);
 			exit(1);
 		}
+		exit(0);
 				
 	}
 	else
 	{
         	waitpid(pid, NULL, 0);
-	}
+        	printf("\nPadre------------------------ %s --------------------------", cmds->argv[0]);fflush(0);
+        	// bug en ft_printf, no interpreta bien la "/" si forma parte del %s y mete un salto de linea
+        	// separar comandos por pipe, no >>. se ve en este ejemplo
+        }
 }
