@@ -6,12 +6,11 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 12:24:50 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/07 11:49:36 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <stdio.h>
 #include <stdio.h>
 
 void print_tokens(t_token *tokens)
@@ -106,6 +105,7 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		// create list of nodes representing cmds
 		cmds = ft_parse(tokens);
+		free_tokens(tokens);
 		free(tokens);
 		if (!cmds)
 			break ;

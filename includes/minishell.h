@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 14:09:13 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/07 11:34:29 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	init_tokenizer_data(t_pos_data *data, t_token **list);
 void	finalize_tokenization(char *input, t_token **list, t_pos_data *data);
 
 //------------lexer.c-------------
+void	free_tokens(t_token *lst);
 void	ft_add_history(char *input);
 t_token	*ft_tokenize(char *input);
 struct s_cmd	*ft_parse(t_token *tokens);

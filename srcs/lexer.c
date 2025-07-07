@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/* ************:colorscheme catppuccin************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:15:18 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 14:58:17 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/07 11:35:28 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,23 @@ void	ft_add_history(char *input);
 //TODO No permitir cosas como | | o > sin un archivo después.
 //TODO Manejo de variables y expansión
 // Función auxiliar para procesar caracteres especiales
+// Redirecciones mal formadas (> sin archivo, por ejemplo, aunque esto también puede ser parte del parser)
+
+
+void	free_tokens(t_token *lst)
+{
+	t_token *tmp;
+	
+	while (lst)
+	{
+		tmp = lst->next;
+		if (lst->value)
+		free(lst->value);
+		free(lst);
+		lst = tmp;
+	}
+}
+
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 {
 	if ((input[data->pos] == '\'') || (input[data->pos] == '\"'))
