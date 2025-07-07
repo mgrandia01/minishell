@@ -1,12 +1,12 @@
-/* ************:colorscheme catppuccin************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/28 16:15:18 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/07 11:35:28 by mgrandia         ###   ########.fr       */
+/*   Created: 2025/07/07 15:27:00 by mgrandia          #+#    #+#             */
+/*   Updated: 2025/07/07 15:28:16 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,15 @@ void	ft_add_history(char *input);
 // Función auxiliar para procesar caracteres especiales
 // Redirecciones mal formadas (> sin archivo, por ejemplo, aunque esto también puede ser parte del parser)
 
-
 void	free_tokens(t_token *lst)
 {
-	t_token *tmp;
-	
+	t_token	*tmp;
+
 	while (lst)
 	{
 		tmp = lst->next;
 		if (lst->value)
-		free(lst->value);
+			free(lst->value);
 		free(lst);
 		lst = tmp;
 	}
