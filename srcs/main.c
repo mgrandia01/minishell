@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/07 13:17:18 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/07 15:11:17 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!cmds)
 			break ;
 		// iterate list and execute cmds
-		ft_execute(cmds, envp);
+	//	ft_execute(cmds, envp);
+		(void)envp;
 		ft_free_cmds(cmds);
        	}
 	rl_clear_history();
