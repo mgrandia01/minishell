@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 14:11:19 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/07 13:13:09 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 	if (!new || (type == TOKEN_WORD && !val))
 		return (0);
 	new->type = type;
-	new->value = val;
+	new->value = ft_strdup(val);
 	new->quote = quote;
 	new->next = NULL;
 	while (*lst && (*lst)->next)
