@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/13 11:33:06 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/13 12:29:17 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,9 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input = NULL;
 	t_token	*tokens;
-	t_cmd	*cmds, *cmd1;
-	int	fd;
+	t_cmd	*cmds;
+	//, *cmd1;
+	//int	fd;
 	//t_cmd	*cmds;
 
 	(void) argc;
@@ -61,7 +62,7 @@ int	main(int argc, char *argv[], char *envp[])
     	{
         	input = readline("minishell \u25B8 ");
 		// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
-		ft_printf("\n TEST1.................");
+		/*ft_printf("\n TEST1.................");
 		cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
 		// Comando introducido por el usuario : ls -la
 		// como en el pipex, el comando deberia de llevar el path correcto delante
@@ -130,7 +131,7 @@ int	main(int argc, char *argv[], char *envp[])
 		// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 		
 		if (!input)
-			break;
+			break;*/
 		ft_add_history(input);
 		//parser and store cmds
 		tokens = ft_tokenize(input);
@@ -145,7 +146,7 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!cmds)
 			break ;
 		// iterate list and execute cmds
-		ft_execute(cmds, envp);
+		//ft_execute(cmds, envp);
 		(void)envp;
 		ft_free_cmds(cmds);
        	}
