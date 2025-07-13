@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/13 11:33:06 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/13 16:27:43 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// Lista splitteada esperada: {"/usr/bin/ls", "-la", NULL}
 	cmds->argv = ft_split("/usr/bin/ls -la", 32);       
 	cmds->infile = -1;
-	cmds->err_infile = 0;
+//	cmds->err_infile = 0;
 	cmds->outfile = 1;
-	cmds->err_outfile = 0;
+//	cmds->err_outfile = 0;
 	cmds->heredoc = -1;
 	cmds->heredoc_delim = NULL;
 	cmds->next = NULL;
@@ -83,9 +83,9 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	
 	cmds->argv = ft_split("/usr/bin/grep -r --include=""*.c"" ""main"" .", 32); 
 	cmds->infile = -1;
-	cmds->err_infile = 0;
+//	cmds->err_infile = 0;
 	cmds->outfile = 1;
-	cmds->err_outfile = 0;
+//	cmds->err_outfile = 0;
 	cmds->heredoc = -1;
 	cmds->heredoc_delim = NULL;
 	cmds->next = NULL;
@@ -109,9 +109,9 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	cmds = cmd1;
 	cmd1->argv = ft_split("/usr/bin/echo pepito", 32); 
 	cmd1->infile = -1;
-	cmd1->err_infile = 0;
+//	cmd1->err_infile = 0;
 	cmd1->outfile = fd;
-	cmd1->err_outfile = 0;
+//	cmd1->err_outfile = 0;
 	cmd1->heredoc = -1;
 	cmd1->heredoc_delim = NULL;
 	ft_execute(cmds, envp);
@@ -127,7 +127,6 @@ int	main(int argc, char *argv[], char *envp[])
 	char	*input = NULL;
 	t_token	*tokens;
 	t_cmd	*cmds;
-
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
@@ -135,6 +134,7 @@ int	main(int argc, char *argv[], char *envp[])
     	while (1)
     	{
         	input = readline("\nminishell \u25B8 ");
+
 		if (!input)
 			break;
 		ft_add_history(input);

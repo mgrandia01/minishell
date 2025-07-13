@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/13 11:44:23 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/13 13:42:54 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,27 +56,26 @@ typedef struct s_token
   struct s_token  *next;
 } t_token;
 
+typedef enum e_redir_type
+{
+	NONE,
+	INFILE,
+	OUTFILE,
+	APPEND,
+	HEREDOC
+} t_redir_type;
+
 typedef struct s_cmd
 {
 	char			**argv;       // Lista de argumentos: [""ls"", "-l", NULL]
 	int				infile;       // fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
-	int				err_infile;	//perror		
+//	int				err_infile;	//perror		
 	int				outfile;      // fd 1:STDOUT, 2: STDERR, >=3 a archivo de salida: "> out.txt" o ">> out.txt" 
-	int				err_outfile;	//perror		
+//	int				err_outfile;	//perror		
 	int				heredoc;	// 1 si heredoc, 0 si no
 	char			*heredoc_delim; // delimitador del heredoc: "<< EOF"
 	struct s_cmd	*next;        // siguiente comando en el pipe
 }	t_cmd;
-/*
-typedef struct s_cmd {
-    char            **argv;       // Lista de argumentos: ["ls", "-l", NULL]
-    int             infile;       // fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
-    int             outfile;      // fd a archivo de salida: "> out.txt" o ">> out.txt"
-    int             heredoc;      // 1 si heredoc, 0 si no
-    char            *heredoc_delim; // delimitador del heredoc: "<< EOF"
-    struct s_cmd    *next;        // siguiente comando en el pipe
->>>>>>> marta
-}	t_cmd;*/
 
 //-------------redirections.c--------------------
 
