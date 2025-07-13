@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 14:57:37 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/05/10 20:50:27 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:28:27 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,5 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 //extra
-void	*ft_realloc(void *ptr, size_t size);
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 #endif

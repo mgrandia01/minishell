@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/06/28 15:01:10 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/13 11:44:23 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,36 @@
 // << heredoc = 1 y guarda heredoc_delim
 // |  termina el comando actual y comienza uno nuevo en next
 
+// Estructura para pasar parámetros de posición
+typedef struct s_pos_data
+{
+	int	start;
+	int	pos;
+	int	state;
+}	t_pos_data;
+
+typedef enum e_token_type
+{
+  TOKEN_WORD,
+  TOKEN_PIPE,
+  TOKEN_REDIR_IN,
+  TOKEN_REDIR_OUT,
+  TOKEN_REDIR_APPEND,
+  TOKEN_HEREDOC,
+  TOKEN_EOF
+} t_token_type;
+
+typedef struct s_token
+{
+  t_token_type  type;
+  char  *value;
+  int	quote; // 0 = normal, 1 = '', 2 = ""
+  struct s_token  *next;
+} t_token;
+
 typedef struct s_cmd
 {
-	char			**argv;       // Lista de argumentos: ["ls", "-l", NULL]
+	char			**argv;       // Lista de argumentos: [""ls"", "-l", NULL]
 	int				infile;       // fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
 	int				err_infile;	//perror		
 	int				outfile;      // fd 1:STDOUT, 2: STDERR, >=3 a archivo de salida: "> out.txt" o ">> out.txt" 
@@ -40,13 +67,51 @@ typedef struct s_cmd
 	char			*heredoc_delim; // delimitador del heredoc: "<< EOF"
 	struct s_cmd	*next;        // siguiente comando en el pipe
 }	t_cmd;
+/*
+typedef struct s_cmd {
+    char            **argv;       // Lista de argumentos: ["ls", "-l", NULL]
+    int             infile;       // fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
+    int             outfile;      // fd a archivo de salida: "> out.txt" o ">> out.txt"
+    int             heredoc;      // 1 si heredoc, 0 si no
+    char            *heredoc_delim; // delimitador del heredoc: "<< EOF"
+    struct s_cmd    *next;        // siguiente comando en el pipe
+>>>>>>> marta
+}	t_cmd;*/
 
+//-------------redirections.c--------------------
+
+void	handle_output_redir(char *input, t_token **list, int *pos, int state);
+void	handle_input_redir(char *input, t_token **list, int *pos, int state);
+void	handle_pipe(t_token **list, int *pos, int state);
+void	process_operator(char *input, t_token **list, t_pos_data *data);
+void	handle_operators(char *input, t_token **list, t_pos_data *data);
+
+//---------token_list.c------------
+
+int	add_token(t_token **lst, t_token_type type, char *val, int quote);
+int	ft_get_state(char input, int state);
+int	process_quote_content(char *input, int *pos, char quote);
+int	handle_quotes(char *input, t_token **list, int *pos, int *state);
+void	process_previous_word(char *input, t_token **list, t_pos_data *data);
+
+//---------white_space.c-----------
+
+void	skip_whitespace(char *input, t_pos_data *data);
+void	handle_whitespace(char *input, t_token **list, t_pos_data *data);
+void	init_tokenizer_data(t_pos_data *data, t_token **list);
+void	finalize_tokenization(char *input, t_token **list, t_pos_data *data);
+
+//------------lexer.c-------------
+void	free_tokens(t_token *lst);
 void	ft_add_history(char *input);
+t_token	*ft_tokenize(char *input);
+struct s_cmd	*ft_parse(t_token *tokens);
+
+
 void	ft_setup_signals(void);
 void	ft_execute(t_cmd *cmds, char *envp[]);
-char	*ft_tokenize(char *input);
-t_cmd	*ft_parse(char *tokens);
-void	ft_execute(t_cmd *cmds, char *envp[]);
+
+
 void	ft_free_cmds(t_cmd *cmds);
 
 #endif
