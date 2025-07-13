@@ -1,0 +1,13 @@
+git branch		para saber donde estoy, por ejemplo en la rama1
+
+git add .
+git commit
+git push
+
+
+
+git checkout main        para cambiar a la rama main
+git pull 		 para actualizar en local la rama main
+git merge rama1          para fusionar la rama main que tengo descargada con la rama1 de github
+git push 		 para subir la rama main ha fusionada
+
