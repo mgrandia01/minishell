@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 11:34:58 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:20:51 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,17 @@ void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 		add_word(cmd, tokens->value);
 	*expect_redir = NONE;
 }
+/*
+void	process_expansion(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
+{
+	if ((tokens->quote) == 1)//single quote
+		handle_word(cmd, tokens, &expect_redir);
+	else
+	{
+		//expandir
+	
+	}
+}*/
 
 void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
 {
@@ -93,6 +104,7 @@ void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
 	*cmd = (*cmd) -> next;
 	*expect_redir = NONE;
 }
+
 
 //TODO comillas dentro de el argv?
 struct s_cmd	*ft_parse(t_token *tokens)
@@ -118,6 +130,7 @@ struct s_cmd	*ft_parse(t_token *tokens)
 			expect_redir = HEREDOC;
 		else if ((tokens->type) == TOKEN_WORD)
 			handle_word(cmd, tokens, &expect_redir);
+			//process_expansion(cmd, tokens, &expect_redir);
 		tokens = tokens -> next;
 	}
 	return (cmd_head);

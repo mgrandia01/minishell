@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 12:07:30 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:51:27 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_token	*tokens;
 	t_cmd	*cmds;
 	char	*path = NULL;
+	size_t len;
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
@@ -181,6 +182,9 @@ int	main(int argc, char *argv[], char *envp[])
 
 		if (!input || !ft_strncmp(input,"esc",3))
 			break;
+		len = ft_strlen(input);
+		if (len> 0 && input[len - 1] == '\n')
+			input[len - 1] = '\0';
 		ft_add_history(input);
 		//parser and store cmds
 		tokens = ft_tokenize(input);
@@ -198,7 +202,6 @@ int	main(int argc, char *argv[], char *envp[])
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
 		// preparacion de datos mientras no esta el parser
-		free(input);
 		
 		//********************************
 		//   puedes si encuentras pipe, en infile y outfile:
@@ -207,8 +210,8 @@ int	main(int argc, char *argv[], char *envp[])
 		//   	cmd2 (wc -l)
 		//   		infile: <fd pipe lectura>
 		//
-			path = find_path(cmds->argv[0], envp);
-			ft_printf("PATH -> %s\n", path);
+		path = find_path(cmds->argv[0], envp);
+		ft_printf("PATH -> %s\n", path);
 		//********************************
 		/*
 		(void)envp;
