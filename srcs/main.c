@@ -104,7 +104,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// Si van comillas dentro del comando, anyadir otra " delante para escaparlas
 	// String a splittear cmd1: "echo pepito" ........ qye oasa si va comillas???
 	// String a splittear cmd2: > "1.txt"
-	// Lista splitteada esperada: {"echo", "pepito", NULL} ->next-> {"1.txt", NULL}
+	// Lista splitteada esperada: {"/usr/bin/echo", "pepito", NULL} ->next-> {"1.txt", NULL}
 	
 	cmds = cmd1;
 	cmd1->argv = ft_split("/usr/bin/echo pepito", 32); 
@@ -133,13 +133,15 @@ int	main(int argc, char *argv[], char *envp[])
     	ft_setup_signals();
     	while (1)
     	{
-        	input = readline("\nminishell \u25B8 ");
+        	ft_printf("\nminishell \u25B8 ");
+        	input = get_next_line(STDIN_FILENO);
+        	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
-		if (!input)
+		if (!input || !ft_strncmp(input,"esc",3))
 			break;
 		ft_add_history(input);
 		//parser and store cmds
-		tokens = ft_tokenize(input);
+		/*tokens = ft_tokenize(input);
 		print_tokens(tokens);
 		free(input);
 		if (!tokens)
@@ -149,16 +151,22 @@ int	main(int argc, char *argv[], char *envp[])
 		free_tokens(tokens);
 		//	free(tokens);
 		if (!cmds)
-			break ;
+			break ;*/
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
 		// preparacion de datos mientras no esta el parser
+		free(input);
 		(void)envp;
-		//(void)tokens;
-		//cmds = NULL;
-		//ft_exe_tests(cmds, envp);
-		ft_free_cmds(cmds);
+		(void)tokens;
+		cmds = NULL;
+		ft_exe_tests(cmds, envp);
+		ft_free_cmds(cmds); // implementar esta parte que estaba parcheada en los tests, algo asi:
+		//for(int j=0; j<5; j++)
+		//	free (cmds->argv[j]);
+		//free (cmds->argv);
+		//free (cmds);
        	}
+       	free(input);
 	rl_clear_history();
        	return (0);
 }
