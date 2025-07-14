@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 14:51:27 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:29:48 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!tokens)
 			break ;
 		// create list of nodes representing cmds
-		cmds = ft_parse(tokens);
+		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		free_tokens(tokens);
 		//	free(tokens);

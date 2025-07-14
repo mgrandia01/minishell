@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 15:20:51 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:28:48 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,39 @@ void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 	*expect_redir = NONE;
 }
 /*
-void	process_expansion(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
+int	find_var(char	*value)
 {
+	int	i;
+	
+	i = 0;
+	if (!value)
+		return (0);
+	while(value[i])
+	{
+		if (value[i] == '$')
+			return (1);
+		i++;	
+	}
+	return (0);
+}
+
+void	process_expansion(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir, char *envp[])
+{
+	(void)envp;
 	if ((tokens->quote) == 1)//single quote
-		handle_word(cmd, tokens, &expect_redir);
+		handle_word(cmd, tokens, expect_redir);
 	else
 	{
+		if (find_var(tokens->value))//si conte almenys 1 $
+		{
+			printf("TENIM $!!! YUHUUU\n");
+			if ((token->quote) == 0)//no cometes
+			{
+				
+			}
+		}
+		else
+			handle_word(cmd, tokens, expect_redir);
 		//expandir
 	
 	}
@@ -107,7 +134,10 @@ void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
 
 
 //TODO comillas dentro de el argv?
-struct s_cmd	*ft_parse(t_token *tokens)
+//
+//    path = find_path(cmds->argv[0], envp);
+
+struct s_cmd	*ft_parse(t_token *tokens, char *envp[])
 {
 	t_cmd			*cmd_head;
 	t_cmd			*cmd;
@@ -116,6 +146,7 @@ struct s_cmd	*ft_parse(t_token *tokens)
 	cmd_head = init_comand();
 	cmd = cmd_head;
 	expect_redir = NONE;
+	(void)envp;
 	while (tokens)
 	{
 		if ((tokens->type) == TOKEN_PIPE)
@@ -129,8 +160,8 @@ struct s_cmd	*ft_parse(t_token *tokens)
 		else if ((tokens->type) == TOKEN_HEREDOC)
 			expect_redir = HEREDOC;
 		else if ((tokens->type) == TOKEN_WORD)
+		//	process_expansion(cmd, tokens, &expect_redir, envp);
 			handle_word(cmd, tokens, &expect_redir);
-			//process_expansion(cmd, tokens, &expect_redir);
 		tokens = tokens -> next;
 	}
 	return (cmd_head);
