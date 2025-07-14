@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/13 16:27:43 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 11:55:48 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,47 @@ void print_tokens(t_token *tokens)
         tokens = tokens->next;
     }
 }
+
+#include <stdio.h>
+
+void	print_commands(t_cmd *cmd_list)
+{
+	int i;
+	int cmd_num = 1;
+
+	while (cmd_list)
+	{
+		printf("======= Comando %d =======\n", cmd_num);
+
+		// Imprimir argumentos
+		if (cmd_list->argv)
+		{
+			i = 0;
+			while (cmd_list->argv[i])
+			{
+				printf("argv[%d]: %s\n", i, cmd_list->argv[i]);
+				i++;
+			}
+		}
+		else
+			printf("argv: (null)\n");
+
+		// Redirecciones
+		printf("infile: %d\n", cmd_list->infile);
+		printf("outfile: %d\n", cmd_list->outfile);
+
+		// Heredoc
+		if (cmd_list->heredoc)
+			printf("heredoc: sí, delimitador = \"%s\"\n", cmd_list->heredoc_delim);
+		else
+			printf("heredoc: no\n");
+
+		printf("\n");
+		cmd_list = cmd_list->next;
+		cmd_num++;
+	}
+}
+
 
 void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 {
@@ -127,6 +168,7 @@ int	main(int argc, char *argv[], char *envp[])
 	char	*input = NULL;
 	t_token	*tokens;
 	t_cmd	*cmds;
+	char	*path = NULL;
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
@@ -146,6 +188,7 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		// create list of nodes representing cmds
 		cmds = ft_parse(tokens);
+		print_commands(cmds);
 		free_tokens(tokens);
 		//	free(tokens);
 		if (!cmds)
@@ -153,6 +196,18 @@ int	main(int argc, char *argv[], char *envp[])
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
 		// preparacion de datos mientras no esta el parser
+		
+		//********************************
+		//   puedes si encuentras pipe, en infile y outfile:
+		//   	cmd1 (ls)
+		//   		outfile: <fd pipe escritura>
+		//   	cmd2 (wc -l)
+		//   		infile: <fd pipe lectura>
+		//
+			path = find_path(cmds->argv[0], envp);
+			ft_printf("PATH -> %s\n", path);
+		//********************************
+		//
 		(void)envp;
 		//(void)tokens;
 		//cmds = NULL;

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/13 13:42:54 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 11:49:46 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,16 @@ void	ft_add_history(char *input);
 t_token	*ft_tokenize(char *input);
 struct s_cmd	*ft_parse(t_token *tokens);
 
+//-----------parse_utils.c----------
+int	argv_num(char **argv);
+char	**expand_argv(char **argv, int s);
+t_cmd	*init_comand(void);
 
+//----------path.c------------------
+char	*find_path(char *cmd, char *env[]);
+
+	
+	
 void	ft_setup_signals(void);
 void	ft_execute(t_cmd *cmds, char *envp[]);
 
