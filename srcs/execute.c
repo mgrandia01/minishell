@@ -69,12 +69,13 @@ int	ft_execute_builtin(char **cmd)
 void	ft_execute(t_cmd *cmds, char *envp[])
 {
 	pid_t pid;
+	char *path;
 	
 	(void)envp;
 	pid = fork();
 	if (pid == 0)
 	{
-        	printf("\nHijo------------------------ %s %d--------------------------", cmds->argv[0], cmds->outfile);fflush(0);
+        	printf("\nHijo------------------------ cmds->argv[0] %s --------------------------", cmds->argv[0]);fflush(0);
 		ft_printf("\n");
             	for(int j=0; j<5; j++)
             	{
@@ -88,9 +89,18 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 			dup2(cmds->outfile, STDOUT_FILENO);
             		close(cmds->outfile);
             	}
-            	printf("\nlll %s llll", cmds->argv[1]);
-            	if (execve(cmds->argv[0], cmds->argv, envp) == -1)
+            	path = find_path(cmds->argv[0], envp);
+            	printf("\nlllllllllllllllllll %s llll\n", path);fflush(0);
+            	for(int j=0; j<5; j++)
+            	{
+			if (!cmds->argv[j])
+				break ;
+			ft_printf("ttttt %d: %smmmm\t", j, cmds->argv[j]);
+		}
+		printf("1234%s5678", cmds->argv[1]);
+		if (execve(path, cmds->argv, envp) == -1)
 		{
+			free(path);
 			ft_printf("%s: %s %s \n", strerror(errno), cmds->argv[0], cmds->argv[1]); // valorar la posiblidad de customiziar ftprintf a la STDERR
 			for(int j=0; j<5; j++)
 			{
@@ -117,10 +127,11 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 {
 	int     pipefd[2];
-	int     prev_fd = -1;
+	int     prev_fd;
 	int	status[2];
 	pid_t   pid;
 
+	prev_fd = -1;
 	if (!cmd || !ft_validate_fds(cmd))
 		return ;
 	// Ejecutar built-in directamente en el padre si es un único comando
