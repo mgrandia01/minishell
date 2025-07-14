@@ -130,7 +130,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	cmds->heredoc = -1;
 	cmds->heredoc_delim = NULL;
 	cmds->next = NULL;
-	ft_execute(cmds, envp);
+	//ft_exe_pipeline(cmds, envp);
 	for(int j=0; j<5; j++)
 		free (cmds->argv[j]);
 	free (cmds->argv);
@@ -163,17 +163,48 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 }
 
+void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
+{
+	t_cmd	*ptr_next;
+
+	if (lst && del)
+	{
+		while (*lst)
+		{
+			ptr_next = (*lst)->next;
+			del((*lst)->argv);
+			free(*lst);
+			*lst = ptr_next;
+		}
+	}
+}
+
+void ft_free_argv(char **ptr)
+{
+	int	i;
+	
+	i = 0;
+	if (ptr)
+	{
+		while (ptr[i])
+			free(ptr[i++]);
+	}
+}
+
 int	main(int argc, char *argv[], char *envp[])
 {
-	char	*input = NULL;
+	char	*input;
 	t_token	*tokens;
 	t_cmd	*cmds;
-	char	*path = NULL;
+	//char	*path;
 	size_t len;
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
     	ft_setup_signals();
+    	input = NULL;
+    	tokens = NULL;
+    	cmds = NULL;
     	while (1)
     	{
         	ft_printf("\nminishell \u25B8 ");
@@ -188,14 +219,16 @@ int	main(int argc, char *argv[], char *envp[])
 		ft_add_history(input);
 		//parser and store cmds
 		tokens = ft_tokenize(input);
-		print_tokens(tokens);
 		free(input);
+		input = NULL;
+		print_tokens(tokens);
 		if (!tokens)
 			break ;
 		// create list of nodes representing cmds
 		cmds = ft_parse(tokens);
-		print_commands(cmds);
+		//print_commands(cmds);
 		free_tokens(tokens);
+		tokens = NULL;
 		//	free(tokens);
 		if (!cmds)
 			break ;
@@ -210,21 +243,22 @@ int	main(int argc, char *argv[], char *envp[])
 		//   	cmd2 (wc -l)
 		//   		infile: <fd pipe lectura>
 		//
-		path = find_path(cmds->argv[0], envp);
-		ft_printf("PATH -> %s\n", path);
+		//path = find_path(cmds->argv[0], envp);
+		//ft_printf("PATH -> %s\n", path);
 		//********************************
-		/*
+		
 		(void)envp;
-		(void)tokens;
+		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
-		ft_free_cmds(cmds); // implementar esta parte que estaba parcheada en los tests, algo asi:
-		//for(int j=0; j<5; j++)
-		//	free (cmds->argv[j]);
-		//free (cmds->argv);
-		//free (cmds);
+		ft_cmdclear (&cmds, ft_free_argv);
+		
        	}
-       	free(input);
-	rl_clear_history();
+       	
+       	if (input)
+       		free(input);
+       	if (tokens)
+       		free_tokens(tokens);
+       	rl_clear_history();
        	return (0);
 }

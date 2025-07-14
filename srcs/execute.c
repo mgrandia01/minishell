@@ -16,6 +16,7 @@ void	ft_setup_signals(void);
 void	ft_execute(t_cmd *cmds, char *envp[]);
 int	ft_is_builtin(char *cmd);
 int	ft_execute_builtin(char **cmd);
+void	ft_exe_pipeline(t_cmd *cmd, char **envp);
 
 
 // en los forks de las ejeciones, si son hijos hay que restarurar el estado
@@ -84,21 +85,21 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 			ft_printf("Comando %d: %s\t", j, cmds->argv[j]);
 		}
 		ft_printf("\n");
+		path = find_path(cmds->argv[0], envp);
+            	printf("\nPath: %s\n", path);fflush(0);
+            	for(int j=0; j<20; j++)
+            	{
+			if (!cmds->argv[j])
+				break ;
+			ft_printf("Argv[%d]: %s\t", j, cmds->argv[j]);
+		}
+		printf("\nInicio ejecucion antes desviar STDOUT\n");fflush(0);
 		if (cmds->outfile >= 3)
 		{
 			dup2(cmds->outfile, STDOUT_FILENO);
             		close(cmds->outfile);
             	}
-            	path = find_path(cmds->argv[0], envp);
-            	printf("\nlllllllllllllllllll %s llll\n", path);fflush(0);
-            	for(int j=0; j<5; j++)
-            	{
-			if (!cmds->argv[j])
-				break ;
-			ft_printf("ttttt %d: %smmmm\t", j, cmds->argv[j]);
-		}
-		printf("1234%s5678", cmds->argv[1]);
-		if (execve(path, cmds->argv, envp) == -1)
+            	if (execve(path, cmds->argv, envp) == -1)
 		{
 			free(path);
 			ft_printf("%s: %s %s \n", strerror(errno), cmds->argv[0], cmds->argv[1]); // valorar la posiblidad de customiziar ftprintf a la STDERR
@@ -130,6 +131,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	int     prev_fd;
 	int	status[2];
 	pid_t   pid;
+	char	*path;
 
 	prev_fd = -1;
 	if (!cmd || !ft_validate_fds(cmd))
@@ -193,10 +195,12 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 				dup2(cmd->outfile, STDOUT_FILENO);
 				close(cmd->outfile);
 			}
+			path = find_path(cmd->argv[0], envp);
 			if (ft_is_builtin(cmd->argv[0]))
 				ft_execute_builtin(cmd->argv);
 			else
-				execve(cmd->argv[0], cmd->argv, envp);
+				execve(path, cmd->argv, envp);
+			free(path);
 			perror("Minishell: execve");
 			exit(1);
 		}
