@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:27:00 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 14:41:16 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:08:08 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,14 @@ void	free_tokens(t_token *lst)
 
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 {
+	char	*prev_word = NULL;
+
 	if ((input[data->pos] == '\'') || (input[data->pos] == '\"'))
 	{
-		if (handle_quotes(input, list, &data->pos, &data->state) == -1)
+		if ((data -> pos) > (data -> start))
+			prev_word = ft_substr(input, data->start, data->pos - data->start);
+		//process_previous_word(input, list, data);
+		if (handle_quotes(input, list, &data->pos, &data->state, prev_word) == -1)
 			return (-1);
 		data->start = data->pos;
 	}
