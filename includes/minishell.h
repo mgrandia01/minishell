@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 15:47:29 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:07:05 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	handle_operators(char *input, t_token **list, t_pos_data *data);
 int	add_token(t_token **lst, t_token_type type, char *val, int quote);
 int	ft_get_state(char input, int state);
 int	process_quote_content(char *input, int *pos, char quote);
-int	handle_quotes(char *input, t_token **list, int *pos, int *state);
+int	handle_quotes(char *input, t_token **list, int *pos, int *state, char *prev_word);
 void	process_previous_word(char *input, t_token **list, t_pos_data *data);
 
 //---------white_space.c-----------
