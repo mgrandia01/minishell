@@ -139,7 +139,9 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	char	*path;
 
 	prev_fd = -1;
-	if (!cmd || !ft_validate_fds(cmd))
+	pipefd[0] = -1;
+	pipefd[1] = -1;
+	if (!cmd)
 		return ;
 	// Ejecutar built-in directamente en el padre si es un único comando
 	// Teoricamente ejeuta los builtin dentro de pipes pero pierde el resultado
@@ -148,6 +150,11 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	{
 		status[0] = dup(STDIN_FILENO);
 		status[1] = dup(STDOUT_FILENO);
+		if (cmd->infile == -1 || cmd->outfile == -1)
+		{
+			ft_putstr_fd("minishell: error en redirección\n", STDERR_FILENO);
+			return ;
+		}
 		if (cmd->infile > 2)
 		{
 			dup2(cmd->infile, STDIN_FILENO);
@@ -182,48 +189,67 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 		if (pid == 0) // hijo
 		{
 			printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);
-			if (prev_fd != -1)
+			printf("\nEXECUTE HIJO-----------------------");fflush(0);
+			if (cmd->infile == -1)
+			{
+				    //ft_putstr_fd("minishell: error redirección de entrada\n", 2);
+				    // el parser es el que tiene el noimbre del fichero
+				    // minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
+				    exit(EXIT_FAILURE); // Solo este proceso termina
+			}else if (cmd->infile > 2)
+			{
+				dup2(cmd->infile, STDIN_FILENO);
+				close(cmd->infile);
+			}else if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			if (cmd->next)
+			if (cmd->outfile == -1)
+			{
+				ft_putstr_fd("minishell: redirección de salida fallida\n", STDERR_FILENO);
+				exit(1);
+			}else if (cmd->outfile > 2)
+			{
+				dup2(cmd->outfile, STDOUT_FILENO);
+				close(cmd->outfile);
+			}else if (cmd->next)
 			{
 				close(pipefd[0]);
 				dup2(pipefd[1], STDOUT_FILENO);
 				close(pipefd[1]);
 			}
-			if (cmd->infile > 2)
-			{
-				dup2(cmd->infile, STDIN_FILENO);
-				close(cmd->infile);
-			}
-			if (cmd->outfile > 2)
-			{
-				dup2(cmd->outfile, STDOUT_FILENO);
-				close(cmd->outfile);
-			}
+			
+			if (pipefd[0] != -1)
+               		 close(pipefd[0]);
+			
+			
 			path = find_path(cmd->argv[0], envp);
-			printf("\nEXECUTE HIJO-----------------------");fflush(0);
 			if (ft_is_builtin(cmd->argv[0]))
 				ft_execute_builtin(cmd->argv);
 			else
 				execve(path, cmd->argv, envp);
-			free(path);
+			free(path); // liberar la mem del main (input, token y cmd). provocar el fallo con /usr/bin echo "paco" (con el espacio)
 			perror("Minishell: execve");
 			printf("\nFIN HIJO------(ha petado un execvce para haber llegado aqui----------------FIN HIJO");fflush(0);
-			exit(1);
+			exit(127);
 		}
 		else // padre
 		{
 			printf("\nINICIO PADRE------------------------%s--------------------INICIO PADRE", cmd->argv[0]);fflush(0);
 			if (prev_fd != -1)
 				close(prev_fd);
+			if (cmd->infile > 2)
+		                close(cmd->infile);
+	                if (cmd->outfile > 2)
+             		    close(cmd->outfile);
 			if (cmd->next)
 			{
 				close(pipefd[1]);
 				prev_fd = pipefd[0];
 			}
+			else
+				prev_fd = -1;
 			waitpid(pid, NULL, 0);
 			cmd = cmd->next;
 			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE", cmd);fflush(0);
