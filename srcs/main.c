@@ -187,7 +187,11 @@ void ft_free_argv(char **ptr)
 	if (ptr)
 	{
 		while (ptr[i])
-			free(ptr[i++]);
+		{
+			free(ptr[i]);
+			i++;
+		}
+		free(ptr);
 	}
 }
 
