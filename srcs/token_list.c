@@ -20,7 +20,8 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 	if (!new || (type == TOKEN_WORD && !val))
 		return (0);
 	new->type = type;
-	new->value = ft_strdup(val);
+	//new->value = ft_strdup(val);
+	new->value = val;
 	new->quote = quote;
 	new->next = NULL;
 	if (!*lst)

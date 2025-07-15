@@ -20,6 +20,7 @@
 # include <readline/history.h>
 # include <sys/wait.h>
 # include <errno.h>
+# include <signal.h>
 
 // un nodo por comando. fin de comando si hay pipe
 // para crear la lista se guardaran los tokens argv hasta encontrar un pipe. Si es un operador:
@@ -114,10 +115,14 @@ t_cmd	*init_comand(void);
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
 
-	
+//---------- signals.c----------------	
 	
 void	ft_setup_signals(void);
+void    handle_sigint(int sig);
+
+//---------- execute.c----------------
 void	ft_execute(t_cmd *cmds, char *envp[]);
+void	ft_exe_pipeline(t_cmd *cmd, char **envp);
 
 
 void	ft_free_cmds(t_cmd *cmds);

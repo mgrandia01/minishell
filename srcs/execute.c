@@ -18,6 +18,11 @@ int	ft_is_builtin(char *cmd);
 int	ft_execute_builtin(char **cmd);
 void	ft_exe_pipeline(t_cmd *cmd, char **envp);
 
+/*void	setup_signals(void)
+{
+    signal(SIGINT, handle_sigint);  // Ctrl+C
+    signal(SIGQUIT, SIG_IGN);       // Ctrl+\
+}*/
 
 // en los forks de las ejeciones, si son hijos hay que restarurar el estado
        	// de las senales
@@ -137,6 +142,8 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	if (!cmd || !ft_validate_fds(cmd))
 		return ;
 	// Ejecutar built-in directamente en el padre si es un único comando
+	// Teoricamente ejeuta los builtin dentro de pipes pero pierde el resultado
+	// asi que solo guardamos el estado si es el primer comando
 	if (cmd->next == NULL && ft_is_builtin(cmd->argv[0]))
 	{
 		status[0] = dup(STDIN_FILENO);
@@ -158,7 +165,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 		close(status[1]);
 		return ;
 	}
-	// Ejecutar pipeline (comandos encadenados)
+	// Ejecutar pipeline
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipefd) == -1)
@@ -174,6 +181,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 		}
 		if (pid == 0) // hijo
 		{
+			printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);
 			if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
@@ -196,16 +204,19 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 				close(cmd->outfile);
 			}
 			path = find_path(cmd->argv[0], envp);
+			printf("\nEXECUTE HIJO-----------------------");fflush(0);
 			if (ft_is_builtin(cmd->argv[0]))
 				ft_execute_builtin(cmd->argv);
 			else
 				execve(path, cmd->argv, envp);
 			free(path);
 			perror("Minishell: execve");
+			printf("\nFIN HIJO------(ha petado un execvce para haber llegado aqui----------------FIN HIJO");fflush(0);
 			exit(1);
 		}
 		else // padre
 		{
+			printf("\nINICIO PADRE------------------------%s--------------------INICIO PADRE", cmd->argv[0]);fflush(0);
 			if (prev_fd != -1)
 				close(prev_fd);
 			if (cmd->next)
@@ -215,6 +226,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			}
 			waitpid(pid, NULL, 0);
 			cmd = cmd->next;
+			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE", cmd);fflush(0);
 		}
 	}
 }

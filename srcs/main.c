@@ -202,10 +202,11 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd	*cmds;
 	//char	*path;
 	size_t len;
+	
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
-    	ft_setup_signals();
+    	//ft_setup_signals();
     	input = NULL;
     	tokens = NULL;
     	cmds = NULL;
@@ -216,16 +217,19 @@ int	main(int argc, char *argv[], char *envp[])
         	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
 		if (!input || !ft_strncmp(input,"esc",3))
+		{
+			ft_printf("exit\n");
 			break;
+		}
 		len = ft_strlen(input);
 		if (len> 0 && input[len - 1] == '\n')
 			input[len - 1] = '\0';
-		ft_add_history(input);
+		//add_history(input);
 		//parser and store cmds
 		tokens = ft_tokenize(input);
 		free(input);
 		input = NULL;
-		print_tokens(tokens);
+		//print_tokens(tokens);
 		if (!tokens)
 			break ;
 		// create list of nodes representing cmds
@@ -237,7 +241,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!cmds)
 			break ;
 		// iterate list and execute cmds
-		//ft_execute(cmds, envp);
+		ft_execute(cmds, envp);
+		//ft_exe_pipeline(cmds, envp);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
@@ -251,7 +256,7 @@ int	main(int argc, char *argv[], char *envp[])
 		//ft_printf("PATH -> %s\n", path);
 		//********************************
 		
-		(void)envp;
+		//(void)envp;
 		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
