@@ -241,8 +241,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!cmds)
 			break ;
 		// iterate list and execute cmds
-		ft_execute(cmds, envp);
-		//ft_exe_pipeline(cmds, envp);
+		//ft_execute(cmds, envp);
+		ft_exe_pipeline(cmds, envp);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
