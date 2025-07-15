@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:04:09 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/04 14:11:39 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:04:16 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,5 @@ void	finalize_tokenization(char *input, t_token **list, t_pos_data *data)
 {
 	process_previous_word(input, list, data);
 	add_token(list, TOKEN_EOF, "EOF", 0);
+	//add_token(list, TOKEN_EOF, ft_strdup("EOF"), 0);
 }
