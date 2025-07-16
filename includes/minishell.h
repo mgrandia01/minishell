@@ -127,4 +127,8 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp);
 
 void	ft_free_cmds(t_cmd *cmds);
 
+extern int g_exit_status;
+int	ft_create_heredoc(const char *delim);
+int	ft_strcmp(const char *s1, const char *s2);
+
 #endif

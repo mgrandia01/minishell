@@ -130,6 +130,49 @@ void	ft_execute(t_cmd *cmds, char *envp[])
         }
 }
 
+static void sigint_handler_heredoc(int sig)
+{
+	(void) sig;
+	write(STDOUT_FILENO, "\n", 1);
+	exit(130); // Bash devuelve 130 en este caso
+}
+
+int	ft_create_heredoc(const char *delim)
+{
+	int	pipefd[2];
+	char	*line;
+	struct sigaction sa;
+	
+	sa.sa_handler = sigint_handler_heredoc;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	
+	if (pipe(pipefd) == -1)
+		return (-1);
+	while (1)
+	{
+		write(STDOUT_FILENO, "> ", 2);
+        	line = get_next_line(STDIN_FILENO);
+		if (!line)
+			break;
+		// Sacar el salto de línea si lo hay
+	        if(ft_strchr(line, '\n'))
+	        	*ft_strchr(line, '\n') = '\0';
+		if (ft_strcmp(line, delim) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(pipefd[1], line, ft_strlen(line));
+		write(pipefd[1], "\n", 1);
+		free(line);
+	}
+	close(pipefd[1]); // cerramos escritura, mantenemos lectura
+	return (pipefd[0]); // devolvemos el fd de lectura
+}
+
+
 void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 {
 	int     pipefd[2];
@@ -137,6 +180,8 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	int	status[2];
 	pid_t   pid;
 	char	*path;
+	int	wstatus;
+	int	g_exit_status;
 
 	prev_fd = -1;
 	pipefd[0] = -1;
@@ -172,6 +217,10 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 		close(status[1]);
 		return ;
 	}
+	// Ignorar SIGINT en el padre mientras se ejecutan comandos
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+
 	// Ejecutar pipeline
 	while (cmd)
 	{
@@ -179,6 +228,15 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 		{
 			perror("Minishell: pipe");
 			break ;
+		}
+		if (cmd->heredoc == 1 && cmd->heredoc_delim)
+		{
+			cmd->infile = ft_create_heredoc(cmd->heredoc_delim);
+			if (cmd->infile == -1)
+			{
+				ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);
+				return ;
+			}
 		}
 		pid = fork();
 		if (pid == -1)
@@ -189,6 +247,9 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 		if (pid == 0) // hijo
 		{
 			printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);
+			
+			signal(SIGINT, SIG_DFL);   // Restablece comportamiento por defecto
+			signal(SIGQUIT, SIG_DFL);  // Para Ctrl+\ también
 			printf("\nEXECUTE HIJO-----------------------");fflush(0);
 			if (cmd->infile == -1)
 			{
@@ -205,6 +266,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
+			
 			if (cmd->outfile == -1)
 			{
 				ft_putstr_fd("minishell: redirección de salida fallida\n", STDERR_FILENO);
@@ -225,12 +287,26 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			
 			
 			path = find_path(cmd->argv[0], envp);
+			if (!path)
+			{
+				printf("minishell: %s: command not found\n", cmd->argv[0]);
+				exit(127);
+			}
+			
 			if (ft_is_builtin(cmd->argv[0]))
 				ft_execute_builtin(cmd->argv);
 			else
 				execve(path, cmd->argv, envp);
+			printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 			free(path); // liberar la mem del main (input, token y cmd). provocar el fallo con /usr/bin echo "paco" (con el espacio)
-			perror("Minishell: execve");
+			if (cmd->infile > 2)
+				close(cmd->infile);
+			if (cmd->outfile > 2)
+				close(cmd->outfile);
+			if (prev_fd != -1)
+				close(prev_fd);
+			if (pipefd[1] != -1)
+				close(pipefd[1]);
 			printf("\nFIN HIJO------(ha petado un execvce para haber llegado aqui----------------FIN HIJO");fflush(0);
 			exit(127);
 		}
@@ -250,11 +326,16 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			}
 			else
 				prev_fd = -1;
-			waitpid(pid, NULL, 0);
+			waitpid(pid, &wstatus, 0);
+			if (WIFEXITED(wstatus))
+				g_exit_status = WEXITSTATUS(wstatus);
+			else if (WIFSIGNALED(wstatus))
+				g_exit_status = 128 + WTERMSIG(wstatus);
 			cmd = cmd->next;
 			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE", cmd);fflush(0);
 		}
 	}
+	ft_setup_signals();
 }
 
 

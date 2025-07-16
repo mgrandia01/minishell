@@ -13,6 +13,9 @@
 #include "../includes/minishell.h"
 #include <stdio.h>
 
+int g_exit_status = 0;
+
+
 void print_tokens(t_token *tokens)
 {
     while (tokens)
@@ -173,6 +176,8 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 		{
 			ptr_next = (*lst)->next;
 			del((*lst)->argv);
+			if ((*lst)->heredoc_delim)
+				free((*lst)->heredoc_delim);
 			free(*lst);
 			*lst = ptr_next;
 		}
@@ -206,13 +211,13 @@ int	main(int argc, char *argv[], char *envp[])
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
-    	//ft_setup_signals();
+    	ft_setup_signals();
     	input = NULL;
     	tokens = NULL;
     	cmds = NULL;
     	while (1)
     	{
-        	ft_printf("\nminishell \u25B8 ");
+        	ft_printf("minishell \u25B8 ");
         	input = get_next_line(STDIN_FILENO);
         	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
@@ -224,7 +229,8 @@ int	main(int argc, char *argv[], char *envp[])
 		len = ft_strlen(input);
 		if (len> 0 && input[len - 1] == '\n')
 			input[len - 1] = '\0';
-		//add_history(input);
+		/*if (*input)
+			add_history(input);*/
 		//parser and store cmds
 		tokens = ft_tokenize(input);
 		free(input);
