@@ -67,8 +67,21 @@ int	ft_is_builtin(char *cmd)
 
 int	ft_execute_builtin(char **cmd)
 {
-	(void) cmd;
-	return 1;
+	if (!ft_strncmp(cmd[0], "pwd", 3))
+        	return (ft_builtin_pwd());
+	if (!ft_strncmp(cmd[0], "cd", 2))
+		return (ft_builtin_cd(cmd));
+	/*if (ft_strcmp(argv[0], "echo") == 0)
+		return (ft_builtin_echo(argv));
+	if (ft_strcmp(argv[0], "exit") == 0)
+		return (ft_builtin_exit(argv));
+	if (ft_strcmp(argv[0], "env") == 0)
+		return (ft_builtin_env());
+	if (ft_strcmp(argv[0], "export") == 0)
+		return (ft_builtin_export(argv));
+	if (ft_strcmp(argv[0], "unset") == 0)
+		return (ft_builtin_unset(argv));*/
+	return 1; // error
 }
 
 
@@ -210,7 +223,11 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			dup2(cmd->outfile, STDOUT_FILENO);
 			close(cmd->outfile);
 		}
-		ft_execute_builtin(cmd->argv);
+		if (ft_execute_builtin(cmd->argv))
+		{
+			//para ek futuro. PWD no hace falta
+			//error
+		}
 		dup2(status[0], STDIN_FILENO);
 		dup2(status[1], STDOUT_FILENO);
 		close(status[0]);
@@ -332,7 +349,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			else if (WIFSIGNALED(wstatus))
 				g_exit_status = 128 + WTERMSIG(wstatus);
 			cmd = cmd->next;
-			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE", cmd);fflush(0);
+			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE\n", cmd);fflush(0);
 		}
 	}
 	ft_setup_signals();

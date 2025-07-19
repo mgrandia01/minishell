@@ -21,6 +21,7 @@
 # include <sys/wait.h>
 # include <errno.h>
 # include <signal.h>
+# include <limits.h>
 
 // un nodo por comando. fin de comando si hay pipe
 // para crear la lista se guardaran los tokens argv hasta encontrar un pipe. Si es un operador:
@@ -130,5 +131,9 @@ void	ft_free_cmds(t_cmd *cmds);
 extern int g_exit_status;
 int	ft_create_heredoc(const char *delim);
 int	ft_strcmp(const char *s1, const char *s2);
+
+//----------- builtin.c----------------
+int	ft_builtin_pwd(void);
+int	ft_builtin_cd(char **args);
 
 #endif
