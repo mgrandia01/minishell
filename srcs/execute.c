@@ -15,7 +15,7 @@
 void	ft_setup_signals(void);
 void	ft_execute(t_cmd *cmds, char *envp[]);
 int	ft_is_builtin(char *cmd);
-int	ft_execute_builtin(char **cmd);
+int	ft_execute_builtin(char **cmd, char **envp);
 void	ft_exe_pipeline(t_cmd *cmd, char **envp);
 
 /*void	setup_signals(void)
@@ -48,32 +48,34 @@ int	ft_is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (!ft_strncmp(cmd, "cd", 2))
+	if (!ft_strncmp(cmd, "cd", 3))
 		return (1);
-	if (!ft_strncmp(cmd, "echo", 4))
+	if (!ft_strncmp(cmd, "echo", 5))
 		return (1);
-	if (!ft_strncmp(cmd, "pwd", 3))
+	if (!ft_strncmp(cmd, "pwd", 4))
 		return (1);
-	if (!ft_strncmp(cmd, "export", 6))
+	if (!ft_strncmp(cmd, "export", 7))
 		return (1);
-	if (!ft_strncmp(cmd, "unset", 5))
+	if (!ft_strncmp(cmd, "unset", 6))
 		return (1);
-	if (!ft_strncmp(cmd, "env", 3))
+	if (!ft_strncmp(cmd, "env", 4))
 		return (1);
-	if (!ft_strncmp(cmd, "exit", 4))
+	if (!ft_strncmp(cmd, "exit", 5))
 		return (1);
 	return (0);
 }
 
-int	ft_execute_builtin(char **cmd)
+int	ft_execute_builtin(char **cmd, char **envp)
 {
 	if (!ft_strncmp(cmd[0], "pwd", 3))
         	return (ft_builtin_pwd());
 	if (!ft_strncmp(cmd[0], "cd", 2))
 		return (ft_builtin_cd(cmd));
-	/*if (ft_strcmp(argv[0], "echo") == 0)
-		return (ft_builtin_echo(argv));
-	if (ft_strcmp(argv[0], "exit") == 0)
+	if (ft_strncmp(cmd[0], "echo", 5) == 0)
+		return (ft_builtin_echo(cmd));
+	if (ft_strncmp(cmd[0], "env", 4) == 0)
+		return (ft_builtin_env(cmd, envp));
+	/*if (ft_strcmp(argv[0], "exit") == 0)
 		return (ft_builtin_exit(argv));
 	if (ft_strcmp(argv[0], "env") == 0)
 		return (ft_builtin_env());
@@ -223,7 +225,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			dup2(cmd->outfile, STDOUT_FILENO);
 			close(cmd->outfile);
 		}
-		if (ft_execute_builtin(cmd->argv))
+		if (ft_execute_builtin(cmd->argv, envp))
 		{
 			//para ek futuro. PWD no hace falta
 			//error
@@ -311,10 +313,16 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			}
 			
 			if (ft_is_builtin(cmd->argv[0]))
-				ft_execute_builtin(cmd->argv);
+			{
+				exit(ft_execute_builtin(cmd->argv, envp));
+			}
 			else
 				execve(path, cmd->argv, envp);
-			printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno));
+			//ft_printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno)); //ft_printf no tiene STDERR
+			ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+			ft_putstr_fd(": ", STDERR_FILENO);
+			ft_putstr_fd(strerror(errno), STDERR_FILENO);
+			ft_putstr_fd("\n", STDERR_FILENO);
 			free(path); // liberar la mem del main (input, token y cmd). provocar el fallo con /usr/bin echo "paco" (con el espacio)
 			if (cmd->infile > 2)
 				close(cmd->infile);

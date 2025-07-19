@@ -33,8 +33,8 @@ int	ft_builtin_cd(char **args)
 
 int	ft_builtin_pwd(void)
 {
-	char buffer[PATH_MAX];
-	
+	char	buffer[PATH_MAX];
+
 	if (getcwd(buffer, sizeof(buffer)))
 	{
 		write(STDOUT_FILENO, buffer, ft_strlen(buffer));
@@ -45,6 +45,56 @@ int	ft_builtin_pwd(void)
 		write(STDERR_FILENO, "minishell: pwd: ", 16);
 		write(STDERR_FILENO, strerror(errno), ft_strlen(strerror(errno)));
 		return (1);
+	}
+	return (0);
+}
+
+int	ft_builtin_echo(char **args)
+{
+	int	i;
+	int	add_cr;
+	
+	add_cr = 1;
+	i = 1;
+	if (args[i] && !ft_strncmp(args[i], "-n", 3))
+	{
+		add_cr = 0;
+		i++;
+	}
+	while (args[i])
+	{
+		write(STDOUT_FILENO, args[i], ft_strlen(args[i]));
+		if (args[i + 1])
+			write(STDOUT_FILENO, " ", 1);
+		i++;
+	}
+	if (add_cr)
+	{
+			write(STDOUT_FILENO, "\n", 1);
+	}
+	return (0);
+}
+
+int	ft_builtin_env(char **args, char **envp)
+{
+	int	i;
+
+	if (args[1])
+	{
+		ft_putstr_fd("minishell: env: '", STDERR_FILENO);
+		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
+		return (127);
+	}
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strchr(envp[i], '='))
+		{
+			ft_putstr_fd(envp[i], STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
+		i++;
 	}
 	return (0);
 }
