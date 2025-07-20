@@ -12,25 +12,25 @@
 
 #include "../includes/ft_printf.h"
 
-int	ft_print_char(char c)
+int	ft_print_char(char c, int fd)
 {
-	write (1, &c, 1);
+	write (fd, &c, 1);
 	return (1);
 }
 
-int	ft_print_string(char *s)
+int	ft_print_string(char *s, int fd)
 {
 	int	size;
 
 	if (s == NULL)
 	{
-		ft_print_string("(null)");
+		ft_print_string("(null)", fd);
 		return (6);
 	}
 	size = 0;
 	while (s[size])
 	{
-		size += ft_print_char(s[size]);
+		size += ft_print_char(s[size], fd);
 	}
 	return (size);
 }

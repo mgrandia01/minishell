@@ -97,7 +97,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	(void)envp;
 	(void) *cmd_ignore;
 	// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
-	ft_printf("\n TEST1.................");
+	ft_printf(STDOUT_FILENO,"\n TEST1.................");
 	cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	// Comando introducido por el usuario : ls -la
 	// como en el pipex, el comando deberia de llevar el path correcto delante
@@ -118,7 +118,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	free (cmds);
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
 	// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
-	ft_printf("\n TEST2.................");
+	ft_printf(STDOUT_FILENO, "\n TEST2.................");
 	cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	// Comando introducido por el usuario : grep -r --include="*.c" "main" .
 	// Si van comillas dentro del comando, anyadir otra " delante para escaparlas
@@ -141,7 +141,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
 	
 	// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
-	ft_printf("\n TEST3.................");
+	ft_printf(STDOUT_FILENO, "\n TEST3.................");
 	cmd1 = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	fd = open("1.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
 	// Comando introducido por el usuario : echo "pepito" > 1.txt
@@ -207,7 +207,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd	*cmds;
 	//char	*path;
 	size_t len;
-	
+
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
@@ -217,13 +217,14 @@ int	main(int argc, char *argv[], char *envp[])
     	cmds = NULL;
     	while (1)
     	{
-        	ft_printf("minishell \u25B8 ");
+        	//ft_printf("minishell \u25B8 ");
+        	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
         	input = get_next_line(STDIN_FILENO);
         	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
 		if (!input || !ft_strncmp(input,"esc",3))
 		{
-			ft_printf("exit\n");
+			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
 		}
 		len = ft_strlen(input);

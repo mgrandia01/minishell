@@ -12,18 +12,18 @@
 
 #include "../includes/ft_printf.h"
 
-int	ft_print_pointer(char *ptr)
+int	ft_print_pointer(char *ptr, int fd)
 {
 	int	size;
 
 	if (ptr == NULL)
 	{
-		ft_print_string("(nil)");
+		ft_print_string("(nil)", fd);
 		return (5);
 	}
 	size = 0;
-	size += ft_print_string("0x");
-	size += ft_print_hex_ptr((unsigned long)ptr, 'x');
+	size += ft_print_string("0x", fd);
+	size += ft_print_hex_ptr((unsigned long)ptr, 'x', fd);
 	return (size);
 }
 
@@ -56,7 +56,7 @@ char	*ft_conv_p_to_hex(unsigned long value, char type, int i)
 	return (ft_flip_string(str));
 }
 
-int	ft_print_hex_ptr(unsigned long value, char type)
+int	ft_print_hex_ptr(unsigned long value, char type, int fd)
 {
 	char	*p_str;
 	int		size;
@@ -66,7 +66,7 @@ int	ft_print_hex_ptr(unsigned long value, char type)
 	p_str = ft_conv_p_to_hex(value, type, i);
 	if (!p_str)
 		return (0);
-	size = ft_print_string(p_str);
+	size = ft_print_string(p_str, fd);
 	free(p_str);
 	return (size);
 }

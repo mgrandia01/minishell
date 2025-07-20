@@ -12,6 +12,23 @@
 
 #include "../includes/minishell.h"
 
+int	ft_is_numeric(const char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+        	return (0);
+	i = 0;
+	if (str[0] == '+' || str[0] == '-')
+	        i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (i > (str[0] == '+' || str[0] == '-'));
+}
 void	ft_free_cmds(t_cmd *cmds)
 {
 	(void)	cmds;

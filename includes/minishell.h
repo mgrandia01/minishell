@@ -136,5 +136,9 @@ int		ft_builtin_pwd(void);
 int		ft_builtin_cd(char **args);
 int		ft_builtin_echo(char **args);
 int		ft_builtin_env(char **cmd,  char **envp);
+int		ft_builtin_exit(char **args);
+
+//----------- minishell_utils.c----------------
+int	ft_is_numeric(const char *str);
 
 #endif

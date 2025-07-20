@@ -61,7 +61,7 @@ int	process_quote_content(char *input, int *pos, char quote)
 		(*pos)++;
 	if (!input[*pos])
 	{
-		ft_printf("no se han cerrado las comillas");
+		ft_printf(STDERR_FILENO, "no se han cerrado las comillas");
 		return (-1);
 	}
 	return (start);

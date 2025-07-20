@@ -54,30 +54,30 @@ int	ft_is_builtin(char *cmd)
 		return (1);
 	if (!ft_strncmp(cmd, "pwd", 4))
 		return (1);
-	if (!ft_strncmp(cmd, "export", 7))
-		return (1);
-	if (!ft_strncmp(cmd, "unset", 6))
-		return (1);
 	if (!ft_strncmp(cmd, "env", 4))
 		return (1);
 	if (!ft_strncmp(cmd, "exit", 5))
+		return (1);
+	if (!ft_strncmp(cmd, "export", 7))
+		return (1);
+	if (!ft_strncmp(cmd, "unset", 6))
 		return (1);
 	return (0);
 }
 
 int	ft_execute_builtin(char **cmd, char **envp)
 {
-	if (!ft_strncmp(cmd[0], "pwd", 3))
+	if (!ft_strncmp(cmd[0], "pwd", 4))
         	return (ft_builtin_pwd());
-	if (!ft_strncmp(cmd[0], "cd", 2))
+	if (!ft_strncmp(cmd[0], "cd", 3))
 		return (ft_builtin_cd(cmd));
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 		return (ft_builtin_echo(cmd));
 	if (ft_strncmp(cmd[0], "env", 4) == 0)
 		return (ft_builtin_env(cmd, envp));
-	/*if (ft_strcmp(argv[0], "exit") == 0)
-		return (ft_builtin_exit(argv));
-	if (ft_strcmp(argv[0], "env") == 0)
+	if (ft_strncmp(cmd[0], "exit", 5) == 0)
+		return (ft_builtin_exit(cmd));
+	/*if (ft_strcmp(argv[0], "env") == 0)
 		return (ft_builtin_env());
 	if (ft_strcmp(argv[0], "export") == 0)
 		return (ft_builtin_export(argv));
@@ -97,21 +97,21 @@ void	ft_execute(t_cmd *cmds, char *envp[])
 	if (pid == 0)
 	{
         	printf("\nHijo------------------------ cmds->argv[0] %s --------------------------", cmds->argv[0]);fflush(0);
-		ft_printf("\n");
+		ft_printf(STDOUT_FILENO,"\n");
             	for(int j=0; j<5; j++)
             	{
 			if (!cmds->argv[j])
 				break ;
-			ft_printf("Comando %d: %s\t", j, cmds->argv[j]);
+			ft_printf(STDOUT_FILENO, "Comando %d: %s\t", j, cmds->argv[j]);
 		}
-		ft_printf("\n");
+		ft_printf(STDOUT_FILENO, "\n");
 		path = find_path(cmds->argv[0], envp);
             	printf("\nPath: %s\n", path);fflush(0);
             	for(int j=0; j<20; j++)
             	{
 			if (!cmds->argv[j])
 				break ;
-			ft_printf("Argv[%d]: %s\t", j, cmds->argv[j]);
+			ft_printf(STDOUT_FILENO, "Argv[%d]: %s\t", j, cmds->argv[j]);
 		}
 		printf("\nInicio ejecucion antes desviar STDOUT\n");fflush(0);
 		if (cmds->outfile >= 3)
@@ -122,7 +122,7 @@ void	ft_execute(t_cmd *cmds, char *envp[])
             	if (execve(path, cmds->argv, envp) == -1)
 		{
 			free(path);
-			ft_printf("%s: %s %s \n", strerror(errno), cmds->argv[0], cmds->argv[1]); // valorar la posiblidad de customiziar ftprintf a la STDERR
+			ft_printf(STDERR_FILENO,"%s: %s %s \n", strerror(errno), cmds->argv[0], cmds->argv[1]); 
 			for(int j=0; j<5; j++)
 			{
 				if (!cmds->argv[j])
@@ -193,11 +193,12 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	int     pipefd[2];
 	int     prev_fd;
 	int	status[2];
-	pid_t   pid;
+	pid_t   pid, last_pid;
 	char	*path;
 	int	wstatus;
 	int	g_exit_status;
 
+	last_pid = -1;
 	prev_fd = -1;
 	pipefd[0] = -1;
 	pipefd[1] = -1;
@@ -319,6 +320,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			else
 				execve(path, cmd->argv, envp);
 			//ft_printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno)); //ft_printf no tiene STDERR
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 			ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
 			ft_putstr_fd(": ", STDERR_FILENO);
 			ft_putstr_fd(strerror(errno), STDERR_FILENO);
@@ -359,6 +361,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			cmd = cmd->next;
 			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE\n", cmd);fflush(0);
 		}
+		
 	}
 	ft_setup_signals();
 }

@@ -99,3 +99,21 @@ int	ft_builtin_env(char **args, char **envp)
 	return (0);
 }
 
+int	ft_builtin_exit(char **args)
+{
+	ft_printf(STDOUT_FILENO, "exit\n");
+	if (!args[1])
+		exit (0);
+	if (!ft_is_numeric(args[1]))
+	{
+		ft_printf(STDERR_FILENO, "minishell: exit: %s: numeric argument required\n", args[1]);
+		exit (255);
+	}
+	if (args[2])
+	{
+		ft_printf(STDERR_FILENO, "minishell: exit: too many arguments\n");
+		return (1);
+	}
+	exit(ft_atoi(args[1]) % 256);
+}
+
