@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 15:41:29 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:46:06 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,19 @@ int	process_quote_content(char *input, int *pos, char quote)
 		(*pos)++;
 	if (!input[*pos])
 	{
-		ft_printf("no se han cerrado las comillas");
+		ft_printf(STDERR_FILENO, "no se han cerrado las comillas");
 		return (-1);
 	}
 	return (start);
 }
 
 // Función para manejar comillas (simples y dobles)
-int	handle_quotes(char *input, t_token **list, int *pos, int *state, char *prev_word)
+int	handle_quotes(char *input, t_token **list, int *pos, int *state)
 {
 	int		start;
 	char	*val;
-	char	*token;
 	char	quote;
-	
+
 	quote = input[*pos];
 	*state = ft_get_state(input[*pos], *state);
 	(*pos)++;
@@ -82,16 +81,7 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state, char *prev_
 	if (start == -1)
 		return (-1);
 	val = ft_substr(input, start, *pos - start);
-	if (prev_word)
-	{
-		token = ft_strjoin(prev_word, val);
-		free (val);
-	}
-	else
-		token = val;
-	add_token(list, TOKEN_WORD, token, *state);
-	if (prev_word)
-		free(token);
+	add_token(list, TOKEN_WORD, val, *state);
 	if (input[*pos] == quote)
 	{
 		*state = ft_get_state(input[*pos], *state);
