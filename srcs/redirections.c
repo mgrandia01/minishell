@@ -12,8 +12,10 @@
 
 #include "../includes/minishell.h"
 
-// Función para manejar redirección de salida (> y >>)
-void	handle_output_redir(char *input, t_token **list, int *pos, int state)
+/* Adds output redirection or append token based on input characters.
+ * Advances the input position accordingly.
+ */
+static void	handle_output_redir(char *input, t_token **list, int *pos, int state)
 {
 	if (input[*pos + 1] == '>')
 	{
@@ -27,8 +29,10 @@ void	handle_output_redir(char *input, t_token **list, int *pos, int state)
 	}
 }
 
-// Función para manejar redirección de entrada (< y <<)
-void	handle_input_redir(char *input, t_token **list, int *pos, int state)
+/* Adds input redirection or heredoc token based on the input characters.
+ * Advances the input position accordingly.
+ */
+static void	handle_input_redir(char *input, t_token **list, int *pos, int state)
 {
 	if (input[*pos + 1] == '<')
 	{
@@ -42,15 +46,18 @@ void	handle_input_redir(char *input, t_token **list, int *pos, int state)
 	}
 }
 
-// Función para manejar pipe
-void	handle_pipe(t_token **list, int *pos, int state)
+/* Adds a pipe token to the list and advances the input position.
+ */
+static void	handle_pipe(t_token **list, int *pos, int state)
 {
 	add_token(list, TOKEN_PIPE, ft_strdup("|"), state);
 	(*pos)++;
 }
 
-// Función para procesar operadores
-void	process_operator(char *input, t_token **list, t_pos_data *data)
+/* Processes a single operator token: output redirection,
+ * input redirection, or pipe, based on the current input char.
+ */
+static void	process_operator(char *input, t_token **list, t_pos_data *data)
 {
 	if (input[data->pos] == '>')
 		handle_output_redir(input, list, &data->pos, data->state);
@@ -60,7 +67,9 @@ void	process_operator(char *input, t_token **list, t_pos_data *data)
 		handle_pipe(list, &data->pos, data->state);
 }
 
-// Función para manejar operadores especiales
+/* Processes operators by handling the previous word
+ * and then the operator itself. Updates tokenizer position.
+ */
 void	handle_operators(char *input, t_token **list, t_pos_data *data)
 {
 	process_previous_word(input, list, data);

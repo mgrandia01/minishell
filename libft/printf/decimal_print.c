@@ -12,38 +12,38 @@
 
 #include "../includes/ft_printf.h"
 
-int	ft_print_int(int i)
+int	ft_print_int(int i, int fd)
 {
 	int		size;
 	char	*str;
 
 	size = 0;
 	str = ft_itoa(i);
-	size += ft_print_string(str);
+	size += ft_print_string(str, fd);
 	free(str);
 	return (size);
 }
 
-unsigned int	ft_print_unsigned_int(unsigned int i)
+unsigned int	ft_print_unsigned_int(unsigned int i, int fd)
 {
 	int		size;
 	char	*str;
 
 	size = 0;
 	str = ft_uitoa(i);
-	size += ft_print_string(str);
+	size += ft_print_string(str, fd);
 	free (str);
 	return (size);
 }
 
-int	ft_print_signed_int(int i)
+int	ft_print_signed_int(int i, int fd)
 {
 	int		size;
 	char	*str;
 
 	size = 0;
 	if (i >= 0)
-		size += ft_print_int(i);
+		size += ft_print_int(i, fd);
 	else if (i == -2147483648)
 	{
 		str = ft_itoa(i);
@@ -53,8 +53,8 @@ int	ft_print_signed_int(int i)
 	}
 	else
 	{
-		size += ft_print_char('-');
-		size += ft_print_int(-i);
+		size += ft_print_char('-', fd);
+		size += ft_print_int(-i, fd);
 	}
 	return (size);
 }

@@ -12,6 +12,9 @@
 
 #include "../includes/minishell.h"
 
+/* Counts the number of strings in the argv array.
+ * Returns zero if argv is NULL.
+ */
 int	argv_num(char **argv)
 {
 	int	num;
@@ -22,6 +25,9 @@ int	argv_num(char **argv)
 	return (num);
 }
 
+/* Expands the argv array to hold one more word.
+ * Uses realloc if argv exists, or allocates new memory otherwise.
+ */
 char	**expand_argv(char **argv, int s)
 {
 	char	**n_argv;
@@ -33,6 +39,9 @@ char	**expand_argv(char **argv, int s)
 	return (n_argv);
 }
 
+/* Allocates and initializes a new command structure.
+ * Sets default values for redirections, heredoc, and argv.
+ */
 t_cmd	*init_comand(void)
 {
 	t_cmd	*cmd;

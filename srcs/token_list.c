@@ -6,12 +6,16 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 15:27:45 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:46:06 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+/*
+ * Creates a new token and adds it to the end of the token list.
+ * Returns 1 on success, 0 on failure.
+ */
 int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 {
 	t_token	*new;
@@ -20,8 +24,8 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 	if (!new || (type == TOKEN_WORD && !val))
 		return (0);
 	new->type = type;
-	new->value = val;
 	//new->value = ft_strdup(val);
+	new->value = val;
 	new->quote = quote;
 	new->next = NULL;
 	if (!*lst)
@@ -38,7 +42,11 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 	return (1);
 }
 
-int	ft_get_state(char input, int state)
+/*
+ * Updates and returns the quote parsing state based on the input character.
+ * Toggles state for single and double quotes.
+ */
+static int	ft_get_state(char input, int state)
 {
 	if (input == '\'' && state == 0)
 		state = 1;
@@ -51,8 +59,11 @@ int	ft_get_state(char input, int state)
 	return (state);
 }
 
-// Función auxiliar para procesar contenido entre comillas
-int	process_quote_content(char *input, int *pos, char quote)
+/*
+ * Finds the content inside quotes. Returns the start position.
+ * Returns -1 if the closing quote is not found.
+ */
+static int	process_quote_content(char *input, int *pos, char quote)
 {
 	int	start;
 
@@ -61,20 +72,24 @@ int	process_quote_content(char *input, int *pos, char quote)
 		(*pos)++;
 	if (!input[*pos])
 	{
-		ft_printf("no se han cerrado las comillas");
+		ft_printf(STDERR_FILENO, "no se han cerrado las comillas");
 		return (-1);
 	}
 	return (start);
 }
 
-// Función para manejar comillas (simples y dobles)
-int	handle_quotes(char *input, t_token **list, int *pos, int *state, char *prev_word)
+/**
+ * Handles quoted strings, adds them as a token.
+ * Returns -1 on error, 0 otherwise.
+ */
+//TODO guardar con las comillas para luego manejar, y no con el char quote
+//guardar finalizado o no cada argumento para arreglar lo de --inlcude"*.c"
+int	handle_quotes(char *input, t_token **list, int *pos, int *state)
 {
 	int		start;
 	char	*val;
-	char	*token;
 	char	quote;
-	
+
 	quote = input[*pos];
 	*state = ft_get_state(input[*pos], *state);
 	(*pos)++;
@@ -82,16 +97,7 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state, char *prev_
 	if (start == -1)
 		return (-1);
 	val = ft_substr(input, start, *pos - start);
-	if (prev_word)
-	{
-		token = ft_strjoin(prev_word, val);
-		free (val);
-	}
-	else
-		token = val;
-	add_token(list, TOKEN_WORD, token, *state);
-	if (prev_word)
-		free(token);
+	add_token(list, TOKEN_WORD, val, *state);
 	if (input[*pos] == quote)
 	{
 		*state = ft_get_state(input[*pos], *state);
@@ -100,7 +106,9 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state, char *prev_
 	return (0);
 }
 
-// Función auxiliar para procesar texto previo
+/*
+ * Extracts and adds the previous word as a token if there is one.
+ */
 void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 {
 	char	*val;

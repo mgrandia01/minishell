@@ -1,0 +1,115 @@
+{
+   readline_keymap_setup
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_bind_keyseq_if_unbound_in_map
+   fun:rl_initialize
+   fun:readline
+}
+
+{
+   readline_terminal_bindings
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_rl_init_terminal_io
+   fun:tgetstr_sp
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+}
+
+{
+   readline_keymap_blocks
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:xmalloc
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_bind_keyseq_if_unbound_in_map
+   fun:_rl_init_terminal_io
+   fun:rl_initialize
+   fun:readline
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+{
+   readline_keymap_extended
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:xmalloc
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_bind_keyseq_if_unbound_in_map
+   fun:_rl_init_terminal_io
+   fun:rl_initialize
+   fun:readline
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+{
+   libtinfo_terminal_setup
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:tgetstr_sp
+   fun:_nc_find_type_entry
+   fun:_rl_init_terminal_io
+   fun:rl_initialize
+   fun:readline
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+{
+   readline_keybinding_cluster
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:xmalloc
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_bind_keyseq_if_unbound_in_map
+   fun:rl_initialize
+   fun:readline
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+{
+   readline_persistent_keymaps
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:xmalloc
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_bind_keyseq_if_unbound_in_map
+   fun:rl_parse_and_bind
+   fun:rl_initialize
+   fun:readline
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+{
+   readline_wildcard_keymap
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_bind_keyseq_if_unbound_in_map
+   fun:*
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+{
+   readline_parse_and_bind_block
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:xmalloc
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_parse_and_bind
+   fun:rl_initialize
+   fun:readline
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+}
+
+
+

@@ -12,16 +12,10 @@
 
 #include "../includes/minishell.h"
 
-//Si ves TOKEN_REDIR_IN (<), el siguiente token debería ser un WORD con el nombre del archivo, y lo guardas en cmd->infile (abriendo el archivo y guardando el fd).
-
-//Si ves TOKEN_REDIR_OUT (>), igual, abres archivo en modo truncado y guardas en cmd->outfile.
-
-//Si ves TOKEN_REDIR_APPEND (>>), abres archivo en modo append y guardas en cmd->outfile.
-
-//Si ves TOKEN_HEREDOC (<<), guardas el delimitador en cmd->heredoc_delim y marcas cmd->heredoc = 1.
-
-//TODO mensaje de error amb els return ;??
-void	add_word(t_cmd *cmd, char *word)
+/* Duplicates and adds a word to the command's argv array.
+ * Expands the array if needed and null-terminates it.
+ */
+static void	add_word(t_cmd *cmd, char *word)
 {
 	char	*dup_word;
 	int		size;
@@ -40,7 +34,10 @@ void	add_word(t_cmd *cmd, char *word)
 	cmd->argv[size + 1] = NULL;
 }
 
-void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir)
+/* Checks for errors when opening redirection files.
+ * Prints an error message if a file descriptor is invalid.
+ */
+static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir)
 {
 	if (*expect_redir == INFILE)
 	{
@@ -59,8 +56,11 @@ void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir)
 	}
 }
 
-//TODO mirar lo de perror donde sale en bash
-void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
+/* Handles a word token depending on the expected redirection type.
+ * Opens files for redirections or adds the word to the command.
+ * Resets expected redirection type after processing.
+ */
+static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 {
 	if (*expect_redir == INFILE)
 	{
@@ -80,12 +80,59 @@ void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 	else if (*expect_redir == HEREDOC)
 	{
 		cmd -> heredoc = 1;
-		cmd -> heredoc_delim = strdup(tokens->value);
+		cmd -> heredoc_delim = ft_strdup(tokens->value);
 	}
 	else
 		add_word(cmd, tokens->value);
 	*expect_redir = NONE;
 }
+
+
+/* Handles a pipe token by creating a new command node.
+ * Resets expected redirection type.
+ */
+static void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
+{
+	(*cmd) -> next = init_comand();
+	*cmd = (*cmd) -> next;
+	*expect_redir = NONE;
+}
+
+
+/* Parses the list of tokens into a command structure.
+ * Handles pipes, redirections, and command words.
+ * Returns the head of the command list.
+ */
+struct s_cmd	*ft_parse(t_token *tokens, char *envp[])
+{
+	t_cmd			*cmd_head;
+	t_cmd			*cmd;
+	t_redir_type	expect_redir;
+
+	cmd_head = init_comand();
+	cmd = cmd_head;
+	expect_redir = NONE;
+	(void)envp;
+	while (tokens)
+	{
+		if ((tokens->type) == TOKEN_PIPE)
+			handle_pipe_token(&cmd, &expect_redir);
+		else if ((tokens->type) == TOKEN_REDIR_IN)
+			expect_redir = INFILE;
+		else if ((tokens->type) == TOKEN_REDIR_OUT)
+			expect_redir = OUTFILE;
+		else if ((tokens->type) == TOKEN_REDIR_APPEND)
+			expect_redir = APPEND;
+		else if ((tokens->type) == TOKEN_HEREDOC)
+			expect_redir = HEREDOC;
+		else if ((tokens->type) == TOKEN_WORD)
+		//	process_expansion(cmd, tokens, &expect_redir, envp);
+			handle_word(cmd, tokens, &expect_redir);
+		tokens = tokens -> next;
+	}
+	return (cmd_head);
+}
+
 /*
 int	find_var(char	*value)
 {
@@ -124,45 +171,3 @@ void	process_expansion(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir, 
 	
 	}
 }*/
-
-void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
-{
-	(*cmd) -> next = init_comand();
-	*cmd = (*cmd) -> next;
-	*expect_redir = NONE;
-}
-
-
-//TODO comillas dentro de el argv?
-//
-//    path = find_path(cmds->argv[0], envp);
-
-struct s_cmd	*ft_parse(t_token *tokens, char *envp[])
-{
-	t_cmd			*cmd_head;
-	t_cmd			*cmd;
-	t_redir_type	expect_redir;
-
-	cmd_head = init_comand();
-	cmd = cmd_head;
-	expect_redir = NONE;
-	(void)envp;
-	while (tokens)
-	{
-		if ((tokens->type) == TOKEN_PIPE)
-			handle_pipe_token(&cmd, &expect_redir);
-		else if ((tokens->type) == TOKEN_REDIR_IN)
-			expect_redir = INFILE;
-		else if ((tokens->type) == TOKEN_REDIR_OUT)
-			expect_redir = OUTFILE;
-		else if ((tokens->type) == TOKEN_REDIR_APPEND)
-			expect_redir = APPEND;
-		else if ((tokens->type) == TOKEN_HEREDOC)
-			expect_redir = HEREDOC;
-		else if ((tokens->type) == TOKEN_WORD)
-		//	process_expansion(cmd, tokens, &expect_redir, envp);
-			handle_word(cmd, tokens, &expect_redir);
-		tokens = tokens -> next;
-	}
-	return (cmd_head);
-}

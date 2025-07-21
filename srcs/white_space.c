@@ -12,14 +12,18 @@
 
 #include "../includes/minishell.h"
 
-// Función auxiliar para saltar espacios
-void	skip_whitespace(char *input, t_pos_data *data)
+/*
+ * Advances position past consecutive whitespace characters.
+ */
+static void	skip_whitespace(char *input, t_pos_data *data)
 {
 	while (input[data->pos] == ' ' || input[data->pos] == '\t')
 		data->pos++;
 }
 
-// Función para manejar espacios en blanco
+/*
+ * Handles whitespace by processing the previous word and skipping spaces.
+ */
 void	handle_whitespace(char *input, t_token **list, t_pos_data *data)
 {
 	process_previous_word(input, list, data);
@@ -27,7 +31,9 @@ void	handle_whitespace(char *input, t_token **list, t_pos_data *data)
 	data->start = data->pos;
 }
 
-// Función auxiliar para inicializar datos
+/*
+ * Initializes tokenizer state and token list.
+ */
 void	init_tokenizer_data(t_pos_data *data, t_token **list)
 {
 	data->state = 0;
@@ -36,10 +42,12 @@ void	init_tokenizer_data(t_pos_data *data, t_token **list)
 	*list = NULL;
 }
 
-// Función auxiliar para finalizar tokenización
+/*
+ * Finalizes tokenization by processing any remaining word and adding an EOF token.
+ */
 void	finalize_tokenization(char *input, t_token **list, t_pos_data *data)
 {
 	process_previous_word(input, list, data);
-	add_token(list, TOKEN_EOF, "EOF", 0);
 	//add_token(list, TOKEN_EOF, ft_strdup("EOF"), 0);
+	add_token(list, TOKEN_EOF, ft_strdup("EOF"), 0);
 }

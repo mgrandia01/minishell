@@ -14,16 +14,6 @@
 
 void	ft_add_history(char *input);
 
-//TODO Tu lexer debe detectar cadenas consecutivas entre comillas y concatenarlas si no hay espacios entre ellas.
-//TODO  Tu lexer debería gestionar correctamente los escapes solo dentro de comillas dobles, y tratarlos como parte del string.
-//TODO Tu lexer no debe crashear ni crear tokens vacíos si el input es vacío o contiene solo espacios.
-//TODO echo hola"mundo"adio esto en bash es holamundoadios
-
-//TODO No permitir cosas como | | o > sin un archivo después.
-//TODO Manejo de variables y expansión
-// Función auxiliar para procesar caracteres especiales
-// Redirecciones mal formadas (> sin archivo, por ejemplo, aunque esto también puede ser parte del parser)
-
 void	free_tokens(t_token *lst)
 {
 	t_token	*tmp;
@@ -38,16 +28,15 @@ void	free_tokens(t_token *lst)
 	}
 }
 
+/**
+ * Processes special characters (quotes, spaces, operators) at the current position.
+ * Returns -1 on error, 0 otherwise.
+ */
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 {
-	char	*prev_word = NULL;
-
 	if ((input[data->pos] == '\'') || (input[data->pos] == '\"'))
 	{
-		if ((data -> pos) > (data -> start))
-			prev_word = ft_substr(input, data->start, data->pos - data->start);
-		//process_previous_word(input, list, data);
-		if (handle_quotes(input, list, &data->pos, &data->state, prev_word) == -1)
+		if (handle_quotes(input, list, &data->pos, &data->state) == -1)
 			return (-1);
 		//free(prev_word);
 		data->start = data->pos;
@@ -63,7 +52,10 @@ static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 	return (0);
 }
 
-// Función principal de tokenización
+/*
+ * Tokenizes the input string and returns a list of tokens.
+ * Returns NULL if an error occurs during tokenization.
+ */
 t_token	*ft_tokenize(char *input)
 {
 	t_token		*list;
@@ -78,4 +70,3 @@ t_token	*ft_tokenize(char *input)
 	finalize_tokenization(input, &list, &data);
 	return (list);
 }
-//struct s_cmd	*ft_parse(t_token *tokens);

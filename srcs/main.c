@@ -6,12 +6,15 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 15:29:48 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:42:19 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <stdio.h>
+
+int g_exit_status = 0;
+
 
 void print_tokens(t_token *tokens)
 {
@@ -94,7 +97,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	(void)envp;
 	(void) *cmd_ignore;
 	// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
-	ft_printf("\n TEST1.................");
+	ft_printf(STDOUT_FILENO,"\n TEST1.................");
 	cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	// Comando introducido por el usuario : ls -la
 	// como en el pipex, el comando deberia de llevar el path correcto delante
@@ -115,7 +118,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	free (cmds);
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 1
 	// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
-	ft_printf("\n TEST2.................");
+	ft_printf(STDOUT_FILENO, "\n TEST2.................");
 	cmds = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	// Comando introducido por el usuario : grep -r --include="*.c" "main" .
 	// Si van comillas dentro del comando, anyadir otra " delante para escaparlas
@@ -130,7 +133,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	cmds->heredoc = -1;
 	cmds->heredoc_delim = NULL;
 	cmds->next = NULL;
-	ft_execute(cmds, envp);
+	//ft_exe_pipeline(cmds, envp);
 	for(int j=0; j<5; j++)
 		free (cmds->argv[j]);
 	free (cmds->argv);
@@ -138,7 +141,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 2
 	
 	// TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
-	ft_printf("\n TEST3.................");
+	ft_printf(STDOUT_FILENO, "\n TEST3.................");
 	cmd1 = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	fd = open("1.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
 	// Comando introducido por el usuario : echo "pepito" > 1.txt
@@ -163,44 +166,91 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 }
 
+void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
+{
+	t_cmd	*ptr_next;
+
+	if (lst && del)
+	{
+		while (*lst)
+		{
+			ptr_next = (*lst)->next;
+			del((*lst)->argv);
+			if ((*lst)->heredoc_delim)
+				free((*lst)->heredoc_delim);
+			free(*lst);
+			*lst = ptr_next;
+		}
+	}
+}
+
+void ft_free_argv(char **ptr)
+{
+	int	i;
+	
+	i = 0;
+	if (ptr)
+	{
+		while (ptr[i])
+		{
+			free(ptr[i]);
+			i++;
+		}
+		free(ptr);
+	}
+}
+
 int	main(int argc, char *argv[], char *envp[])
 {
-	char	*input = NULL;
+	char	*input;
 	t_token	*tokens;
 	t_cmd	*cmds;
-	char	*path = NULL;
+	//char	*path;
 	size_t len;
+
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
     	ft_setup_signals();
+    	input = NULL;
+    	tokens = NULL;
+    	cmds = NULL;
     	while (1)
     	{
-        	ft_printf("\nminishell \u25B8 ");
+        	//ft_printf("minishell \u25B8 ");
+        	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
         	input = get_next_line(STDIN_FILENO);
         	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
 		if (!input || !ft_strncmp(input,"esc",3))
+		{
+			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
+		}
 		len = ft_strlen(input);
 		if (len> 0 && input[len - 1] == '\n')
 			input[len - 1] = '\0';
-		ft_add_history(input);
+		/*if (*input)
+			add_history(input);*/
 		//parser and store cmds
 		tokens = ft_tokenize(input);
-		print_tokens(tokens);
 		free(input);
+		input = NULL;
+		print_tokens(tokens);
 		if (!tokens)
 			break ;
 		// create list of nodes representing cmds
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
+		
 		free_tokens(tokens);
+		tokens = NULL;
 		//	free(tokens);
 		if (!cmds)
 			break ;
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
+		ft_exe_pipeline(cmds, envp);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
@@ -210,21 +260,22 @@ int	main(int argc, char *argv[], char *envp[])
 		//   	cmd2 (wc -l)
 		//   		infile: <fd pipe lectura>
 		//
-		path = find_path(cmds->argv[0], envp);
-		ft_printf("PATH -> %s\n", path);
+		//path = find_path(cmds->argv[0], envp);
+		//ft_printf("PATH -> %s\n", path);
 		//********************************
-		/*
-		(void)envp;
-		(void)tokens;
+		
+		//(void)envp;
+		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
-		ft_free_cmds(cmds); // implementar esta parte que estaba parcheada en los tests, algo asi:
-		//for(int j=0; j<5; j++)
-		//	free (cmds->argv[j]);
-		//free (cmds->argv);
-		//free (cmds);
+		ft_cmdclear (&cmds, ft_free_argv);
+		
        	}
-       	free(input);
-	rl_clear_history();
+       	
+       	if (input)
+       		free(input);
+       	if (tokens)
+       		free_tokens(tokens);
+       	rl_clear_history();
        	return (0);
 }

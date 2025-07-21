@@ -80,7 +80,7 @@ char	*ft_convert_to_hex(unsigned int value, char type, int i)
 	return (ft_flip_string(str));
 }
 
-int	ft_print_hexadecimal(unsigned int value, char type)
+int	ft_print_hexadecimal(unsigned int value, char type, int fd)
 {
 	char	*hex_str;
 	int		size;
@@ -90,7 +90,7 @@ int	ft_print_hexadecimal(unsigned int value, char type)
 	hex_str = ft_convert_to_hex(value, type, i);
 	if (!hex_str)
 		return (0);
-	size = ft_print_string(hex_str);
+	size = ft_print_string(hex_str, fd);
 	free(hex_str);
 	return (size);
 }
