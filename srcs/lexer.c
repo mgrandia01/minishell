@@ -29,7 +29,7 @@ void	free_tokens(t_token *lst)
 }
 
 /**
- * Processes special characters (quotes, spaces, operators) at the current position.
+ * Processes special char (quotes, spaces, operators) at the current position.
  * Returns -1 on error, 0 otherwise.
  */
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
@@ -67,5 +67,5 @@ t_token	*ft_tokenize(char *input)
 			return (NULL);
 	}
 	finalize_tokenization(input, &list, &data);
-		return (list);
-	}
+	return (list);
+}

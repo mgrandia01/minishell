@@ -15,17 +15,16 @@
 /* Adds output redirection or append token based on input characters.
  * Advances the input position accordingly.
  */
-static void	handle_output_redir(char *input, t_token **list, int *pos, int state)
+static void	handle_output_redir(char *input, t_token **list, int *pos)
 {
-	(void)state;
 	if (input[*pos + 1] == '>')
 	{
-		add_token(list, TOKEN_REDIR_APPEND, ft_strdup(">>"), 0);//state);
+		add_token(list, TOKEN_REDIR_APPEND, ft_strdup(">>"), 0);
 		*pos += 2;
 	}
 	else
 	{
-		add_token(list, TOKEN_REDIR_OUT, ft_strdup(">"), 0);//state);
+		add_token(list, TOKEN_REDIR_OUT, ft_strdup(">"), 0);
 		(*pos)++;
 	}
 }
@@ -33,27 +32,25 @@ static void	handle_output_redir(char *input, t_token **list, int *pos, int state
 /* Adds input redirection or heredoc token based on the input characters.
  * Advances the input position accordingly.
  */
-static void	handle_input_redir(char *input, t_token **list, int *pos, int state)
+static void	handle_input_redir(char *input, t_token **list, int *pos)
 {
-	(void)state;
 	if (input[*pos + 1] == '<')
 	{
-		add_token(list, TOKEN_HEREDOC, ft_strdup("<<"), 0);// state);
+		add_token(list, TOKEN_HEREDOC, ft_strdup("<<"), 0);
 		*pos += 2;
 	}
 	else
 	{
-		add_token(list, TOKEN_REDIR_IN, ft_strdup("<"), 0);//state);
+		add_token(list, TOKEN_REDIR_IN, ft_strdup("<"), 0);
 		(*pos)++;
 	}
 }
 
 /* Adds a pipe token to the list and advances the input position.
  */
-static void	handle_pipe(t_token **list, int *pos, int state)
+static void	handle_pipe(t_token **list, int *pos)
 {
-	(void)state;
-	add_token(list, TOKEN_PIPE, ft_strdup("|"), 0);//state);
+	add_token(list, TOKEN_PIPE, ft_strdup("|"), 0);
 	(*pos)++;
 }
 
@@ -63,11 +60,11 @@ static void	handle_pipe(t_token **list, int *pos, int state)
 static void	process_operator(char *input, t_token **list, t_pos_data *data)
 {
 	if (input[data->pos] == '>')
-		handle_output_redir(input, list, &data->pos, data->state);
+		handle_output_redir(input, list, &data->pos);
 	else if (input[data->pos] == '<')
-		handle_input_redir(input, list, &data->pos, data->state);
+		handle_input_redir(input, list, &data->pos);
 	else if (input[data->pos] == '|')
-		handle_pipe(list, &data->pos, data->state);
+		handle_pipe(list, &data->pos);
 }
 
 /* Processes operators by handling the previous word

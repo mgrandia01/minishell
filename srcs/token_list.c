@@ -77,34 +77,34 @@ static int	handle_end(char c)
  * Handles quoted strings, adds them as a token.
  * Returns -1 on error, 0 otherwise.
  */
-int     handle_quotes(char *input, t_token **list, t_pos_data *data)
+int	handle_quotes(char *input, t_token **list, t_pos_data *data)
 {
-        int             start;
-        char    *val;
-        char    quote;
-        int     end;
+	int		start;
+	char	*val;
+	char	quote;
+	int		end;
 
-        process_previous_word(input, list, data);
-        quote = input[data->pos];
+	process_previous_word(input, list, data);
+	quote = input[data->pos];
 	data->pos++;
-        start = process_quote_content(input, &data->pos, quote);
-        if (start == -1)
-                return (-1);
-        if (input[data->pos] == quote)
-                data->pos++;
-	val = ft_substr(input, (start - 1), (data->pos + 2 - start));
-
-        end = handle_end(input[data->pos]);
-        add_token(list, TOKEN_WORD, val, end);
-        return (0);
+	start = process_quote_content(input, &data->pos, quote);
+	if (start == -1)
+		return (-1);
+	if (input[data->pos] == quote)
+		data->pos++;
+	val = ft_substr(input, (start - 1), (data->pos + 1 - start));
+	end = handle_end(input[data->pos]);
+	add_token(list, TOKEN_WORD, val, end);
+	return (0);
 }
+
 /*
  * Extracts and adds the previous word as a token if there is one.
  */
 void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 {
 	char	*val;
-	int	end;
+	int		end;
 
 	if (data->start != data->pos)
 	{
