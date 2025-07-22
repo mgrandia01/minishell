@@ -55,7 +55,8 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
-	int				quote; // 0 = normal, 1 = '', 2 = ""
+//	int				quote; // 0 = normal, 1 = '', 2 = ""
+	int		end; // 0 = end, 1 = no end (--include".*c"
 	struct s_token	*next;
 }	t_token;
 

@@ -16,7 +16,7 @@
  * Creates a new token and adds it to the end of the token list.
  * Returns 1 on success, 0 on failure.
  */
-int	add_token(t_token **lst, t_token_type type, char *val, int quote)
+int	add_token(t_token **lst, t_token_type type, char *val, int end) //int quote)
 {
 	t_token	*new;
 
@@ -26,7 +26,8 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 	new->type = type;
 	//new->value = ft_strdup(val);
 	new->value = val;
-	new->quote = quote;
+	//new->quote = quote;
+	new->end = end;
 	new->next = NULL;
 	if (!*lst)
 	{
@@ -96,8 +97,8 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state)
 	start = process_quote_content(input, pos, quote);
 	if (start == -1)
 		return (-1);
-	val = ft_substr(input, start, *pos - start);
-	add_token(list, TOKEN_WORD, val, *state);
+	val = ft_substr(input, (start - 1), (*pos + 2 - start));// incluyendo las comillas
+	add_token(list, TOKEN_WORD, val, 0);//TODO //*state);
 	if (input[*pos] == quote)
 	{
 		*state = ft_get_state(input[*pos], *state);
@@ -116,6 +117,7 @@ void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 	if (data->start != data->pos)
 	{
 		val = ft_substr(input, data->start, data->pos - data->start);
-		add_token(list, TOKEN_WORD, val, data->state);
+		add_token(list, TOKEN_WORD, val, 1); //TODO 1 perque al ser previous word significa que no esta end
+				// data->state);
 	}
 }

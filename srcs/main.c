@@ -21,7 +21,7 @@ void print_tokens(t_token *tokens)
     while (tokens)
     {
         const char *type_str;
-        const char *quote_str;
+ //       const char *quote_str;
 
         switch (tokens->type)
         {
@@ -35,15 +35,16 @@ void print_tokens(t_token *tokens)
             default:                  type_str = "UNKNOWN"; break;
         }
 
-        switch (tokens->quote)
+/*        switch (tokens->quote)
         {
             case 0: quote_str = "NORMAL"; break;
             case 1: quote_str = "SINGLE_QUOTE"; break;
             case 2: quote_str = "DOUBLE_QUOTE"; break;
             default: quote_str = "UNKNOWN_QUOTE"; break;
         }
-
-        printf("Token type: %s, value: '%s', quote: %s\n", type_str, tokens->value, quote_str);
+*/
+        printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
+        //printf("Token type: %s, value: '%s', quote: %s, end: %d\n", type_str, tokens->value, quote_str, tokens->end);
         tokens = tokens->next;
     }
 }
@@ -250,7 +251,7 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
-		ft_exe_pipeline(cmds, envp);
+//		ft_exe_pipeline(cmds, envp);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
@@ -268,7 +269,7 @@ int	main(int argc, char *argv[], char *envp[])
 		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
-		ft_cmdclear (&cmds, ft_free_argv);
+//		ft_cmdclear (&cmds, ft_free_argv);
 		
        	}
        	

@@ -17,14 +17,15 @@
  */
 static void	handle_output_redir(char *input, t_token **list, int *pos, int state)
 {
+	(void)state;
 	if (input[*pos + 1] == '>')
 	{
-		add_token(list, TOKEN_REDIR_APPEND, ft_strdup(">>"), state);
+		add_token(list, TOKEN_REDIR_APPEND, ft_strdup(">>"), 0);//state);
 		*pos += 2;
 	}
 	else
 	{
-		add_token(list, TOKEN_REDIR_OUT, ft_strdup(">"), state);
+		add_token(list, TOKEN_REDIR_OUT, ft_strdup(">"), 0);//state);
 		(*pos)++;
 	}
 }
@@ -34,14 +35,15 @@ static void	handle_output_redir(char *input, t_token **list, int *pos, int state
  */
 static void	handle_input_redir(char *input, t_token **list, int *pos, int state)
 {
+	(void)state;
 	if (input[*pos + 1] == '<')
 	{
-		add_token(list, TOKEN_HEREDOC, ft_strdup("<<"), state);
+		add_token(list, TOKEN_HEREDOC, ft_strdup("<<"), 0);// state);
 		*pos += 2;
 	}
 	else
 	{
-		add_token(list, TOKEN_REDIR_IN, ft_strdup("<"), state);
+		add_token(list, TOKEN_REDIR_IN, ft_strdup("<"), 0);//state);
 		(*pos)++;
 	}
 }
@@ -50,7 +52,8 @@ static void	handle_input_redir(char *input, t_token **list, int *pos, int state)
  */
 static void	handle_pipe(t_token **list, int *pos, int state)
 {
-	add_token(list, TOKEN_PIPE, ft_strdup("|"), state);
+	(void)state;
+	add_token(list, TOKEN_PIPE, ft_strdup("|"), 0);//state);
 	(*pos)++;
 }
 
