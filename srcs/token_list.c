@@ -115,11 +115,15 @@ void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 {
 	char	*val;
 	int	end;
+	char	c;
 
+	c = input[data->pos];
 	if (data->start != data->pos)
 	{
 		val = ft_substr(input, data->start, data->pos - data->start);
-		if (input[data->pos] && ((input[data->pos] == ' ') || (input[data->pos] == '\t') || (input[data->pos] == EOF)))//TODO
+		if (((c == ' ') || (c == '\t') || (c == '\0')))//FIXME
+			end = 0;
+		else if ((c == '>') || (c == '<') || (c == '|'))//FIXME
 			end = 0;
 		else
 			end = 1;
