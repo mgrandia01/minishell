@@ -90,7 +90,10 @@ int	handle_quotes(char *input, t_token **list, int *pos, t_pos_data *data)// int
 	int		start;
 	char	*val;
 	char	quote;
-
+	char	c;
+	int	end;
+	
+	c = input[data->pos];
 	process_previous_word(input, list, data);//TODO poder podria passarli aqui el 1?
 	quote = input[*pos];
 	//*state = ft_get_state(input[*pos], *state);
@@ -99,7 +102,16 @@ int	handle_quotes(char *input, t_token **list, int *pos, t_pos_data *data)// int
 	if (start == -1)
 		return (-1);
 	val = ft_substr(input, (start - 1), (*pos + 2 - start));// incluyendo las comillas
-	add_token(list, TOKEN_WORD, val, 0);//TODO //*state);
+	
+	//AQUIIIII TODO TODO CREAR UNA FUNCIO APART?
+	if (((c == ' ') || (c == '\t') || (c == '\0')))//FIXME
+		end = 0;
+	else if ((c == '>') || (c == '<') || (c == '|'))//FIXME
+		end = 0;
+	else
+		end = 1;
+
+	add_token(list, TOKEN_WORD, val, end);//TODO //*state);
 	if (input[*pos] == quote)
 	{
 		//*state = ft_get_state(input[*pos], *state);
