@@ -55,7 +55,6 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
-//	int				quote; // 0 = normal, 1 = '', 2 = ""
 	int		end; // 0 = end, 1 = no end (--include".*c"
 	struct s_token	*next;
 }	t_token;
@@ -82,19 +81,11 @@ typedef struct s_cmd
 }	t_cmd;
 
 //-------------redirections.c--------------------
-
-//void	handle_output_redir(char *input, t_token **list, int *pos, int state);
-//void	handle_input_redir(char *input, t_token **list, int *pos, int state);
-//void	handle_pipe(t_token **list, int *pos, int state);
-//void	process_operator(char *input, t_token **list, t_pos_data *data);
 void	handle_operators(char *input, t_token **list, t_pos_data *data);
 
 //---------token_list.c------------
-
 int		add_token(t_token **lst, t_token_type type, char *val, int quote);
-//int		ft_get_state(char input, int state);
-//int		process_quote_content(char *input, int *pos, char quote);
-int		handle_quotes(char *input, t_token **list, int *pos, t_pos_data *data);//int *state);
+int		handle_quotes(char *input, t_token **list, t_pos_data *data);
 void	process_previous_word(char *input, t_token **list, t_pos_data *data);
 
 //---------white_space.c-----------
@@ -117,8 +108,6 @@ t_cmd	*init_comand(void);
 
 //----------parse.c--------------
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
-
-
 
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
