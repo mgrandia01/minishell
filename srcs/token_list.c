@@ -46,7 +46,7 @@ int	add_token(t_token **lst, t_token_type type, char *val, int end) //int quote)
 /*
  * Updates and returns the quote parsing state based on the input character.
  * Toggles state for single and double quotes.
- */
+ 
 static int	ft_get_state(char input, int state)
 {
 	if (input == '\'' && state == 0)
@@ -59,7 +59,7 @@ static int	ft_get_state(char input, int state)
 		state = 0;
 	return (state);
 }
-
+*/
 /*
  * Finds the content inside quotes. Returns the start position.
  * Returns -1 if the closing quote is not found.
@@ -85,14 +85,15 @@ static int	process_quote_content(char *input, int *pos, char quote)
  */
 //TODO guardar con las comillas para luego manejar, y no con el char quote
 //guardar finalizado o no cada argumento para arreglar lo de --inlcude"*.c"
-int	handle_quotes(char *input, t_token **list, int *pos, int *state)
+int	handle_quotes(char *input, t_token **list, int *pos, t_pos_data *data)// int *state)
 {
 	int		start;
 	char	*val;
 	char	quote;
 
+	process_previous_word(input, list, data);//TODO poder podria passarli aqui el 1?
 	quote = input[*pos];
-	*state = ft_get_state(input[*pos], *state);
+	//*state = ft_get_state(input[*pos], *state);
 	(*pos)++;
 	start = process_quote_content(input, pos, quote);
 	if (start == -1)
@@ -101,7 +102,7 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state)
 	add_token(list, TOKEN_WORD, val, 0);//TODO //*state);
 	if (input[*pos] == quote)
 	{
-		*state = ft_get_state(input[*pos], *state);
+		//*state = ft_get_state(input[*pos], *state);
 		(*pos)++;
 	}
 	return (0);
@@ -113,11 +114,16 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state)
 void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 {
 	char	*val;
+	int	end;
 
 	if (data->start != data->pos)
 	{
 		val = ft_substr(input, data->start, data->pos - data->start);
-		add_token(list, TOKEN_WORD, val, 1); //TODO 1 perque al ser previous word significa que no esta end
-				// data->state);
+		if (input[data->pos] && ((input[data->pos] == ' ') || (input[data->pos] == '\t') || (input[data->pos] == EOF)))//TODO
+			end = 0;
+		else
+			end = 1;
+
+		add_token(list, TOKEN_WORD, val, end);// data->state);
 	}
 }
