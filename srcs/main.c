@@ -240,7 +240,7 @@ int	main(int argc, char *argv[], char *envp[])
 		print_tokens(tokens);
 		if (!tokens)
 			break ;
-	//	process_expansion(&tokens, envp);
+		process_expansion(&tokens, envp);
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		
@@ -251,7 +251,7 @@ int	main(int argc, char *argv[], char *envp[])
 		
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
-		ft_exe_pipeline(cmds, envp);
+//		ft_exe_pipeline(cmds, envp);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
