@@ -233,25 +233,25 @@ int	main(int argc, char *argv[], char *envp[])
 			input[len - 1] = '\0';
 		/*if (*input)
 			add_history(input);*/
-		//parser and store cmds
+		
 		tokens = ft_tokenize(input);
 		free(input);
 		input = NULL;
 		print_tokens(tokens);
 		if (!tokens)
 			break ;
-		// create list of nodes representing cmds
+	//	process_expansion(&tokens, envp);
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		
 		free_tokens(tokens);
 		tokens = NULL;
-		//	free(tokens);
 		if (!cmds)
 			break ;
+		
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
-//		ft_exe_pipeline(cmds, envp);
+		ft_exe_pipeline(cmds, envp);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
@@ -269,7 +269,7 @@ int	main(int argc, char *argv[], char *envp[])
 		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
-//		ft_cmdclear (&cmds, ft_free_argv);
+		ft_cmdclear (&cmds, ft_free_argv);
 		
        	}
        	

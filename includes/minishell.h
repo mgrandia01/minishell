@@ -109,6 +109,9 @@ t_cmd	*init_comand(void);
 //----------parse.c--------------
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
+//---------expansion.c-----------
+void	process_expansion(t_token **tokens, char *envp[]);
+
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
 

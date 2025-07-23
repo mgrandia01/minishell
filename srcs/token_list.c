@@ -45,7 +45,7 @@ int	add_token(t_token **lst, t_token_type type, char *val, int end)
  * Finds the content inside quotes. Returns the start position.
  * Returns -1 if the closing quote is not found.
  */
-static int	process_quote_content(char *input, int *pos, char quote)
+static int	process_quote_content(char *input, int *pos, char quote, t_token **tokens)
 {
 	int	start;
 
@@ -54,7 +54,8 @@ static int	process_quote_content(char *input, int *pos, char quote)
 		(*pos)++;
 	if (!input[*pos])
 	{
-		ft_printf(STDERR_FILENO, "no se han cerrado las comillas");
+		ft_printf(STDERR_FILENO, "quotes not closed");//TODO igual que bash
+		free_tokens(*tokens);
 		return (-1);
 	}
 	return (start);
@@ -87,7 +88,7 @@ int	handle_quotes(char *input, t_token **list, t_pos_data *data)
 	process_previous_word(input, list, data);
 	quote = input[data->pos];
 	data->pos++;
-	start = process_quote_content(input, &data->pos, quote);
+	start = process_quote_content(input, &data->pos, quote, list);
 	if (start == -1)
 		return (-1);
 	if (input[data->pos] == quote)
