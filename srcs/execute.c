@@ -12,11 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	ft_setup_signals(void);
-void	ft_execute(t_cmd *cmds, char *envp[]);
-int	ft_is_builtin(char *cmd);
-int	ft_execute_builtin(char **cmd, char **envp);
-void	ft_exe_pipeline(t_cmd *cmd, char **envp);
+
 
 /*void	setup_signals(void)
 {
@@ -65,7 +61,7 @@ int	ft_is_builtin(char *cmd)
 	return (0);
 }
 
-int	ft_execute_builtin(char **cmd, char **envp)
+int	ft_execute_builtin(char **cmd, char **envp, t_list *l_env)
 {
 	if (!ft_strncmp(cmd[0], "pwd", 4))
         	return (ft_builtin_pwd());
@@ -77,11 +73,9 @@ int	ft_execute_builtin(char **cmd, char **envp)
 		return (ft_builtin_env(cmd, envp));
 	if (ft_strncmp(cmd[0], "exit", 5) == 0)
 		return (ft_builtin_exit(cmd));
-	/*if (ft_strcmp(argv[0], "env") == 0)
-		return (ft_builtin_env());
-	if (ft_strcmp(argv[0], "export") == 0)
-		return (ft_builtin_export(argv));
-	if (ft_strcmp(argv[0], "unset") == 0)
+	if (ft_strncmp(cmd[0], "export", 7) == 0)
+		return (ft_builtin_export(cmd, l_env));
+	/*if (ft_strcmp(argv[0], "unset") == 0)
 		return (ft_builtin_unset(argv));*/
 	return 1; // error
 }
@@ -188,7 +182,7 @@ int	ft_create_heredoc(const char *delim)
 }
 
 
-void	ft_exe_pipeline(t_cmd *cmd, char **envp)
+void	ft_exe_pipeline(t_cmd *cmd, char **envp, t_list *l_env)
 {
 	int     pipefd[2];
 	int     prev_fd;
@@ -202,6 +196,8 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	prev_fd = -1;
 	pipefd[0] = -1;
 	pipefd[1] = -1;
+	//(void) g_exit_status;
+	//(void) last_pid;
 	if (!cmd)
 		return ;
 	// Ejecutar built-in directamente en el padre si es un único comando
@@ -226,7 +222,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			dup2(cmd->outfile, STDOUT_FILENO);
 			close(cmd->outfile);
 		}
-		if (ft_execute_builtin(cmd->argv, envp))
+		if (ft_execute_builtin(cmd->argv, envp, l_env))
 		{
 			//para ek futuro. PWD no hace falta
 			//error
@@ -315,7 +311,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			
 			if (ft_is_builtin(cmd->argv[0]))
 			{
-				exit(ft_execute_builtin(cmd->argv, envp));
+				exit(ft_execute_builtin(cmd->argv, envp, l_env));
 			}
 			else
 				execve(path, cmd->argv, envp);

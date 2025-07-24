@@ -80,40 +80,52 @@ typedef struct s_cmd
 	struct s_cmd	*next;				// siguiente comando en el pipe
 }	t_cmd;
 
+typedef struct s_env
+{
+	char	*key;
+	char	*kval;
+	int	kexp;
+} t_env;
+
+
 //-------------redirections.c--------------------
 
-void	handle_output_redir(char *input, t_token **list, int *pos, int state);
-void	handle_input_redir(char *input, t_token **list, int *pos, int state);
-void	handle_pipe(t_token **list, int *pos, int state);
-void	process_operator(char *input, t_token **list, t_pos_data *data);
+//void	handle_output_redir(char *input, t_token **list, int *pos, int state);
+//void	handle_input_redir(char *input, t_token **list, int *pos, int state);
+//void	handle_pipe(t_token **list, int *pos, int state);
+//void	process_operator(char *input, t_token **list, t_pos_data *data);
 void	handle_operators(char *input, t_token **list, t_pos_data *data);
 
 //---------token_list.c------------
 
 int		add_token(t_token **lst, t_token_type type, char *val, int quote);
-int		ft_get_state(char input, int state);
-int		process_quote_content(char *input, int *pos, char quote);
+//int		ft_get_state(char input, int state);
+//int		process_quote_content(char *input, int *pos, char quote);
 int		handle_quotes(char *input, t_token **list, int *pos, int *state);
-
 void	process_previous_word(char *input, t_token **list, t_pos_data *data);
 
 //---------white_space.c-----------
 
-void	skip_whitespace(char *input, t_pos_data *data);
+//void	skip_whitespace(char *input, t_pos_data *data);
 void	handle_whitespace(char *input, t_token **list, t_pos_data *data);
 void	init_tokenizer_data(t_pos_data *data, t_token **list);
 void	finalize_tokenization(char *input, t_token **list, t_pos_data *data);
 
 //------------lexer.c-------------
-void	free_tokens(t_token *lst);
 void	ft_add_history(char *input);
+//--------------------------------
+void	free_tokens(t_token *lst);
 t_token	*ft_tokenize(char *input);
-struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
 //-----------parse_utils.c----------
 int		argv_num(char **argv);
 char	**expand_argv(char **argv, int s);
 t_cmd	*init_comand(void);
+
+//----------parse.c--------------
+struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
+
+
 
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
@@ -124,7 +136,7 @@ void	handle_sigint(int sig);
 
 //---------- execute.c----------------
 void	ft_execute(t_cmd *cmds, char *envp[]);
-void	ft_exe_pipeline(t_cmd *cmd, char **envp);
+void	ft_exe_pipeline(t_cmd *cmd, char **envp, t_list *l_env);
 
 void	ft_free_cmds(t_cmd *cmds);
 
@@ -138,8 +150,12 @@ int		ft_builtin_cd(char **args);
 int		ft_builtin_echo(char **args);
 int		ft_builtin_env(char **cmd,  char **envp);
 int		ft_builtin_exit(char **args);
+int		ft_builtin_export(char **args, t_list *l_env);
 
 //----------- minishell_utils.c----------------
 int	ft_is_numeric(const char *str);
+t_list	*ft_init_env(char **envp);
+void	ft_free_env(void *content);
+
 
 #endif

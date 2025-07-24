@@ -11,3 +11,5 @@ git pull 		 para actualizar en local la rama main
 git merge rama1          para fusionar la rama main que tengo descargada con la rama1 de github
 git push 		 para subir la rama main ha fusionada
 
+git stash		guarda temporalmente unos cambios para poder hacer el pull y perder los cambios en local
+git stash clear		borra esos cambios definitivamente

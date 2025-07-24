@@ -207,6 +207,8 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd	*cmds;
 	//char	*path;
 	size_t len;
+	t_list *l_env;
+
 
 	(void) argc;
 	(void) argv;
@@ -215,7 +217,15 @@ int	main(int argc, char *argv[], char *envp[])
     	input = NULL;
     	tokens = NULL;
     	cmds = NULL;
-    	while (1)
+    	l_env = ft_init_env(envp);
+    	t_list *env_list2 = l_env;
+    	while (env_list2)
+	{
+        	t_env *var = (t_env *)env_list2->content;
+ 	       printf("key=%s, value=%s, exported=%d\n", var->key, var->kval, var->kexp);
+ 	       env_list2 = env_list2->next;
+    	}
+	while (1)
     	{
         	//ft_printf("minishell \u25B8 ");
         	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
@@ -236,13 +246,14 @@ int	main(int argc, char *argv[], char *envp[])
 		tokens = ft_tokenize(input);
 		free(input);
 		input = NULL;
-		//print_tokens(tokens);
+		print_tokens(tokens);
 		if (!tokens)
 			break ;
 		// create list of nodes representing cmds
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
-		
+		// ATENCION . Valorar si las asginaciones de nuevas variables se anyaden
+		// entre el parser y executer ya que en ejecucion solo hay strcut de comandos 
 		free_tokens(tokens);
 		tokens = NULL;
 		//	free(tokens);
@@ -250,7 +261,10 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
-		ft_exe_pipeline(cmds, envp);
+		//aqui ya le pasaremos la nueva struct de varaibles, no vale la pena pasar envp
+		//VAR 1 = EEEE crea variable con export=0
+		//export VAR1 pondra export=1
+		ft_exe_pipeline(cmds, envp, l_env);
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
@@ -271,7 +285,7 @@ int	main(int argc, char *argv[], char *envp[])
 		ft_cmdclear (&cmds, ft_free_argv);
 		
        	}
-       	
+ 	ft_lstclear(&l_env, ft_free_env);      	
        	if (input)
        		free(input);
        	if (tokens)
