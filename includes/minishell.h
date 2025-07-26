@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 15:07:05 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/26 12:26:26 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 //---------expansion.c-----------
 void	process_expansion(t_token **tokens, char *envp[]);
 
+//-----------expansion_utils.c--------
+char	**ft_split_whitespace(char const *s);
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
 

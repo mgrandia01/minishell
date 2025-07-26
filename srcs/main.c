@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 15:42:19 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/26 11:29:56 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,7 @@ int	main(int argc, char *argv[], char *envp[])
 		print_tokens(tokens);
 		if (!tokens)
 			break ;
-		process_expansion(&tokens, envp);
+//		process_expansion(&tokens, envp);
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		

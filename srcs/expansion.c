@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 16:28:48 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/26 12:59:24 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,25 @@ static int	ft_quoted_type(char c)
 	return (quote);	
 }
 
-
-static char	*expand_variable_at(const char *token_valeu, int *i, char *envp[])
+static char	*get_env_value(const char *name, char *envp[])
 {
+	int	i;
+	size_t	len;
+
+	len = ft_strlen(name);
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+			return(envp[i] + len + 1);
+		i ++;
+	}
+	return (NULL);
+}
+
+static char	*expand_variable_at(const char *token_value, int *i, char *envp[])
+{
+
 	// TODO las variables creadas por el usuario
 
 /*
@@ -36,19 +52,66 @@ static char	*expand_variable_at(const char *token_valeu, int *i, char *envp[])
 ** Devuelve el valor como string (puede contener espacios).
 ** Avanza el índice `*i` hasta el final del nombre de la variable para que el bucle lo continúe bien.
 */
+	char	*var_name;
+	char	*value;
+	int	start;
+	int	len;
+
+	start = *i;
+	(*i)++;
+	len = 0;
+	while(token_value[*i+len] && (ft_isalnum(token_value[*i + len]) || token_value[*i + len] == '_')) 
+		len++;
+	var_name = ft_substr(token_value, start + 1, len);
+	*i += len;
+	if (!var_name)
+		return (NULL);
+	value = get_env_value(var_name, envp);
+	free(var_name);
+	if(!value)
+		return (ft_strdup(""));
+	return (ft_strdup(value));
 }
 
-static char	*expand_exit_status(vois)
-{
 /*
 ** Devuelve una string que representa el valor de la última variable $? expandida.
 ** Este valor debe estar guardado globalmente o ser accesible de alguna forma.
 */
-}
+/*
+static char	*expand_exit_status(void)
+{
+	//FIXME Crec que podriem necessitar una variable global
+}*/
 
 static void	split_and_add_token(t_token **new_list, t_token_type type, char *token_exp, int end_flag)
 {
+	char	**split;
+	int	i;
+	int	end;
+
+	if (!token_exp)
+		return ;
+	split = ft_split_whitespace(token_exp);//TODO nueva funcion que divide por espacios y /t
+	if (!split)
+		return ;
+	i = 0;
+	while(split[i])
+	{
+		end = 0;
+		if (split[i+1] == NULL)
+			end = end_flag;//FIXME per posar 0 o 1correctaent
+		add_token(new_list, type, ft_strdup(split[i]), end);
+		i++;
+	}
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++ ;
+	}
+	free(split);
 /*
+ *
 ** Divide el string `str` por espacios en blanco (puedes usar ft_split).
 ** Por cada palabra resultante, llama a add_token.
 ** El `end_flag` se pasa como 0 si estamos dentro de una expansión que divide, para que se comporten como tokens independientes.
@@ -79,22 +142,23 @@ static void	exp_token_value(const char *t_val,t_token **n_lst, t_token *c, char 
 			{
 				result = ft_realloc(result, size, size + 1);
 				result[size] = '\0';
-				add_token(new_list,current->type, result, 1); 
+				add_token(n_lst,c->type, result, 1); 
 				result = NULL;
 				size = 0;
 			}
 			if (t_val[i+1] == '?')
 			{
-				token_exp = expand_exit_status();
-				add_token(new_list,current->type, token_exp, 1); 
+				printf("gestionar $?");
+				//token_exp = expand_exit_status();
+				//add_token(n_lst,current->type, token_exp, 1); 
 			}
 			else
 			{
-				token_exp = expand_variable_at(token_value, &i, env);
+				token_exp = expand_variable_at(t_val, &i, env);
 				if (ft_strchr(token_exp, ' ') && quote == 0)
-					split_and_add_token(new_list, current->type, token_exp, 1);
+					split_and_add_token(n_lst, c->type, token_exp, 1);
 				else
-					add_token(new_list, current->type, token_exp, 1);
+					add_token(n_lst, c->type, token_exp, 1);
 			}
 		}
 		else
@@ -111,7 +175,7 @@ static void	exp_token_value(const char *t_val,t_token **n_lst, t_token *c, char 
 	{
 		result = ft_realloc(result, size, size + 1);
 		result[size] = '\0';
-		add_token(new_list, current->type, result, 1);
+		add_token(n_lst, c->type, result, 1);
 	}
 }
 
@@ -119,7 +183,6 @@ void	process_expansion(t_token **tokens,  char *envp[])
 {
 	t_token	*new_list;
 	t_token	*current;
-	char	*expanded;
 
 	new_list = NULL;
 	current = *tokens;
@@ -127,15 +190,12 @@ void	process_expansion(t_token **tokens,  char *envp[])
 	while (current != NULL)
 	{
 		if (ft_strchr(current->value, '$'))
-		{
 			exp_token_value(current->value,&new_list, current, envp);
-			//add_token(&new_list, current->type, expanded, current->end);
-		}
 		else
 			//TODO Gestionar para que no incluya las comillas
 			add_token(&new_list, current->type, ft_strdup(current->value), current->end);
 		current = current->next;
 	}
-	free_token(*tokens);
+	free_tokens(*tokens);
 	*tokens = new_list;
 }
