@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/26 12:59:24 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/26 15:27:44 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,37 @@ static int	ft_quoted_type(char c)
 		quote = 2;
 	return (quote);	
 }
+
+static char	*remove_quotes(char *str)
+{
+	int	i;
+	int	j;
+	char	quote;
+	char	*result;
+
+	i = 0;
+	j = 0;
+	quote = 0;
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return (NULL);
+	while (str[i])
+	{
+		if ((str[i] == '\'') || (str[i] == '"'))
+		{
+			if (!quote)
+				quote = str[i];
+			else if (quote == str[i])
+				quote = 0;
+			i++;
+			continue;
+		}
+		result[j++] = str[i++];
+	}
+	result[j] = '\0';
+	return (result);
+}
+
 
 static char	*get_env_value(const char *name, char *envp[])
 {
@@ -88,6 +119,7 @@ static void	split_and_add_token(t_token **new_list, t_token_type type, char *tok
 	char	**split;
 	int	i;
 	int	end;
+	char	*cleaned;
 
 	if (!token_exp)
 		return ;
@@ -100,7 +132,12 @@ static void	split_and_add_token(t_token **new_list, t_token_type type, char *tok
 		end = 0;
 		if (split[i+1] == NULL)
 			end = end_flag;//FIXME per posar 0 o 1correctaent
-		add_token(new_list, type, ft_strdup(split[i]), end);
+		cleaned = remove_quotes(split[i]);
+		if (cleaned)
+
+			add_token(new_list, type, cleaned, end);
+		else
+			add_token(new_list, type, ft_strdup(split[i]), end);
 		i++;
 	}
 	i = 0;
@@ -128,6 +165,7 @@ static void	exp_token_value(const char *t_val,t_token **n_lst, t_token *c, char 
 	char	*result;
 	int	size;
 	char	*token_exp;
+	char	*cleaned;
 
 	quote = ft_quoted_type(t_val[0]);
 	i = 0;
@@ -142,13 +180,18 @@ static void	exp_token_value(const char *t_val,t_token **n_lst, t_token *c, char 
 			{
 				result = ft_realloc(result, size, size + 1);
 				result[size] = '\0';
-				add_token(n_lst,c->type, result, 1); 
+				cleaned = remove_quotes(result);
+				if (!cleaned)
+					cleaned = ft_strdup(result);
+				free(result);
+				add_token(n_lst,c->type, cleaned, 1); 
 				result = NULL;
 				size = 0;
 			}
 			if (t_val[i+1] == '?')
 			{
 				printf("gestionar $?");
+				i += 2;
 				//token_exp = expand_exit_status();
 				//add_token(n_lst,current->type, token_exp, 1); 
 			}
@@ -158,7 +201,13 @@ static void	exp_token_value(const char *t_val,t_token **n_lst, t_token *c, char 
 				if (ft_strchr(token_exp, ' ') && quote == 0)
 					split_and_add_token(n_lst, c->type, token_exp, 1);
 				else
-					add_token(n_lst, c->type, token_exp, 1);
+				{
+					cleaned = remove_quotes(token_exp);
+					if(!cleaned)
+						cleaned = ft_strdup(token_exp);
+					free(token_exp);
+					add_token(n_lst, c->type, cleaned, 1);
+				}
 			}
 		}
 		else
@@ -175,7 +224,11 @@ static void	exp_token_value(const char *t_val,t_token **n_lst, t_token *c, char 
 	{
 		result = ft_realloc(result, size, size + 1);
 		result[size] = '\0';
-		add_token(n_lst, c->type, result, 1);
+		cleaned = remove_quotes(result);
+		if (!cleaned)
+			cleaned = ft_strdup(result);
+		free(result);
+		add_token(n_lst, c->type, cleaned, 1);
 	}
 }
 
@@ -183,6 +236,7 @@ void	process_expansion(t_token **tokens,  char *envp[])
 {
 	t_token	*new_list;
 	t_token	*current;
+	char	*cleaned_value;
 
 	new_list = NULL;
 	current = *tokens;
@@ -192,8 +246,13 @@ void	process_expansion(t_token **tokens,  char *envp[])
 		if (ft_strchr(current->value, '$'))
 			exp_token_value(current->value,&new_list, current, envp);
 		else
+		{
 			//TODO Gestionar para que no incluya las comillas
-			add_token(&new_list, current->type, ft_strdup(current->value), current->end);
+			cleaned_value = remove_quotes(current->value);
+			if (!cleaned_value)
+				cleaned_value = ft_strdup(current->value);
+			add_token(&new_list, current->type, cleaned_value, current->end);
+		}
 		current = current->next;
 	}
 	free_tokens(*tokens);
