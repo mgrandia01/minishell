@@ -12,11 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	ft_setup_signals(void);
-void	ft_execute(t_cmd *cmds, char *envp[]);
-int	ft_is_builtin(char *cmd);
-int	ft_execute_builtin(char **cmd, char **envp);
-void	ft_exe_pipeline(t_cmd *cmd, char **envp);
+
 
 /*void	setup_signals(void)
 {
@@ -65,7 +61,7 @@ int	ft_is_builtin(char *cmd)
 	return (0);
 }
 
-int	ft_execute_builtin(char **cmd, char **envp)
+int	ft_execute_builtin(char **cmd, t_list *l_env)
 {
 	if (!ft_strncmp(cmd[0], "pwd", 4))
         	return (ft_builtin_pwd());
@@ -74,15 +70,13 @@ int	ft_execute_builtin(char **cmd, char **envp)
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 		return (ft_builtin_echo(cmd));
 	if (ft_strncmp(cmd[0], "env", 4) == 0)
-		return (ft_builtin_env(cmd, envp));
+		return (ft_builtin_env(cmd, l_env));
 	if (ft_strncmp(cmd[0], "exit", 5) == 0)
 		return (ft_builtin_exit(cmd));
-	/*if (ft_strcmp(argv[0], "env") == 0)
-		return (ft_builtin_env());
-	if (ft_strcmp(argv[0], "export") == 0)
-		return (ft_builtin_export(argv));
-	if (ft_strcmp(argv[0], "unset") == 0)
-		return (ft_builtin_unset(argv));*/
+	if (ft_strncmp(cmd[0], "export", 7) == 0)
+		return (ft_builtin_export(cmd, l_env));
+	if (ft_strncmp(cmd[0], "unset", 6) == 0)
+		return (ft_builtin_unset(cmd, &l_env));
 	return 1; // error
 }
 
@@ -188,7 +182,7 @@ int	ft_create_heredoc(const char *delim)
 }
 
 
-void	ft_exe_pipeline(t_cmd *cmd, char **envp)
+void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
 	int     pipefd[2];
 	int     prev_fd;
@@ -197,15 +191,21 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 	char	*path;
 	int	wstatus;
 	int	g_exit_status;
+	char	**envp_exec;
 
 	last_pid = -1;
 	prev_fd = -1;
 	pipefd[0] = -1;
 	pipefd[1] = -1;
-	(void) g_exit_status;
-	(void) last_pid;
+	envp_exec = NULL;
+	//(void) g_exit_status;
+	//(void) last_pid;
+
 	if (!cmd)
 		return ;
+		
+	pid = 0; path =NULL; wstatus=0, g_exit_status=0;
+		
 	// Ejecutar built-in directamente en el padre si es un único comando
 	// Teoricamente ejeuta los builtin dentro de pipes pero pierde el resultado
 	// asi que solo guardamos el estado si es el primer comando
@@ -228,7 +228,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			dup2(cmd->outfile, STDOUT_FILENO);
 			close(cmd->outfile);
 		}
-		if (ft_execute_builtin(cmd->argv, envp))
+		if (ft_execute_builtin(cmd->argv, l_env))
 		{
 			//para ek futuro. PWD no hace falta
 			//error
@@ -307,22 +307,29 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			if (pipefd[0] != -1)
                		 close(pipefd[0]);
 			
-			
-			path = find_path(cmd->argv[0], envp);
+			envp_exec = ft_build_envp_array(l_env);
+			path = find_path(cmd->argv[0], envp_exec);
 			if (!path)
 			{
 				printf("minishell: %s: command not found\n", cmd->argv[0]);
+				ft_lstclear(&l_env, ft_free_env);
+				ft_free_tab(envp_exec);
+				ft_cmdclear (&cmd, ft_free_argv);
 				exit(127);
 			}
 			
 			if (ft_is_builtin(cmd->argv[0]))
 			{
-				exit(ft_execute_builtin(cmd->argv, envp));
+				exit((ft_execute_builtin(cmd->argv, l_env))); // ojo con liberar el envp_exec
 			}
 			else
-				execve(path, cmd->argv, envp);
+			{	
+				ft_lstclear(&l_env, ft_free_env);
+				execve(path, cmd->argv, envp_exec);
+			}
+			ft_free_tab(envp_exec);
 			//ft_printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno)); //ft_printf no tiene STDERR
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
+			ft_printf(STDERR_FILENO, "minishsssell: %s: %s\n", cmd->argv[0], strerror(errno));
 			ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
 			ft_putstr_fd(": ", STDERR_FILENO);
 			ft_putstr_fd(strerror(errno), STDERR_FILENO);
@@ -337,6 +344,7 @@ void	ft_exe_pipeline(t_cmd *cmd, char **envp)
 			if (pipefd[1] != -1)
 				close(pipefd[1]);
 			printf("\nFIN HIJO------(ha petado un execvce para haber llegado aqui----------------FIN HIJO");fflush(0);
+			ft_cmdclear (&cmd, ft_free_argv);
 			exit(127);
 		}
 		else // padre

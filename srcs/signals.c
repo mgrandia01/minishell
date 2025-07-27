@@ -22,8 +22,8 @@ void    handle_sigint(int sig)
 }
 
 
-void    setup_signals(void)
+void    ft_setup_signals(void)
 {
-    signal(SIGINT, handle_sigint);  // Ctrl+C
-    signal(SIGQUIT, SIG_IGN);       // Ctrl+\
+    /*signal(SIGINT, handle_sigint);  // Ctrl+C
+    signal(SIGQUIT, SIG_IGN);       // Ctrl+\*/
 }
