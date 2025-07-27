@@ -40,22 +40,6 @@ static t_env	*ft_find_env_var(t_list *env_list, const char *key)
 	return (NULL);
 }
 
-static int	ft_is_valid_key(const char *key)
-{
-	int	i;
-	
-	i = 0;
-	if (!key )
-		return (0);
-	while (key[i])
-	{
-		if (!ft_isalnum(key[i]) && key[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 static int	ft_export_parse_key_value(char *arg, char **key, char **value)
 {
 	char    *equal;
@@ -94,12 +78,14 @@ static void	ft_export_assign_var(char *key, char *value, t_list **l_env)
 	}
 	else
 	{
-        	new = malloc(sizeof(t_env));
+        	new = (t_env *)malloc(sizeof(t_env));
 	        if (!new)
         	    return ;
 	        new->key = key;
-        	if (new->kval != value)
-        		ft_strdup("");
+		if (value)
+			new->kval = value;
+		else
+			new->kval = ft_strdup("");
         	new->kexp = 1;
         	ft_lstadd_back(l_env, ft_lstnew(new));
     	}

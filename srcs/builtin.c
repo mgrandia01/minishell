@@ -75,9 +75,9 @@ int	ft_builtin_echo(char **args)
 	return (0);
 }
 
-int	ft_builtin_env(char **args, char **envp)
+int	ft_builtin_env(char **args, t_list *l_env)
 {
-	int	i;
+	t_env	*var;
 
 	if (args[1])
 	{
@@ -86,15 +86,17 @@ int	ft_builtin_env(char **args, char **envp)
 		ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
 		return (127);
 	}
-	i = 0;
-	while (envp[i])
+	while (l_env)
 	{
-		if (ft_strchr(envp[i], '='))
+		var = (t_env *) l_env->content;
+		if (var->kexp && var->key && var->kval)
 		{
-			ft_putstr_fd(envp[i], STDOUT_FILENO);
+			ft_putstr_fd(var->key, STDOUT_FILENO);
+			ft_putstr_fd("=", STDOUT_FILENO);
+			ft_putstr_fd(var->kval, STDOUT_FILENO);
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		}
-		i++;
+		l_env = l_env->next;
 	}
 	return (0);
 }
@@ -116,4 +118,3 @@ int	ft_builtin_exit(char **args)
 	}
 	exit(ft_atoi(args[1]) % 256);
 }
-

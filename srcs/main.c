@@ -166,40 +166,6 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 }
 
-void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
-{
-	t_cmd	*ptr_next;
-
-	if (lst && del)
-	{
-		while (*lst)
-		{
-			ptr_next = (*lst)->next;
-			del((*lst)->argv);
-			if ((*lst)->heredoc_delim)
-				free((*lst)->heredoc_delim);
-			free(*lst);
-			*lst = ptr_next;
-		}
-	}
-}
-
-void ft_free_argv(char **ptr)
-{
-	int	i;
-	
-	i = 0;
-	if (ptr)
-	{
-		while (ptr[i])
-		{
-			free(ptr[i]);
-			i++;
-		}
-		free(ptr);
-	}
-}
-
 int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input;
@@ -218,21 +184,22 @@ int	main(int argc, char *argv[], char *envp[])
     	tokens = NULL;
     	cmds = NULL;
     	l_env = ft_init_env(envp);
-    	t_list *env_list2 = l_env;
+    	/*t_list *env_list2 = l_env;
     	while (env_list2)
 	{
         	t_env *var = (t_env *)env_list2->content;
  	       printf("key=%s, value=%s, exported=%d\n", var->key, var->kval, var->kexp);
  	       env_list2 = env_list2->next;
-    	}
+    	}*/
 	while (1)
     	{
         	//ft_printf("minishell \u25B8 ");
-        	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
+        	if (isatty(STDIN_FILENO))
+        		ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
         	input = get_next_line(STDIN_FILENO);
         	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
-		if (!input || !ft_strncmp(input,"esc",3))
+		if (!input || !ft_strncmp(input,"\n",2) || !ft_strncmp(input,"esc",3))
 		{
 			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
@@ -264,7 +231,12 @@ int	main(int argc, char *argv[], char *envp[])
 		//aqui ya le pasaremos la nueva struct de varaibles, no vale la pena pasar envp
 		//VAR 1 = EEEE crea variable con export=0
 		//export VAR1 pondra export=1
-		ft_exe_pipeline(cmds, envp, l_env);
+		//atencion export VAR=1 funciona
+		// pero export VAR1="1" no funciona, DEBE ELIMINAR LAS COMILLAS
+		
+		
+		ft_exe_pipeline(cmds, l_env);
+		
 		// preparacion de datos mientras no esta el parser
 		
 		//********************************
@@ -293,3 +265,5 @@ int	main(int argc, char *argv[], char *envp[])
        	rl_clear_history();
        	return (0);
 }
+
+

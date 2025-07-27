@@ -84,9 +84,8 @@ typedef struct s_env
 {
 	char	*key;
 	char	*kval;
-	int	kexp;
-} t_env;
-
+	int		kexp;
+}	t_env;
 
 //-------------redirections.c--------------------
 
@@ -125,8 +124,6 @@ t_cmd	*init_comand(void);
 //----------parse.c--------------
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
-
-
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
 
@@ -136,7 +133,7 @@ void	handle_sigint(int sig);
 
 //---------- execute.c----------------
 void	ft_execute(t_cmd *cmds, char *envp[]);
-void	ft_exe_pipeline(t_cmd *cmd, char **envp, t_list *l_env);
+void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env);
 
 void	ft_free_cmds(t_cmd *cmds);
 
@@ -148,14 +145,22 @@ int		ft_strcmp(const char *s1, const char *s2);
 int		ft_builtin_pwd(void);
 int		ft_builtin_cd(char **args);
 int		ft_builtin_echo(char **args);
-int		ft_builtin_env(char **cmd,  char **envp);
+int		ft_builtin_env(char **cmd, t_list *l_env);
 int		ft_builtin_exit(char **args);
 int		ft_builtin_export(char **args, t_list *l_env);
+int		ft_builtin_unset(char **cmd, t_list **l_env);
 
 //----------- minishell_utils.c----------------
-int	ft_is_numeric(const char *str);
+char	**ft_build_envp_array(t_list *l_env);
+int		ft_is_numeric(const char *str);
+int		ft_is_valid_key(const char *key);
+int		ft_strcmp(const char *s1, const char *s2);
+
+//----------- minishell_utils_1.c----------------
 t_list	*ft_init_env(char **envp);
 void	ft_free_env(void *content);
-
+void	ft_free_tab(char **tab);
+void	ft_free_argv(char **ptr);
+void	ft_cmdclear(t_cmd **lst, void (*del)(char **));
 
 #endif
