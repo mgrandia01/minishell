@@ -111,9 +111,11 @@ struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
 //---------expansion.c-----------
 void	process_expansion(t_token **tokens, char *envp[]);
-
+char	*remove_quotes(char *str);
+char	*expand_variable_at(const char *t_val, int *i, char *envp[]);
 //-----------expansion_utils.c--------
 char	**ft_split_whitespace(char const *s);
+void	free_split_array(char **split);
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
 

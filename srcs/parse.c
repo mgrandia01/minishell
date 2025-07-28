@@ -20,6 +20,8 @@ static void	add_word(t_cmd *cmd, char *word)
 	char	*dup_word;
 	int		size;
 
+	if (!word || *word == '\0')
+	       return ;
 	dup_word = ft_strdup(word);
 	if (!dup_word)
 		return ;
@@ -87,17 +89,15 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 	*expect_redir = NONE;
 }
 
-
 /* Handles a pipe token by creating a new command node.
  * Resets expected redirection type.
  */
 static void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
 {
-	(*cmd) -> next = init_comand();
-	*cmd = (*cmd) -> next;
+	(*cmd)-> next = init_comand();
+	*cmd = (*cmd)-> next;
 	*expect_redir = NONE;
 }
-
 
 /* Parses the list of tokens into a command structure.
  * Handles pipes, redirections, and command words.

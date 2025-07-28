@@ -40,7 +40,8 @@ DIR_SRC = srcs/
 # ─────────────────────────────────────────────────────────────
 SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       token_list.c white_space.c parse_utils.c path.c\
-      parse.c builtin.c expansion.c expansion_utils.c
+      parse.c builtin.c expansion.c expansion_utils.c\
+      tokenizer_main.c
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a

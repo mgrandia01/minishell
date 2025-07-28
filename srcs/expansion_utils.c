@@ -35,7 +35,7 @@ static int	count_words(const char *s)
 
 static int	word_len(const char *s)
 {
-	int len;
+	int	len;
 
 	len = 0;
 	while (s[len] && s[len] != ' ' && s[len] != '\t')
@@ -46,9 +46,9 @@ static int	word_len(const char *s)
 char	**ft_split_whitespace(char const *s)
 {
 	char	**result;
-	int	words;
-	int	i;
-	int	len;
+	int		words;
+	int		i;
+	int		len;
 
 	i = 0;
 	if (!s)
@@ -71,3 +71,20 @@ char	**ft_split_whitespace(char const *s)
 	result[i] = NULL;
 	return (result);
 }
+
+void	free_split_array(char **split)
+{
+	int	i;
+
+	if (!split)
+		return ;
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++ ;
+	}
+	free(split);
+}
+
+
