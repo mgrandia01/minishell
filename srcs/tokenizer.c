@@ -14,7 +14,7 @@
 
 // Returns the quote type:
 // 0 = no quote, 1 = single quote ('), 2 = double quote (")
-int	ft_quoted_type(char c)
+int	get_quoted_type(char c)
 {
 	int	quote;
 
@@ -26,7 +26,7 @@ int	ft_quoted_type(char c)
 	return (quote);
 }
 
-char	*literal_tok(char **result, int *size)
+char	*finalize_literal_tok(char **result, int *size)
 {
 	char	*cleaned;
 

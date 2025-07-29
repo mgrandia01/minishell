@@ -110,18 +110,18 @@ t_cmd	*init_comand(void);
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
 //---------expansion.c-----------
-void	process_expansion(t_token **tokens, char *envp[]);
+void	process_token_expansion(t_token **tokens, char *envp[]);
 char	*remove_quotes(char *str);
-char	*expand_variable_at(const char *t_val, int *i, char *envp[]);
+char	*exp_var_at_index(const char *t_val, int *i, char *envp[]);
 
 //-----------split_utils.c--------
 char	**ft_split_whitespace(char const *s);
 void	free_split_array(char **split);
-void	spl_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl);
+void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl);
 
 //-----------tokenizer.c---------
-int	ft_quoted_type(char c);
-char	*literal_tok(char **result, int *size)i;
+int	get_quoted_type(char c);
+char	*finalize_literal_tok(char **result, int *size);
 void	handle_exit_status(int *i);
 void	handle_literal_char(const char *t_val, int *i, char **r, int *s);
 

@@ -101,8 +101,9 @@ void	free_split_array(char **split)
 }
 
 // Splits a string by whitespace and adds each part as a token to the list.
-// The original token type is preserved, and 'end' is set to 'e_fl' for the last token.
-void	spl_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
+// The original token type is preserved, and 'end' is set 
+// to 'e_fl' for the last token.
+void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
 {
 	char	**split;
 	int		i;
@@ -129,5 +130,3 @@ void	spl_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
 	}
 	free_split_array(split);
 }
-
-

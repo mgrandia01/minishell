@@ -19,15 +19,15 @@ static void	init_vars_to0(int *i, int*j, char *quote)
 	*quote = 0;
 }
 
+//TODO a que equival quote al inicio?
+//aixi elimina absolutament totes les comilles que troba
 char	*remove_quotes(char *str)
 {
 	int		i;
 	int		j;
 	char	quote;
 	char	*result;
-	
-	//TODO a que equival quote al inicio?
-	//aixi elimina absolutament totes les comilles que troba
+
 	init_vars_to0(&i, &j, &quote);
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
@@ -76,7 +76,7 @@ static char	*get_env_value(const char *name, char *envp[])
  * Looks up its value in envp and returns a duplicated string of the value.
  * Advances *i past the variable name.
  */
-char	*expand_variable_at(const char *t_val, int *i, char *envp[])
+char	*exp_var_at_index(const char *t_val, int *i, char *envp[])
 {
 	char	*var_name;
 	char	*value;

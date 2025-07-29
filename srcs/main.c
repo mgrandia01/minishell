@@ -240,7 +240,7 @@ int	main(int argc, char *argv[], char *envp[])
 		print_tokens(tokens);
 		if (!tokens)
 			break ;
-		process_expansion(&tokens, envp);
+		process_token_expansion(&tokens, envp);
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		

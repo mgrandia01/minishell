@@ -12,13 +12,13 @@
 
 #include "../includes/minishell.h"
 
-static void	process_exp_res(t_token **n_lst, t_token *c, char **r, int q)
+static void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 {
 	char	*temp;
 
 	if (ft_strchr(*r, ' ') && q == 0)
 	{
-		spl_tok(n_lst, c->type, *r, 1);
+		split_tok(n_lst, c->type, *r, 1);
 		free(*r);
 	}
 	else
@@ -43,7 +43,7 @@ void	exp_tok_val(const char *t_val, t_token **n_lst, t_token *c, char *env[])
 	char	*result;
 	int		s;
 
-	quote = ft_quoted_type(t_val[0]);
+	quote = get_quoted_type(t_val[0]);
 	i = 0;
 	result = NULL;
 	s = 0;
@@ -52,13 +52,13 @@ void	exp_tok_val(const char *t_val, t_token **n_lst, t_token *c, char *env[])
 		if (t_val[i] == '$' && quote != 1)
 		{
 			if (s > 0)
-				add_token(n_lst, c->type, literal_tok(&result, &s), 1);
+				add_token(n_lst, c->type, finalize_literal_tok(&result, &s), 1);
 			if (t_val[i + 1] == '?')
 				handle_exit_status(&i);
 			else
 			{
-				result = expand_variable_at(t_val, &i, env);
-				process_exp_res(n_lst, c, &result, quote);
+				result = exp_var_at_index(t_val, &i, env);
+				handle_exp_result(n_lst, c, &result, quote);
 				s = 0;
 			}
 		}
@@ -66,10 +66,10 @@ void	exp_tok_val(const char *t_val, t_token **n_lst, t_token *c, char *env[])
 			handle_literal_char(t_val, &i, &result, &s);
 	}
 	if (s > 0)
-		add_token(n_lst, c->type, literal_tok(&result, &s), 0);
+		add_token(n_lst, c->type, finalize_literal_tok(&result, &s), 0);
 }
 
-void	process_expansion(t_token **tokens, char *envp[])
+void	process_token_expansion(t_token **tokens, char *envp[])
 {
 	t_token	*new_list;
 	t_token	*current;
