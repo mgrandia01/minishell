@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion.c                                        :+:      :+:    :+:   */
+/*   env_expansion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include <stdio.h>
 
 static void	init_vars_to0(int *i, int*j, char *quote)
 {
@@ -26,7 +25,9 @@ char	*remove_quotes(char *str)
 	int		j;
 	char	quote;
 	char	*result;
-
+	
+	//TODO a que equival quote al inicio?
+	//aixi elimina absolutament totes les comilles que troba
 	init_vars_to0(&i, &j, &quote);
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
@@ -48,6 +49,11 @@ char	*remove_quotes(char *str)
 	return (result);
 }
 
+/* 
+ * Searches for the value of an environment variable by name.
+ * Returns a pointer to the value part (after the '=') if found in envp.
+ * Returns NULL if the variable is not found.
+ */
 static char	*get_env_value(const char *name, char *envp[])
 {
 	int		i;
@@ -65,15 +71,11 @@ static char	*get_env_value(const char *name, char *envp[])
 }
 
 // TODO las variables creadas por el usuario
-
 /*
-** A partir de la posición `*i`, detecta y extrae el nombre de la variable.
-alfanumerico o _
-** Busca el valor correspondiente en `envp`.
-** Devuelve el valor como string (puede contener espacios).
-** Avanza el índice `*i` hasta el final del nombre de la variable para
-que el bucle lo continúe bien.
-*/
+ * Expands an environment variable starting at index *i in t_val.
+ * Looks up its value in envp and returns a duplicated string of the value.
+ * Advances *i past the variable name.
+ */
 char	*expand_variable_at(const char *t_val, int *i, char *envp[])
 {
 	char	*var_name;

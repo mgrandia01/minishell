@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion_utils.c                                  :+:      :+:    :+:   */
+/*   split_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,6 +12,9 @@
 
 #include "../includes/minishell.h"
 
+/*
+ * Counts the number of words in a string separated by spaces or tabs.
+ */
 static int	count_words(const char *s)
 {
 	int	count;
@@ -33,6 +36,9 @@ static int	count_words(const char *s)
 	return (count);
 }
 
+/*
+ * Returns the length of the next word until space or tab.
+ */
 static int	word_len(const char *s)
 {
 	int	len;
@@ -43,6 +49,10 @@ static int	word_len(const char *s)
 	return (len);
 }
 
+/*
+ * Splits a string by whitespace (space or tab) into an array of words.
+ * Returns a NULL-terminated array of strings.
+ */
 char	**ft_split_whitespace(char const *s)
 {
 	char	**result;
@@ -72,6 +82,9 @@ char	**ft_split_whitespace(char const *s)
 	return (result);
 }
 
+/*
+ * Frees a NULL-terminated array of strings and its elements.
+ */
 void	free_split_array(char **split)
 {
 	int	i;
@@ -85,6 +98,36 @@ void	free_split_array(char **split)
 		i++ ;
 	}
 	free(split);
+}
+
+// Splits a string by whitespace and adds each part as a token to the list.
+// The original token type is preserved, and 'end' is set to 'e_fl' for the last token.
+void	spl_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
+{
+	char	**split;
+	int		i;
+	int		end;
+	char	*cleaned;
+
+	if (!t_exp)
+		return ;
+	split = ft_split_whitespace(t_exp);
+	if (!split)
+		return ;
+	i = 0;
+	while (split[i])
+	{
+		end = 0;
+		if (split[i + 1] == NULL)
+			end = e_fl;
+		cleaned = remove_quotes(split[i]);//FIXME es correcte el remove?
+		if (cleaned)
+			add_token(n_lst, type, cleaned, end);
+		else
+			add_token(n_lst, type, ft_strdup(split[i]), end);
+		i++;
+	}
+	free_split_array(split);
 }
 
 
