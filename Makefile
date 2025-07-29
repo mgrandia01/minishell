@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/07/14 10:59:41 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/07/26 12:25:26 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,8 @@ DIR_SRC = srcs/
 SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       token_list.c white_space.c parse_utils.c path.c\
       parse.c builtin.c builtin_export.c minishell_utils_1.c\
-      builtin_unset.c signals.c
+      builtin_unset.c signals.c env_expansion.c split_utils.c\
+      tokenizer.c expansion_process.c expansion_exec.c
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a

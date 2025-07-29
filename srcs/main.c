@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 15:42:19 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/26 14:48:52 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void print_tokens(t_token *tokens)
     while (tokens)
     {
         const char *type_str;
-        const char *quote_str;
+ //       const char *quote_str;
 
         switch (tokens->type)
         {
@@ -35,15 +35,16 @@ void print_tokens(t_token *tokens)
             default:                  type_str = "UNKNOWN"; break;
         }
 
-        switch (tokens->quote)
+/*        switch (tokens->quote)
         {
             case 0: quote_str = "NORMAL"; break;
             case 1: quote_str = "SINGLE_QUOTE"; break;
             case 2: quote_str = "DOUBLE_QUOTE"; break;
             default: quote_str = "UNKNOWN_QUOTE"; break;
         }
-
-        printf("Token type: %s, value: '%s', quote: %s\n", type_str, tokens->value, quote_str);
+*/
+        printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
+        //printf("Token type: %s, value: '%s', quote: %s, end: %d\n", type_str, tokens->value, quote_str, tokens->end);
         tokens = tokens->next;
     }
 }
@@ -209,23 +210,23 @@ int	main(int argc, char *argv[], char *envp[])
 			input[len - 1] = '\0';
 		/*if (*input)
 			add_history(input);*/
-		//parser and store cmds
+		
 		tokens = ft_tokenize(input);
 		free(input);
 		input = NULL;
 		print_tokens(tokens);
 		if (!tokens)
 			break ;
-		// create list of nodes representing cmds
+		process_token_expansion(&tokens, envp);
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		// ATENCION . Valorar si las asginaciones de nuevas variables se anyaden
 		// entre el parser y executer ya que en ejecucion solo hay strcut de comandos 
 		free_tokens(tokens);
 		tokens = NULL;
-		//	free(tokens);
 		if (!cmds)
 			break ;
+		
 		// iterate list and execute cmds
 		//ft_execute(cmds, envp);
 		//aqui ya le pasaremos la nueva struct de varaibles, no vale la pena pasar envp
@@ -235,7 +236,7 @@ int	main(int argc, char *argv[], char *envp[])
 		// pero export VAR1="1" no funciona, DEBE ELIMINAR LAS COMILLAS
 		
 		
-		ft_exe_pipeline(cmds, l_env);
+		//ft_exe_pipeline(cmds, l_env);
 		
 		// preparacion de datos mientras no esta el parser
 		

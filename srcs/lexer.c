@@ -29,16 +29,15 @@ void	free_tokens(t_token *lst)
 }
 
 /**
- * Processes special characters (quotes, spaces, operators) at the current position.
+ * Processes special char (quotes, spaces, operators) at the current position.
  * Returns -1 on error, 0 otherwise.
  */
 static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 {
 	if ((input[data->pos] == '\'') || (input[data->pos] == '\"'))
 	{
-		if (handle_quotes(input, list, &data->pos, &data->state) == -1)
+		if (handle_quotes(input, list, data) == -1)
 			return (-1);
-		//free(prev_word);
 		data->start = data->pos;
 	}
 	else if (data->state == 0 && (input[data->pos] == ' '

@@ -16,7 +16,7 @@
  * Creates a new token and adds it to the end of the token list.
  * Returns 1 on success, 0 on failure.
  */
-int	add_token(t_token **lst, t_token_type type, char *val, int quote)
+int	add_token(t_token **lst, t_token_type type, char *val, int end)
 {
 	t_token	*new;
 
@@ -24,9 +24,8 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 	if (!new || (type == TOKEN_WORD && !val))
 		return (0);
 	new->type = type;
-	//new->value = ft_strdup(val);
 	new->value = val;
-	new->quote = quote;
+	new->end = end;
 	new->next = NULL;
 	if (!*lst)
 	{
@@ -43,66 +42,60 @@ int	add_token(t_token **lst, t_token_type type, char *val, int quote)
 }
 
 /*
- * Updates and returns the quote parsing state based on the input character.
- * Toggles state for single and double quotes.
- */
-static int	ft_get_state(char input, int state)
-{
-	if (input == '\'' && state == 0)
-		state = 1;
-	else if (input == '\'' && state == 1)
-		state = 0;
-	else if (input == '"' && state == 0)
-		state = 2;
-	else if (input == '"' && state == 2)
-		state = 0;
-	return (state);
-}
-
-/*
  * Finds the content inside quotes. Returns the start position.
  * Returns -1 if the closing quote is not found.
  */
-static int	process_quote_content(char *input, int *pos, char quote)
+static int	process_q_cont(char *i, int *pos, char quote, t_token **tokens)
 {
 	int	start;
 
 	start = *pos;
-	while (input[*pos] && input[*pos] != quote)
+	while (i[*pos] && i[*pos] != quote)
 		(*pos)++;
-	if (!input[*pos])
+	if (!i[*pos])
 	{
-		ft_printf(STDERR_FILENO, "no se han cerrado las comillas");
+		ft_printf(STDERR_FILENO, "quotes not closed");//TODO igual que bash
+		free_tokens(*tokens);
 		return (-1);
 	}
 	return (start);
+}
+
+static int	handle_end(char c)
+{
+	int	end;
+
+	if (((c == ' ') || (c == '\t') || (c == '\0')))
+		end = 0;
+	else if ((c == '>') || (c == '<') || (c == '|'))
+		end = 0;
+	else
+		end = 1;
+	return (end);
 }
 
 /**
  * Handles quoted strings, adds them as a token.
  * Returns -1 on error, 0 otherwise.
  */
-//TODO guardar con las comillas para luego manejar, y no con el char quote
-//guardar finalizado o no cada argumento para arreglar lo de --inlcude"*.c"
-int	handle_quotes(char *input, t_token **list, int *pos, int *state)
+int	handle_quotes(char *input, t_token **list, t_pos_data *data)
 {
 	int		start;
 	char	*val;
 	char	quote;
+	int		end;
 
-	quote = input[*pos];
-	*state = ft_get_state(input[*pos], *state);
-	(*pos)++;
-	start = process_quote_content(input, pos, quote);
+	process_previous_word(input, list, data);
+	quote = input[data->pos];
+	data->pos++;
+	start = process_q_cont(input, &data->pos, quote, list);
 	if (start == -1)
 		return (-1);
-	val = ft_substr(input, start, *pos - start);
-	add_token(list, TOKEN_WORD, val, *state);
-	if (input[*pos] == quote)
-	{
-		*state = ft_get_state(input[*pos], *state);
-		(*pos)++;
-	}
+	if (input[data->pos] == quote)
+		data->pos++;
+	val = ft_substr(input, (start - 1), (data->pos + 1 - start));
+	end = handle_end(input[data->pos]);
+	add_token(list, TOKEN_WORD, val, end);
 	return (0);
 }
 
@@ -112,10 +105,12 @@ int	handle_quotes(char *input, t_token **list, int *pos, int *state)
 void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 {
 	char	*val;
+	int		end;
 
 	if (data->start != data->pos)
 	{
 		val = ft_substr(input, data->start, data->pos - data->start);
-		add_token(list, TOKEN_WORD, val, data->state);
+		end = handle_end(input[data->pos]);
+		add_token(list, TOKEN_WORD, val, end);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 15:07:05 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/07/26 12:26:26 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
-	int				quote; // 0 = normal, 1 = '', 2 = ""
+	int		end; // 0 = end, 1 = no end (--include".*c"
 	struct s_token	*next;
 }	t_token;
 
@@ -67,6 +67,16 @@ typedef enum e_redir_type
 	APPEND,
 	HEREDOC
 }	t_redir_type;
+
+//estructura para la expansion
+typedef struct s_exp_data
+{
+    int     quote;
+    int     i;
+    char    *result;
+    int     s;
+    char    **env;
+}   t_exp_data;
 
 typedef struct s_cmd
 {
@@ -88,19 +98,11 @@ typedef struct s_env
 }	t_env;
 
 //-------------redirections.c--------------------
-
-//void	handle_output_redir(char *input, t_token **list, int *pos, int state);
-//void	handle_input_redir(char *input, t_token **list, int *pos, int state);
-//void	handle_pipe(t_token **list, int *pos, int state);
-//void	process_operator(char *input, t_token **list, t_pos_data *data);
 void	handle_operators(char *input, t_token **list, t_pos_data *data);
 
 //---------token_list.c------------
-
 int		add_token(t_token **lst, t_token_type type, char *val, int quote);
-//int		ft_get_state(char input, int state);
-//int		process_quote_content(char *input, int *pos, char quote);
-int		handle_quotes(char *input, t_token **list, int *pos, int *state);
+int		handle_quotes(char *input, t_token **list, t_pos_data *data);
 void	process_previous_word(char *input, t_token **list, t_pos_data *data);
 
 //---------white_space.c-----------
@@ -123,6 +125,30 @@ t_cmd	*init_comand(void);
 
 //----------parse.c--------------
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
+
+//---------env_expansion.c-----------
+char	*remove_quotes(char *str);
+char	*exp_var_at_index(const char *t_val, int *i, char *envp[]);
+
+//-----------split_utils.c--------
+void	free_split_array(char **split);
+void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl);
+
+//-----------tokenizer.c---------
+int	get_quoted_type(char c);
+char	*literal_tok(char **result, int *size);
+void	handle_exit_status(int *i);
+void	handle_literal_char(const char *t_val, int *i, char **r, int *s);
+
+//----------expansion_exec.c--------------------
+
+void	init_exp_data(t_exp_data *data, char first_char, char *env[]);
+void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_exp_data *data);
+void	finalize_expansion(t_token **n_lst, t_token *c, t_exp_data *data);
+
+//-----------expansion_process.c-----------------
+void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q);
+void	process_token_expansion(t_token **tokens, char *envp[]);
 
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);
