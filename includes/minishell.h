@@ -68,6 +68,16 @@ typedef enum e_redir_type
 	HEREDOC
 }	t_redir_type;
 
+//estructura para la expansion
+typedef struct s_exp_data
+{
+    int     quote;
+    int     i;
+    char    *result;
+    int     s;
+    char    **env;
+}   t_exp_data;
+
 typedef struct s_cmd
 {
 	char			**argv;			// Lista de argumentos: [""ls"", "-l", NULL]
