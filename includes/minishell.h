@@ -119,21 +119,31 @@ t_cmd	*init_comand(void);
 //----------parse.c--------------
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
-//---------expansion.c-----------
-void	process_token_expansion(t_token **tokens, char *envp[]);
+
+
+//---------env_expansion.c-----------
 char	*remove_quotes(char *str);
 char	*exp_var_at_index(const char *t_val, int *i, char *envp[]);
 
 //-----------split_utils.c--------
-char	**ft_split_whitespace(char const *s);
 void	free_split_array(char **split);
 void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl);
 
 //-----------tokenizer.c---------
 int	get_quoted_type(char c);
-char	*finalize_literal_tok(char **result, int *size);
+char	*literal_tok(char **result, int *size);
 void	handle_exit_status(int *i);
 void	handle_literal_char(const char *t_val, int *i, char **r, int *s);
+
+//----------expansion_exec.c--------------------
+
+void	init_exp_data(t_exp_data *data, char first_char, char *env[]);
+void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_exp_data *data);
+void	finalize_expansion(t_token **n_lst, t_token *c, t_exp_data *data);
+
+//-----------expansion_process.c-----------------
+void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q);
+void	process_token_expansion(t_token **tokens, char *envp[]);
 
 //----------path.c------------------
 char	*find_path(char *cmd, char *env[]);

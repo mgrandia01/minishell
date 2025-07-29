@@ -53,7 +53,7 @@ static int	word_len(const char *s)
  * Splits a string by whitespace (space or tab) into an array of words.
  * Returns a NULL-terminated array of strings.
  */
-char	**ft_split_whitespace(char const *s)
+static char	**ft_split_whitespace(char const *s)
 {
 	char	**result;
 	int		words;

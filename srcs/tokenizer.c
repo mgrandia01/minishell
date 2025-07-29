@@ -12,8 +12,7 @@
 
 #include "../includes/minishell.h"
 
-// Returns the quote type:
-// 0 = no quote, 1 = single quote ('), 2 = double quote (")
+// Return quote type: 1 for single quote, 2 for double quote, 0 otherwise
 int	get_quoted_type(char c)
 {
 	int	quote;
@@ -26,7 +25,8 @@ int	get_quoted_type(char c)
 	return (quote);
 }
 
-char	*finalize_literal_tok(char **result, int *size)
+// Return quote type: 1 for single quote, 2 for double quote, 0 otherwise
+char	*literal_tok(char **result, int *size)
 {
 	char	*cleaned;
 
@@ -49,6 +49,7 @@ void	handle_exit_status(int *i)
 	*i += 2;
 }
 
+// Add current char to result string and update indices
 void	handle_literal_char(const char *t_val, int *i, char **r, int *s)
 {
 	*r = ft_realloc(*r, *s, *s + 1);
