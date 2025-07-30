@@ -28,18 +28,20 @@ int	get_quoted_type(char c)
 // Return quote type: 1 for single quote, 2 for double quote, 0 otherwise
 char	*literal_tok(char **result, int *size)
 {
-	char	*cleaned;
+	//char	*cleaned;
 
 	*result = ft_realloc(*result, *size, *size + 1);
 	(*result)[*size] = '\0';
-	cleaned = remove_quotes(*result);//FIXME es correcte el remove?
+	/*cleaned = remove_quotes(*result);//FIXME es correcte el remove?
 	if (!cleaned)
 		cleaned = ft_strdup(*result);
 	free(*result);
 	//no siempre, gestionar eso porque si es el fin si que es end, pero si es el inicio, no
 	*result = NULL;
 	*size = 0;
-	return (cleaned);
+	return (cleaned);*/
+	return(*result);
+	//TODO asegurate de liberar result quien llama a litteral_tok
 }
 
 void	handle_exit_status(int *i)

@@ -218,6 +218,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!tokens)
 			break ;
 		process_token_expansion(&tokens, envp);
+		join_tokens_with_end(&tokens);
+		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens, envp);
 		print_commands(cmds);
 		// ATENCION . Valorar si las asginaciones de nuevas variables se anyaden

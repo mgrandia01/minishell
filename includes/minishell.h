@@ -127,8 +127,13 @@ t_cmd	*init_comand(void);
 struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
 
 //---------env_expansion.c-----------
-char	*remove_quotes(char *str);
 char	*exp_var_at_index(const char *t_val, int *i, char *envp[]);
+
+void	join_tokens_with_end(t_token **tokens);
+
+//----------quotes.c-----------	
+char	*remove_quotes(char *str);
+void	remove_quotes_from_token_list(t_token *token);
 
 //-----------split_utils.c--------
 void	free_split_array(char **split);

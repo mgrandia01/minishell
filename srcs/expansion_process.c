@@ -15,7 +15,7 @@
 // Process the result of a variable expansion: split if needed or clean quotes
 void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 {
-	char	*temp;
+//	char	*temp;
 
 	if (ft_strchr(*r, ' ') && q == 0)
 	{
@@ -24,12 +24,13 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 	}
 	else
 	{
-		temp = *r;
+		/*temp = *r;
 		*r = remove_quotes(temp);
 		if (!*r)
 			*r = ft_strdup(temp);
 		free(temp);
-		add_token(n_lst, c->type, *r, 1);//FIXME why token = 1?
+		add_token(n_lst, c->type, *r, 1);//FIXME why token = 1?*/
+		add_token(n_lst, c->type, *r, 1);//FIXME why token = 1
 	}
 	*r = NULL;
 }
@@ -49,7 +50,7 @@ void	process_token_expansion(t_token **tokens, char *envp[])
 {
 	t_token		*new_list;
 	t_token		*current;
-	char		*cleaned_value;
+//	char		*cleaned_value;
 
 	new_list = NULL;
 	current = *tokens;
@@ -58,11 +59,12 @@ void	process_token_expansion(t_token **tokens, char *envp[])
 		if (ft_strchr(current->value, '$'))
 			exp_tok_val(current->value, &new_list, current, envp);
 		else
-		{
+		{/*
 			cleaned_value = remove_quotes(current->value);
 			if (!cleaned_value)
 				cleaned_value = ft_strdup(current->value);
-			add_token(&new_list, current->type, cleaned_value, current->end);
+			add_token(&new_list, current->type, cleaned_value, current->end);*/
+			add_token(&new_list, current->type, ft_strdup(current->value), current->end);
 		}
 		current = current->next;
 	}

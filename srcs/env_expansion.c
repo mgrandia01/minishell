@@ -12,43 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static void	init_vars_to0(int *i, int*j, char *quote)
-{
-	*i = 0;
-	*j = 0;
-	*quote = 0;
-}
-
-//TODO a que equival quote al inicio?
-//aixi elimina absolutament totes les comilles que troba
-char	*remove_quotes(char *str)
-{
-	int		i;
-	int		j;
-	char	quote;
-	char	*result;
-
-	init_vars_to0(&i, &j, &quote);
-	result = malloc(ft_strlen(str) + 1);
-	if (!result)
-		return (NULL);
-	while (str[i])
-	{
-		if ((str[i] == '\'') || (str[i] == '"'))
-		{
-			if (!quote)
-				quote = str[i];
-			else if (quote == str[i])
-				quote = 0;
-			i++;
-			continue ;
-		}
-		result[j++] = str[i++];
-	}
-	result[j] = '\0';
-	return (result);
-}
-
 /* 
  * Searches for the value of an environment variable by name.
  * Returns a pointer to the value part (after the '=') if found in envp.
