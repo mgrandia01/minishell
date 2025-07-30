@@ -19,7 +19,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 
 	if (ft_strchr(*r, ' ') && q == 0)
 	{
-		split_tok(n_lst, c->type, *r, 1);
+		split_tok(n_lst, c->type, *r, c->end);
 		free(*r);
 	}
 	else
@@ -30,7 +30,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 			*r = ft_strdup(temp);
 		free(temp);
 		add_token(n_lst, c->type, *r, 1);//FIXME why token = 1?*/
-		add_token(n_lst, c->type, *r, 1);//FIXME why token = 1
+		add_token(n_lst, c->type, *r, c->end);//FIXME why token = 1
 	}
 	*r = NULL;
 }

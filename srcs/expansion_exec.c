@@ -12,32 +12,30 @@
 
 #include "../includes/minishell.h"
 // Une tokens consecutivos con end == 1
-
-void	join_tokens_with_end(t_token **tokens)
+void    join_tokens_with_end(t_token **tokens)
 {
-	t_token	*curr;
-	t_token	*next;
-	char	*joined;
-
-	curr = *tokens;
-	while (curr && curr->next)
-	{
-		next = curr->next;
-		while (next && curr->end == 1)
-		{
-			joined = ft_strjoin(curr->value, next->value);
-			free(curr->value);
-			curr->value = joined;
-
-			curr->end = next->end; // el "end final" será el del último token
-
-			curr->next = next->next;
-			free(next->value);
-			free(next);
-			next = curr->next;
-		}
-		curr = curr->next;
-	}
+        t_token *curr;
+        t_token *next;
+        char    *joined;
+        curr = *tokens;
+        while (curr && curr->next)
+        {
+                next = curr->next;
+                while (next && curr->end == 1)
+                {
+                        if (next->type == TOKEN_EOF)
+                                break ;
+                        joined = ft_strjoin(curr->value, next->value);
+                        free(curr->value);
+                        curr->value = joined;
+                        curr->end = next->end; // el "end final" será el del último token
+                        curr->next = next->next;
+                        free(next->value);
+                        free(next);
+                        next = curr->next;
+                }
+                curr = curr->next;
+        }
 }
 
 // Initialize expansion state (quote type, index, result buffer, etc.)
