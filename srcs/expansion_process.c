@@ -15,58 +15,41 @@
 // Process the result of a variable expansion: split if needed or clean quotes
 void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 {
-//	char	*temp;
-
 	if (ft_strchr(*r, ' ') && q == 0)
 	{
 		split_tok(n_lst, c->type, *r, c->end);
 		free(*r);
 	}
 	else
-	{
-		/*temp = *r;
-		*r = remove_quotes(temp);
-		if (!*r)
-			*r = ft_strdup(temp);
-		free(temp);
-		add_token(n_lst, c->type, *r, 1);//FIXME why token = 1?*/
-		add_token(n_lst, c->type, *r, c->end);//FIXME why token = 1
-	}
+		add_token(n_lst, c->type, *r, c->end);
 	*r = NULL;
 }
 
 // Expand variables inside token value and add tokens to the new list
-static void	exp_tok_val(const char *t_val, t_token **n_lst, t_token *c, char *env[])
+static void	exp_tok_val(const char *val, t_token **n_l, t_token *c, char *env[])
 {
 	t_exp_data	data;
 
-	init_exp_data(&data, t_val[0], env);
-	p_exp(t_val, n_lst, c, &data);
-	finalize_expansion(n_lst, c, &data);
+	init_exp_data(&data, val[0], env);
+	p_exp(val, n_l, c, &data);
+	finalize_expansion(n_l, c, &data);
 }
 
 // Go through all tokens and expand variables when needed
 void	process_token_expansion(t_token **tokens, char *envp[])
 {
 	t_token		*new_list;
-	t_token		*current;
-//	char		*cleaned_value;
+	t_token		*c;
 
 	new_list = NULL;
-	current = *tokens;
-	while (current != NULL)
+	c = *tokens;
+	while (c != NULL)
 	{
-		if (ft_strchr(current->value, '$'))
-			exp_tok_val(current->value, &new_list, current, envp);
+		if (ft_strchr(c->value, '$'))
+			exp_tok_val(c->value, &new_list, c, envp);
 		else
-		{/*
-			cleaned_value = remove_quotes(current->value);
-			if (!cleaned_value)
-				cleaned_value = ft_strdup(current->value);
-			add_token(&new_list, current->type, cleaned_value, current->end);*/
-			add_token(&new_list, current->type, ft_strdup(current->value), current->end);
-		}
-		current = current->next;
+			add_token(&new_list, c->type, ft_strdup(c->value), c->end);
+		c = c->next;
 	}
 	free_tokens(*tokens);
 	*tokens = new_list;

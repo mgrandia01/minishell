@@ -108,7 +108,6 @@ void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
 	char	**split;
 	int		i;
 	int		end;
-	//char	*cleaned;
 
 	if (!t_exp)
 		return ;
@@ -121,10 +120,6 @@ void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
 		end = 0;
 		if (split[i + 1] == NULL)
 			end = e_fl;
-		/*cleaned = remove_quotes(split[i]);//FIXME es correcte el remove?
-		if (cleaned)
-			add_token(n_lst, type, cleaned, end);
-		else*/
 		add_token(n_lst, type, ft_strdup(split[i]), end);
 		i++;
 	}

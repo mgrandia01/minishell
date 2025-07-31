@@ -28,9 +28,9 @@ char	*remove_quotes(char *str)
 	return (ft_strdup(str));
 }
 
-void remove_quotes_from_token_list(t_token *token)
+void	remove_quotes_from_token_list(t_token *token)
 {
-	char *cleaned;
+	char	*cleaned;
 
 	while (token)
 	{
@@ -40,4 +40,3 @@ void remove_quotes_from_token_list(t_token *token)
 		token = token->next;
 	}
 }
-
