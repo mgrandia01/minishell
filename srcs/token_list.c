@@ -41,26 +41,6 @@ int	add_token(t_token **lst, t_token_type type, char *val, int end)
 	return (1);
 }
 
-/*
- * Finds the content inside quotes. Returns the start position.
- * Returns -1 if the closing quote is not found.
- */
-static int	process_q_cont(char *i, int *pos, char quote, t_token **tokens)
-{
-	int	start;
-
-	start = *pos;
-	while (i[*pos] && i[*pos] != quote)
-		(*pos)++;
-	if (!i[*pos])
-	{
-		ft_printf(STDERR_FILENO, "quotes not closed");//TODO igual que bash
-		free_tokens(*tokens);
-		return (-1);
-	}
-	return (start);
-}
-
 static int	handle_end(char c)
 {
 	int	end;

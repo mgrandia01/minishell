@@ -134,6 +134,7 @@ void	join_tokens_with_end(t_token **tokens);
 //----------quotes.c-----------	
 char	*remove_quotes(char *str);
 void	remove_quotes_from_token_list(t_token *token);
+int	process_q_cont(char *i, int *pos, char quote, t_token **tokens);
 
 //-----------split_utils.c--------
 void	free_split_array(char **split);

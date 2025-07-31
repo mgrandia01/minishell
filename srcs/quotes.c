@@ -12,6 +12,26 @@
 
 #include "../includes/minishell.h"
 
+/*
+ * Finds the content inside quotes. Returns the start position.
+ * Returns -1 if the closing quote is not found.
+ */
+int	process_q_cont(char *i, int *pos, char quote, t_token **tokens)
+{
+	int	start;
+
+	start = *pos;
+	while (i[*pos] && i[*pos] != quote)
+		(*pos)++;
+	if (!i[*pos])
+	{
+		ft_printf(STDERR_FILENO, "quotes not closed");//TODO igual que bash
+		free_tokens(*tokens);
+		return (-1);
+	}
+	return (start);
+}
+
 char	*remove_quotes(char *str)
 {
 	char	*result;
