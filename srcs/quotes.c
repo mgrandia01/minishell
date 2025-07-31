@@ -14,18 +14,29 @@
 
 char	*remove_quotes(char *str)
 {
-	size_t	len;
+	char	*result;
+	int	i;
+	int	j;
 	char	quote;
-
-	len = ft_strlen(str);
-	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'')
-			|| (str[0] == '"' && str[len - 1] == '"')))
+	
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 0;
+	quote = 0;
+	while (str[i])
 	{
-		quote = str[0];
-		if (str[len - 1] == quote)
-			return (ft_substr(str, 1, len - 2));
+		if (!quote && (str[i] == '\'' || str[i] == '"'))
+			quote = str[i];
+		else if (quote && str[i] == quote)
+			quote = 0;
+		else
+			result[j++] = str[i];
+		i ++;
 	}
-	return (ft_strdup(str));
+	result[j] = '\0';
+	return (result);
 }
 
 void	remove_quotes_from_token_list(t_token *token)

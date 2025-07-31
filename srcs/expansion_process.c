@@ -15,13 +15,21 @@
 // Process the result of a variable expansion: split if needed or clean quotes
 void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 {
+	int	end;
+
 	if (ft_strchr(*r, ' ') && q == 0)
 	{
 		split_tok(n_lst, c->type, *r, c->end);
 		free(*r);
 	}
 	else
-		add_token(n_lst, c->type, *r, c->end);
+	{
+		if (q != 0)
+			end = 1;
+		else
+			end = c->end;
+		add_token(n_lst, c->type, *r, end);
+	}
 	*r = NULL;
 }
 
