@@ -89,7 +89,7 @@ void	print_commands(t_cmd *cmd_list)
 }
 
 
-void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
+/*void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 {
 	t_cmd	*cmds, *cmd1;
 	int	fd;
@@ -165,6 +165,7 @@ void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
 	free (cmd1);
 	// FIN TEMPORAL MIENTRAS NO ESTA EL PARSING TEST 3
 }
+*/
 
 int	main(int argc, char *argv[], char *envp[])
 {

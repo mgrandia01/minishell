@@ -12,18 +12,17 @@
 
 #include "../includes/minishell.h"
 
-void    handle_sigint(int sig)
+void	handle_sigint(int sig)
 {
-    (void)sig;
-    write(STDOUT_FILENO, "\n", 1);
-    rl_on_new_line();           // resetea línea interna de readline
-    rl_replace_line("", 0);     // limpia línea actual
-    rl_redisplay();             // vuelve a mostrar el prompt
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();		// resetea línea interna de readline
+	rl_replace_line("", 0);		// limpia línea actual
+	rl_redisplay();			// vuelve a mostrar el prompt
 }
 
-
-void    ft_setup_signals(void)
+void	ft_setup_signals(void)
 {
-    /*signal(SIGINT, handle_sigint);  // Ctrl+C
-    signal(SIGQUIT, SIG_IGN);       // Ctrl+\*/
+    /*signal(SIGINT, handle_sigint);	// Ctrl+C
+    signal(SIGQUIT, SIG_IGN);		// Ctrl+\*/
 }

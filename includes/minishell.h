@@ -163,4 +163,10 @@ void	ft_free_tab(char **tab);
 void	ft_free_argv(char **ptr);
 void	ft_cmdclear(t_cmd **lst, void (*del)(char **));
 
+//----------- minishell_utils_2.c----------------
+void	ft_export_assign_var(char *key, char *value, t_list **l_env);
+
+//----------- heredoc.c----------------
+int	ft_create_heredoc(const char *delim);
+
 #endif
