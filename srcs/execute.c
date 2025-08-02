@@ -151,7 +151,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	// Ejecutar built-in directamente en el padre si es un único comando
 	// Teoricamente ejeuta los builtin dentro de pipes pero pierde el resultado
 	// asi que solo guardamos el estado si es el primer comando
-	if (cmd->next == NULL && ft_is_builtin(cmd->argv[0]))
+	if (cmd->next == NULL && cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{
 		status[0] = dup(STDIN_FILENO);
 		status[1] = dup(STDOUT_FILENO);
@@ -231,7 +231,6 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			}
 			else if (prev_fd != -1)
 			{
-				printf("Ejecutando export en hij %s oddddddddddddddddddddddddddddd\n", cmd->argv[0]);fflush(0);
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
@@ -255,7 +254,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			if (pipefd[0] != -1)
 				close(pipefd[0]);
 			
-			if (ft_is_builtin(cmd->argv[0]))
+			if (cmd->argv && cmd->argv && ft_is_builtin(cmd->argv[0]))
 			{
 				//ft_free_tab(envp_exec);
 				i = ft_execute_builtin(cmd->argv, l_env);
@@ -267,11 +266,15 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			else
 			{
 				envp_exec = ft_build_envp_array(l_env);
-				path = find_path(cmd->argv[0], envp_exec);
+				if (cmd->argv)
+					path = find_path(cmd->argv[0], envp_exec);
+				else
+					path = NULL;
 				ft_lstclear(&l_env, ft_free_env);
 				if (!path)
 				{
-					printf("minishell: %s: command not found\n", cmd->argv[0]);
+					if (cmd->argv)
+						printf("minishell: %s: command not found\n", cmd->argv[0]);
 					ft_free_tab(envp_exec);
 					ft_cmdclear (&cmd, ft_free_argv);
 					exit(127);
