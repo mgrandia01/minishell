@@ -12,23 +12,6 @@
 
 #include "../includes/minishell.h"
 
-
-
-/*void	setup_signals(void)
-{
-    signal(SIGINT, handle_sigint);  // Ctrl+C
-    signal(SIGQUIT, SIG_IGN);       // Ctrl+\
-}*/
-
-// en los forks de las ejeciones, si son hijos hay que restarurar el estado
-       	// de las senales
-       	//if (pid == 0)
-       	//{
-    	//  signal(SIGINT, SIG_DFL);
-	//    signal(SIGQUIT, SIG_DFL);
-	//    ...
-	//
-
 int	ft_validate_fds(t_cmd *cmd)
 {
 	while (cmd)
@@ -64,7 +47,7 @@ int	ft_is_builtin(char *cmd)
 int	ft_execute_builtin(char **cmd, t_list *l_env)
 {
 	if (!ft_strncmp(cmd[0], "pwd", 4))
-        	return (ft_builtin_pwd());
+		return (ft_builtin_pwd());
 	if (!ft_strncmp(cmd[0], "cd", 3))
 		return (ft_builtin_cd(cmd));
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
@@ -77,16 +60,15 @@ int	ft_execute_builtin(char **cmd, t_list *l_env)
 		return (ft_builtin_export(cmd, l_env));
 	if (ft_strncmp(cmd[0], "unset", 6) == 0)
 		return (ft_builtin_unset(cmd, &l_env));
-	return 1; // error
+	return (1); // error
 }
 
-
-void	ft_execute(t_cmd *cmds, char *envp[])
+/*void	ft_execute(t_cmd *cmds, char *envp[])
 {
 	pid_t pid;
 	char *path;
-	
-	(void)envp;
+
+	(void) envp;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -137,60 +119,18 @@ void	ft_execute(t_cmd *cmds, char *envp[])
         	// bug en ft_printf, no interpreta bien la "/" si forma parte del %s y mete un salto de linea
         	// separar comandos por pipe, no >>. se ve en este ejemplo
         }
-}
-
-static void sigint_handler_heredoc(int sig)
-{
-	(void) sig;
-	write(STDOUT_FILENO, "\n", 1);
-	exit(130); // Bash devuelve 130 en este caso
-}
-
-int	ft_create_heredoc(const char *delim)
-{
-	int	pipefd[2];
-	char	*line;
-	struct sigaction sa;
-	
-	sa.sa_handler = sigint_handler_heredoc;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
-	
-	if (pipe(pipefd) == -1)
-		return (-1);
-	while (1)
-	{
-		write(STDOUT_FILENO, "> ", 2);
-        	line = get_next_line(STDIN_FILENO);
-		if (!line)
-			break;
-		// Sacar el salto de línea si lo hay
-	        if(ft_strchr(line, '\n'))
-	        	*ft_strchr(line, '\n') = '\0';
-		if (ft_strcmp(line, delim) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
-		free(line);
-	}
-	close(pipefd[1]); // cerramos escritura, mantenemos lectura
-	return (pipefd[0]); // devolvemos el fd de lectura
-}
-
+}*/
 
 void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
-	int     pipefd[2];
-	int     prev_fd;
-	int	status[2];
-	pid_t   pid, last_pid;
+	int		pipefd[2];
+	int		prev_fd;
+	int		status[2];
+	pid_t	pid;
+	pid_t	last_pid;
 	char	*path;
-	int	wstatus;
-	int	g_exit_status;
+	int		wstatus;
+	int		g_exit_status;
 	char	**envp_exec;
 
 	(void)g_exit_status;
@@ -204,10 +144,11 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	//(void) last_pid;
 
 	if (!cmd)
-		return ;
-		
-	pid = 0; path =NULL; wstatus=0, g_exit_status=0;
-		
+		return ;	
+	pid = 0;
+	path = NULL;
+	wstatus = 0,
+	g_exit_status = 0;
 	// Ejecutar built-in directamente en el padre si es un único comando
 	// Teoricamente ejeuta los builtin dentro de pipes pero pierde el resultado
 	// asi que solo guardamos el estado si es el primer comando
@@ -244,7 +185,6 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	// Ignorar SIGINT en el padre mientras se ejecutan comandos
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-
 	// Ejecutar pipeline
 	while (cmd)
 	{
@@ -271,44 +211,45 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 		if (pid == 0) // hijo
 		{
 			printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);
-			
+			// si son hijos hay que restarurar el estado de la senyales
 			signal(SIGINT, SIG_DFL);   // Restablece comportamiento por defecto
 			signal(SIGQUIT, SIG_DFL);  // Para Ctrl+\ también
 			printf("\nEXECUTE HIJO-----------------------");fflush(0);
 			if (cmd->infile == -1)
 			{
-				    //ft_putstr_fd("minishell: error redirección de entrada\n", 2);
-				    // el parser es el que tiene el noimbre del fichero
-				    // minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
-				    exit(EXIT_FAILURE); // Solo este proceso termina
-			}else if (cmd->infile > 2)
+				//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
+				// el parser es el que tiene el noimbre del fichero
+				// minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
+				exit(EXIT_FAILURE); // Solo este proceso termina
+			}
+			else if (cmd->infile > 2)
 			{
 				dup2(cmd->infile, STDIN_FILENO);
 				close(cmd->infile);
-			}else if (prev_fd != -1)
+			}
+			else if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			
 			if (cmd->outfile == -1)
 			{
 				ft_putstr_fd("minishell: redirección de salida fallida\n", STDERR_FILENO);
 				exit(1);
-			}else if (cmd->outfile > 2)
+			}
+			else if (cmd->outfile > 2)
 			{
 				dup2(cmd->outfile, STDOUT_FILENO);
 				close(cmd->outfile);
-			}else if (cmd->next)
+			}
+			else if (cmd->next)
 			{
 				close(pipefd[0]);
 				dup2(pipefd[1], STDOUT_FILENO);
 				close(pipefd[1]);
 			}
-			
 			if (pipefd[0] != -1)
-               		 close(pipefd[0]);
-			
+				close(pipefd[0]);
 			envp_exec = ft_build_envp_array(l_env);
 			path = find_path(cmd->argv[0], envp_exec);
 			if (!path)
@@ -319,13 +260,12 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 				ft_cmdclear (&cmd, ft_free_argv);
 				exit(127);
 			}
-			
 			if (ft_is_builtin(cmd->argv[0]))
 			{
 				exit((ft_execute_builtin(cmd->argv, l_env))); // ojo con liberar el envp_exec
 			}
 			else
-			{	
+			{
 				ft_lstclear(&l_env, ft_free_env);
 				execve(path, cmd->argv, envp_exec);
 			}
@@ -345,7 +285,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 				close(prev_fd);
 			if (pipefd[1] != -1)
 				close(pipefd[1]);
-			printf("\nFIN HIJO------(ha petado un execvce para haber llegado aqui----------------FIN HIJO");fflush(0);
+			printf("\nFIN HIJO------(ha petado un execvce para haber llegado aqui----------------FIN HIJO");
+			fflush(0);
 			ft_cmdclear (&cmd, ft_free_argv);
 			exit(127);
 		}
@@ -355,9 +296,9 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			if (prev_fd != -1)
 				close(prev_fd);
 			if (cmd->infile > 2)
-		                close(cmd->infile);
-	                if (cmd->outfile > 2)
-             		    close(cmd->outfile);
+				close(cmd->infile);
+			if (cmd->outfile > 2)
+				close(cmd->outfile);
 			if (cmd->next)
 			{
 				close(pipefd[1]);
@@ -368,12 +309,14 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			waitpid(pid, &wstatus, 0);
 			if (WIFEXITED(wstatus))
 				g_exit_status = WEXITSTATUS(wstatus);
-			else if (WIFSIGNALED(wstatus))
-				g_exit_status = 128 + WTERMSIG(wstatus);
+			else
+			{
+				if (WIFSIGNALED(wstatus))
+					g_exit_status = 128 + WTERMSIG(wstatus);
+			}
 			cmd = cmd->next;
 			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE\n", cmd);fflush(0);
 		}
-		
 	}
 	ft_setup_signals();
 }

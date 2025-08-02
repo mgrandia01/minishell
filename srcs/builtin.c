@@ -53,7 +53,7 @@ int	ft_builtin_echo(char **args)
 {
 	int	i;
 	int	add_cr;
-	
+
 	add_cr = 1;
 	i = 1;
 	if (args[i] && !ft_strncmp(args[i], "-n", 3))
@@ -70,7 +70,7 @@ int	ft_builtin_echo(char **args)
 	}
 	if (add_cr)
 	{
-			write(STDOUT_FILENO, "\n", 1);
+		write(STDOUT_FILENO, "\n", 1);
 	}
 	return (0);
 }
@@ -108,7 +108,8 @@ int	ft_builtin_exit(char **args)
 		exit (0);
 	if (!ft_is_numeric(args[1]))
 	{
-		ft_printf(STDERR_FILENO, "minishell: exit: %s: numeric argument required\n", args[1]);
+		ft_printf(STDERR_FILENO, "minishell: exit: ");
+		ft_printf(STDERR_FILENO, "%s: numeric argument required\n", args[1]);
 		exit (255);
 	}
 	if (args[2])

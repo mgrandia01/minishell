@@ -41,10 +41,14 @@ DIR_SRC = srcs/
 SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       token_list.c white_space.c parse_utils.c path.c\
       parse.c builtin.c builtin_export.c minishell_utils_1.c\
+<<<<<<< HEAD
       builtin_unset.c signals.c env_expansion.c split_utils.c\
       tokenizer.c expansion_process.c expansion_exec.c\
       quotes.c
 
+=======
+      builtin_unset.c signals.c builtin_export_2.c heredoc.c
+>>>>>>> arcadio
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a
