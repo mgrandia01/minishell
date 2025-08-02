@@ -27,38 +27,38 @@ int	ft_is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (!ft_strncmp(cmd, "cd", 3))
+	if (ft_strcmp(cmd, "cd") == 0)
 		return (1);
-	if (!ft_strncmp(cmd, "echo", 5))
+	if (ft_strcmp(cmd, "echo") == 0)
 		return (1);
-	if (!ft_strncmp(cmd, "pwd", 4))
+	if (ft_strcmp(cmd, "pwd") == 0)
 		return (1);
-	if (!ft_strncmp(cmd, "env", 4))
+	if (ft_strcmp(cmd, "env") == 0)
 		return (1);
-	if (!ft_strncmp(cmd, "exit", 5))
+	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
-	if (!ft_strncmp(cmd, "export", 7))
+	if (ft_strcmp(cmd, "export") == 0)
 		return (1);
-	if (!ft_strncmp(cmd, "unset", 6))
+	if (ft_strcmp(cmd, "unset") == 0)
 		return (1);
 	return (0);
 }
 
 int	ft_execute_builtin(char **cmd, t_list *l_env)
 {
-	if (!ft_strncmp(cmd[0], "pwd", 4))
+	if (ft_strcmp(cmd[0], "pwd") == 0)
 		return (ft_builtin_pwd());
-	if (!ft_strncmp(cmd[0], "cd", 3))
+	if (ft_strcmp(cmd[0], "cd") == 0)
 		return (ft_builtin_cd(cmd));
-	if (ft_strncmp(cmd[0], "echo", 5) == 0)
+	if (ft_strcmp(cmd[0], "echo") == 0)
 		return (ft_builtin_echo(cmd));
-	if (ft_strncmp(cmd[0], "env", 4) == 0)
+	if (ft_strcmp(cmd[0], "env") == 0)
 		return (ft_builtin_env(cmd, l_env));
-	if (ft_strncmp(cmd[0], "exit", 5) == 0)
+	if (ft_strcmp(cmd[0], "exit") == 0)
 		return (ft_builtin_exit(cmd));
-	if (ft_strncmp(cmd[0], "export", 7) == 0)
+	if (ft_strcmp(cmd[0], "export") == 0)
 		return (ft_builtin_export(cmd, l_env));
-	if (ft_strncmp(cmd[0], "unset", 6) == 0)
+	if (ft_strcmp(cmd[0], "unset") == 0)
 		return (ft_builtin_unset(cmd, &l_env));
 	return (1); // error
 }
@@ -132,6 +132,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	int		wstatus;
 	int		g_exit_status;
 	char	**envp_exec;
+	int		i;
 
 
 	last_pid = -1;
@@ -208,7 +209,10 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 		}
 		if (pid == 0) // hijo
 		{
-			printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);
+			if (cmd->argv)
+			{printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);}
+			else
+			{printf("\nINICIO HIJO------Comando cmd->argv[0]: VACIO --------------------INICIO HIJO");fflush(0);}
 			// si son hijos hay que restarurar el estado de la senyales
 			signal(SIGINT, SIG_DFL);   // Restablece comportamiento por defecto
 			signal(SIGQUIT, SIG_DFL);  // Para Ctrl+\ también
@@ -227,6 +231,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			}
 			else if (prev_fd != -1)
 			{
+				printf("Ejecutando export en hij %s oddddddddddddddddddddddddddddd\n", cmd->argv[0]);fflush(0);
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
@@ -246,30 +251,36 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 				dup2(pipefd[1], STDOUT_FILENO);
 				close(pipefd[1]);
 			}
+			
 			if (pipefd[0] != -1)
 				close(pipefd[0]);
-			envp_exec = ft_build_envp_array(l_env);
-			path = find_path(cmd->argv[0], envp_exec);
-			if (!path)
-			{
-				printf("minishell: %s: command not found\n", cmd->argv[0]);
-				ft_lstclear(&l_env, ft_free_env);
-				ft_free_tab(envp_exec);
-				ft_cmdclear (&cmd, ft_free_argv);
-				exit(127);
-			}
+			
 			if (ft_is_builtin(cmd->argv[0]))
 			{
-				exit((ft_execute_builtin(cmd->argv, l_env))); // ojo con liberar el envp_exec
+				//ft_free_tab(envp_exec);
+				i = ft_execute_builtin(cmd->argv, l_env);
+				ft_lstclear(&l_env, ft_free_env);
+				ft_cmdclear (&cmd, ft_free_argv);
+				//free(path);
+				exit(i);
 			}
 			else
 			{
+				envp_exec = ft_build_envp_array(l_env);
+				path = find_path(cmd->argv[0], envp_exec);
 				ft_lstclear(&l_env, ft_free_env);
+				if (!path)
+				{
+					printf("minishell: %s: command not found\n", cmd->argv[0]);
+					ft_free_tab(envp_exec);
+					ft_cmdclear (&cmd, ft_free_argv);
+					exit(127);
+				}
 				execve(path, cmd->argv, envp_exec);
 			}
 			ft_free_tab(envp_exec);
 			//ft_printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno)); //ft_printf no tiene STDERR
-			ft_printf(STDERR_FILENO, "minishsssell: %s: %s\n", cmd->argv[0], strerror(errno));
+			ft_printf(STDERR_FILENO, "minishsell: %s: %s\n", cmd->argv[0], strerror(errno));
 			ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
 			ft_putstr_fd(": ", STDERR_FILENO);
 			ft_putstr_fd(strerror(errno), STDERR_FILENO);
@@ -290,7 +301,10 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 		}
 		else // padre
 		{
-			printf("\nINICIO PADRE------------------------%s--------------------INICIO PADRE", cmd->argv[0]);fflush(0);
+			if (cmd->argv)
+			{printf("\nINICIO PADRE------------------------%s--------------------INICIO PADRE", cmd->argv[0]);fflush(0);}
+			else
+			{printf("\nINICIO PADRE------------------------VACIO-----------------INICIO PADRE");fflush(0);}		
 			if (prev_fd != -1)
 				close(prev_fd);
 			if (cmd->infile > 2)
