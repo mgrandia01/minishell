@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/26 14:48:52 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:18:21 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ int	main(int argc, char *argv[], char *envp[])
 	//char	*path;
 	size_t len;
 	t_list *l_env;
-
+	char    **envp_exec;
 
 	(void) argc;
 	(void) argv;
@@ -186,6 +186,7 @@ int	main(int argc, char *argv[], char *envp[])
     	tokens = NULL;
     	cmds = NULL;
     	l_env = ft_init_env(envp);
+	envp_exec = NULL;
     	/*t_list *env_list2 = l_env;
     	while (env_list2)
 	{
@@ -218,10 +219,13 @@ int	main(int argc, char *argv[], char *envp[])
 		print_tokens(tokens);
 		if (!tokens)
 			break ;
-		process_token_expansion(&tokens, envp);
+		envp_exec = ft_build_envp_array(l_env);
+		//crear un print para esta funcion y ver si se parece a envp
+		process_token_expansion(&tokens, envp_exec);
+		ft_free_tab(envp_exec);
 		join_tokens_with_end(&tokens);
 		remove_quotes_from_token_list(tokens);
-		cmds = ft_parse(tokens, envp);
+		cmds = ft_parse(tokens);
 		print_commands(cmds);
 		// ATENCION . Valorar si las asginaciones de nuevas variables se anyaden
 		// entre el parser y executer ya que en ejecucion solo hay strcut de comandos 
@@ -239,7 +243,7 @@ int	main(int argc, char *argv[], char *envp[])
 		// pero export VAR1="1" no funciona, DEBE ELIMINAR LAS COMILLAS
 		
 		
-		//ft_exe_pipeline(cmds, l_env);
+		ft_exe_pipeline(cmds, l_env);
 		
 		// preparacion de datos mientras no esta el parser
 		

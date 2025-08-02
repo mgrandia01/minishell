@@ -6,13 +6,13 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/26 15:27:44 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:41:08 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// Une tokens consecutivos con end == 1
+// FIXME Une tokens consecutivos con end == 1
 void	join_tokens_with_end(t_token **tokens)
 {
 	t_token	*curr;

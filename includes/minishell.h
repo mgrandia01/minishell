@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/26 12:26:26 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:07:58 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ typedef struct s_cmd
 //	int				err_outfile;	//perror		
 	int				heredoc;	// 1 si heredoc, 0 si no
 	char			*heredoc_delim;		// delimitador del heredoc: "<< EOF"
+	char			*heredoc_delim_1;// == NULL es que solo hay 1 !=NULL inicio lectura
+	char			*heredoc_delim_2;		// delimitador del heredoc: "<< EOF"
 	struct s_cmd	*next;				// siguiente comando en el pipe
 }	t_cmd;
 
@@ -124,7 +126,7 @@ char	**expand_argv(char **argv, int s);
 t_cmd	*init_comand(void);
 
 //----------parse.c--------------
-struct s_cmd	*ft_parse(t_token *tokens, char *envp[]);
+struct s_cmd	*ft_parse(t_token *tokens);
 
 //---------env_expansion.c-----------
 char	*exp_var_at_index(const char *t_val, int *i, char *envp[]);

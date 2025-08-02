@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 16:28:48 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:07:42 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ static void	handle_pipe_token(t_cmd **cmd, t_redir_type *expect_redir)
  * Handles pipes, redirections, and command words.
  * Returns the head of the command list.
  */
-struct s_cmd	*ft_parse(t_token *tokens, char *envp[])
+struct s_cmd	*ft_parse(t_token *tokens)
 {
 	t_cmd			*cmd_head;
 	t_cmd			*cmd;
@@ -112,7 +112,6 @@ struct s_cmd	*ft_parse(t_token *tokens, char *envp[])
 	cmd_head = init_comand();
 	cmd = cmd_head;
 	expect_redir = NONE;
-	(void)envp;
 	while (tokens)
 	{
 		if ((tokens->type) == TOKEN_PIPE)

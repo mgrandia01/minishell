@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/14 14:46:06 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:51:50 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,30 @@
  * Creates a new token and adds it to the end of the token list.
  * Returns 1 on success, 0 on failure.
  */
-int	add_token(t_token **lst, t_token_type type, char *val, int end)
+int     add_token(t_token **lst, t_token_type type, char *val, int end)
 {
-	t_token	*new;
-
-	new = malloc(sizeof(*new));
-	if (!new || (type == TOKEN_WORD && !val))
-		return (0);
-	new->type = type;
-	new->value = val;
-	new->end = end;
-	new->next = NULL;
-	if (!*lst)
-	{
-		*lst = new;
-		return (1);
-	}
-	while (*lst && (*lst)->next)
-		lst = &(*lst)->next;
-	if (*lst)
-		(*lst)->next = new;
-	else
-		*lst = new;
-	return (1);
+        t_token *new;
+	
+//	printf("[add_token] val=\"%s\", end=%d\n", val, end);
+        new = malloc(sizeof(*new));
+        if (!new || (type == TOKEN_WORD && !val))
+                return (0);
+        new->type = type;
+        new->value = val;
+        new->end = end;
+        new->next = NULL;
+        if (!*lst)
+        {
+                *lst = new;
+                return (1);
+        }
+        while (*lst && (*lst)->next)
+                lst = &(*lst)->next;
+        if (*lst)
+                (*lst)->next = new;
+        else
+                *lst = new;
+        return (1);
 }
 
 static int	handle_end(char c)
