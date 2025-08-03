@@ -43,7 +43,7 @@ SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       parse.c builtin.c builtin_export.c minishell_utils_1.c\
       builtin_unset.c signals.c env_expansion.c split_utils.c\
       tokenizer.c expansion_process.c expansion_exec.c\
-      quotes.c builtin_export_2.c heredoc.c
+      quotes.c builtin_export_2.c heredoc.c execute_2.c
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a

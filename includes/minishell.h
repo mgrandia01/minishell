@@ -166,7 +166,8 @@ void	ft_setup_signals(void);
 void	handle_sigint(int sig);
 
 //---------- execute.c----------------
-void	ft_execute(t_cmd *cmds, char *envp[]);
+int	ft_execute_builtin(char **cmd, t_list *l_env);
+int	ft_is_builtin(char *cmd);
 void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env);
 
 void	ft_free_cmds(t_cmd *cmds);
@@ -202,5 +203,10 @@ void	ft_export_assign_var(char *key, char *value, t_list **l_env);
 
 //----------- heredoc.c----------------
 int	ft_create_heredoc(const char *delim);
+
+//----------- execute_2.c----------------
+void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
+void	ft_parent_process(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
+void	ft_child_process(t_cmd *cmd, t_list *l_env);
 
 #endif

@@ -202,10 +202,15 @@ int	main(int argc, char *argv[], char *envp[])
         	input = get_next_line(STDIN_FILENO);
         	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
 
-		if (!input || !ft_strncmp(input,"\n",2) || !ft_strncmp(input,"esc",3))
+		if (!input || !ft_strncmp(input,"esc",3))
 		{
 			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
+		}
+		if (!ft_strncmp(input,"\n",2))
+		{
+			free(input);
+			continue ;
 		}
 		len = ft_strlen(input);
 		if (len> 0 && input[len - 1] == '\n')

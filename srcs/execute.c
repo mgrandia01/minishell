@@ -125,63 +125,27 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
 	int		pipefd[2];
 	int		prev_fd;
-	int		status[2];
 	pid_t	pid;
 	pid_t	last_pid;
-	char	*path;
-	int		wstatus;
-	int		g_exit_status;
-	char	**envp_exec;
-	int		i;
-
 
 	last_pid = -1;
 	prev_fd = -1;
 	pipefd[0] = -1;
 	pipefd[1] = -1;
-	envp_exec = NULL;
-	
-
 	if (!cmd)
 		return ;	
 	pid = 0;
-	path = NULL;
-	wstatus = 0,
-	g_exit_status = 0;
+		
 	// Ejecutar built-in directamente en el padre si es un único comando
-	// Teoricamente ejeuta los builtin dentro de pipes pero pierde el resultado
+	// Teoricamente (bash???) ejecuta los builtin dentro de pipes pero pierde el resultado
 	// asi que solo guardamos el estado si es el primer comando
 	if (cmd->next == NULL && cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{
-		status[0] = dup(STDIN_FILENO);
-		status[1] = dup(STDOUT_FILENO);
-		if (cmd->infile == -1 || cmd->outfile == -1)
-		{
-			ft_putstr_fd("minishell: error en redirección\n", STDERR_FILENO);
-			return ;
-		}
-		if (cmd->infile > 2)
-		{
-			dup2(cmd->infile, STDIN_FILENO);
-			close(cmd->infile);
-		}
-		if (cmd->outfile > 2)
-		{
-			dup2(cmd->outfile, STDOUT_FILENO);
-			close(cmd->outfile);
-		}
-		if (ft_execute_builtin(cmd->argv, l_env))
-		{
-			//para ek futuro. PWD no hace falta
-			//error
-		}
-		dup2(status[0], STDIN_FILENO);
-		dup2(status[1], STDOUT_FILENO);
-		close(status[0]);
-		close(status[1]);
-		return ;
+		ft_handle_single_builtin(cmd, l_env);
+		cmd = cmd->next; // si se ejecuta aqui que no entre a while para que no lo haga el hijo)
 	}
 	// Ignorar SIGINT en el padre mientras se ejecutan comandos
+	
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	// Ejecutar pipeline
@@ -201,6 +165,24 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 				return ;
 			}
 		}
+		
+		/*if (cmd->infile == -1 || cmd->outfile == -1)
+		{
+			//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
+			// el parser es el que tiene el noimbre del fichero
+			// minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
+			ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
+			
+			if (pipefd[0] != -1)
+				close(pipefd[0]);
+			if (pipefd[1] != -1)
+				close(pipefd[1]);
+			prev_fd = -1;
+			
+			cmd = cmd->next;
+			continue ;
+		}*/
+
 		pid = fork();
 		if (pid == -1)
 		{
@@ -210,19 +192,33 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 		if (pid == 0) // hijo
 		{
 			if (cmd->argv)
-			{printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);fflush(0);}
+			{
+				printf("\nINICIO HIJO------Comando cmd->argv[0]: %s --------------------INICIO HIJO", cmd->argv[0]);
+				fflush(0);
+			}
 			else
-			{printf("\nINICIO HIJO------Comando cmd->argv[0]: VACIO --------------------INICIO HIJO");fflush(0);}
+			{
+				printf("\nINICIO HIJO------Comando cmd->argv[0]: VACIO --------------------INICIO HIJO");
+				fflush(0);
+			}
 			// si son hijos hay que restarurar el estado de la senyales
 			signal(SIGINT, SIG_DFL);   // Restablece comportamiento por defecto
 			signal(SIGQUIT, SIG_DFL);  // Para Ctrl+\ también
 			printf("\nEXECUTE HIJO-----------------------");fflush(0);
+			
 			if (cmd->infile == -1)
 			{
-				//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
-				// el parser es el que tiene el noimbre del fichero
-				// minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
-				exit(EXIT_FAILURE); // Solo este proceso termina
+			//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
+			// el parser es el que tiene el noimbre del fichero
+			// minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
+				ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
+				ft_lstclear(&l_env, ft_free_env);
+				ft_cmdclear (&cmd, ft_free_argv);
+				if (pipefd[0] != -1)
+					close(pipefd[0]);
+				if (pipefd[1] != -1)
+					close(pipefd[1]);
+				exit(EXIT_FAILURE);
 			}
 			else if (cmd->infile > 2)
 			{
@@ -234,12 +230,19 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
+			
 			if (cmd->outfile == -1)
 			{
-				ft_putstr_fd("minishell: redirección de salida fallida\n", STDERR_FILENO);
-				exit(1);
-			}
-			else if (cmd->outfile > 2)
+				ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
+				ft_cmdclear (&cmd, ft_free_argv);
+				ft_lstclear(&l_env, ft_free_env);
+				if (pipefd[0] != -1)
+					close(pipefd[0]);
+				if (pipefd[1] != -1)
+					close(pipefd[1]);
+				exit(1); 
+			
+			}else if (cmd->outfile > 2)
 			{
 				dup2(cmd->outfile, STDOUT_FILENO);
 				close(cmd->outfile);
@@ -254,41 +257,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			if (pipefd[0] != -1)
 				close(pipefd[0]);
 			
-			if (cmd->argv && cmd->argv && ft_is_builtin(cmd->argv[0]))
-			{
-				//ft_free_tab(envp_exec);
-				i = ft_execute_builtin(cmd->argv, l_env);
-				ft_lstclear(&l_env, ft_free_env);
-				ft_cmdclear (&cmd, ft_free_argv);
-				//free(path);
-				exit(i);
-			}
-			else
-			{
-				envp_exec = ft_build_envp_array(l_env);
-				if (cmd->argv)
-					path = find_path(cmd->argv[0], envp_exec);
-				else
-					path = NULL;
-				ft_lstclear(&l_env, ft_free_env);
-				if (!path)
-				{
-					if (cmd->argv)
-						printf("minishell: %s: command not found\n", cmd->argv[0]);
-					ft_free_tab(envp_exec);
-					ft_cmdclear (&cmd, ft_free_argv);
-					exit(127);
-				}
-				execve(path, cmd->argv, envp_exec);
-			}
-			ft_free_tab(envp_exec);
-			//ft_printf("minishell: %s: %s\n", cmd->argv[0], strerror(errno)); //ft_printf no tiene STDERR
-			ft_printf(STDERR_FILENO, "minishsell: %s: %s\n", cmd->argv[0], strerror(errno));
-			ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
-			ft_putstr_fd(": ", STDERR_FILENO);
-			ft_putstr_fd(strerror(errno), STDERR_FILENO);
-			ft_putstr_fd("\n", STDERR_FILENO);
-			free(path); // liberar la mem del main (input, token y cmd). provocar el fallo con /usr/bin echo "paco" (con el espacio)
+			ft_child_process(cmd, l_env);
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 			if (cmd->infile > 2)
 				close(cmd->infile);
 			if (cmd->outfile > 2)
@@ -304,33 +274,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 		}
 		else // padre
 		{
-			if (cmd->argv)
-			{printf("\nINICIO PADRE------------------------%s--------------------INICIO PADRE", cmd->argv[0]);fflush(0);}
-			else
-			{printf("\nINICIO PADRE------------------------VACIO-----------------INICIO PADRE");fflush(0);}		
-			if (prev_fd != -1)
-				close(prev_fd);
-			if (cmd->infile > 2)
-				close(cmd->infile);
-			if (cmd->outfile > 2)
-				close(cmd->outfile);
-			if (cmd->next)
-			{
-				close(pipefd[1]);
-				prev_fd = pipefd[0];
-			}
-			else
-				prev_fd = -1;
-			waitpid(pid, &wstatus, 0);
-			if (WIFEXITED(wstatus))
-				g_exit_status = WEXITSTATUS(wstatus);
-			else
-			{
-				if (WIFSIGNALED(wstatus))
-					g_exit_status = 128 + WTERMSIG(wstatus);
-			}
+			ft_parent_process(cmd, &prev_fd, pipefd, pid);
 			cmd = cmd->next;
-			printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE\n", cmd);fflush(0);
 		}
 	}
 	ft_setup_signals();
