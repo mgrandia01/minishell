@@ -17,8 +17,7 @@ NAME = minishell
 CC = cc
 AR = ar rcs
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -g 
-
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 # ─────────────────────────────────────────────────────────────
 # COLORESSSSSS
 # ─────────────────────────────────────────────────────────────
@@ -44,6 +43,7 @@ SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       builtin_unset.c signals.c env_expansion.c split_utils.c\
       tokenizer.c expansion_process.c expansion_exec.c\
       quotes.c builtin_export_2.c heredoc.c split.c
+
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a

@@ -16,12 +16,15 @@
 # include "../libft/includes/libft.h"
 # include "../libft/includes/ft_printf.h"
 # include "../libft/includes/get_next_line.h"
+
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/wait.h>
 # include <errno.h>
 # include <signal.h>
 # include <limits.h>
+
+
 
 // un nodo por comando. fin de comando si hay pipe
 // para crear la lista se guardaran los tokens argv hasta encontrar un pipe. 

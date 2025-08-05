@@ -115,8 +115,6 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 	}
 	else if (*expect_redir == HEREDOC)
 	{
-		//cmd -> heredoc = 1;
-		//cmd -> heredoc_delim = ft_strdup(tokens->value);
 		add_heredoc(cmd, tokens->value);
 	}
 	else
