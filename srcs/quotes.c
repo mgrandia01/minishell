@@ -25,7 +25,7 @@ int	process_q_cont(char *i, int *pos, char quote, t_token **tokens)
 		(*pos)++;
 	if (!i[*pos])
 	{
-		ft_printf(STDERR_FILENO, "quotes not closed");//TODO igual que bash
+		ft_printf(STDERR_FILENO, "quotes not closed");
 		free_tokens(*tokens);
 		return (-1);
 	}
@@ -35,10 +35,10 @@ int	process_q_cont(char *i, int *pos, char quote, t_token **tokens)
 char	*remove_quotes(char *str)
 {
 	char	*result;
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	quote;
-	
+
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
 		return (NULL);

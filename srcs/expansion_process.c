@@ -13,7 +13,7 @@
 #include "../includes/minishell.h"
 
 // Process the result of a variable expansion: split if needed or clean quotes
-/*void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
+void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 {
 	int	end;
 
@@ -24,34 +24,12 @@
 	}
 	else
 	{
-	//	if (q != 0)
-	//		end = 1;
-	//	else
 		end = c->end;
 		add_token(n_lst, c->type, *r, end);
 	}
 	*r = NULL;
-}*/
-void handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
-{
-    int end;
-    
-    printf("DEBUG handle_exp_result: original end=%d, quote=%d, result='%s'\n", 
-           c->end, q, *r);
-    
-    if (ft_strchr(*r, ' ') && q == 0)
-    {
-        split_tok(n_lst, c->type, *r, c->end);
-        free(*r);
-    }
-    else
-    {
-        end = c->end;  // ← Este debería ser 1 para tu caso
-        printf("DEBUG: creando token con end=%d\n", end);
-        add_token(n_lst, c->type, *r, end);
-    }
-    *r = NULL;
 }
+
 // Expand variables inside token value and add tokens to the new list
 static void	exp_tok_val(const char *val, t_token **n_l, t_token *c, char *env[])
 {
