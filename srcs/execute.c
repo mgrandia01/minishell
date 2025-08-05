@@ -134,6 +134,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	char	**envp_exec;
 
 
+	(void)g_exit_status;
+	(void)last_pid;
 	last_pid = -1;
 	prev_fd = -1;
 	pipefd[0] = -1;

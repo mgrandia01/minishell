@@ -235,7 +235,7 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		
 		// iterate list and execute cmds
-		//ft_execute(cmds, envp);
+	//	ft_execute(cmds, envp);
 		//aqui ya le pasaremos la nueva struct de varaibles, no vale la pena pasar envp
 		//VAR 1 = EEEE crea variable con export=0
 		//export VAR1 pondra export=1
@@ -243,7 +243,7 @@ int	main(int argc, char *argv[], char *envp[])
 		// pero export VAR1="1" no funciona, DEBE ELIMINAR LAS COMILLAS
 		
 		
-		ft_exe_pipeline(cmds, l_env);
+		//ft_exe_pipeline(cmds, l_env);
 		
 		// preparacion de datos mientras no esta el parser
 		

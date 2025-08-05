@@ -138,9 +138,15 @@ char	*remove_quotes(char *str);
 void	remove_quotes_from_token_list(t_token *token);
 int	process_q_cont(char *i, int *pos, char quote, t_token **tokens);
 
-//-----------split_utils.c--------
-void	free_split_array(char **split);
+//-----------split.c-------------
 void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl);
+
+//-----------split_utils.c--------
+const char	*skip_space(const char *s);
+int	word_len_with_quotes(const char *s);
+int	count_words_with_quotes(const char *s);
+char	*extract_word(const char *s, int len);
+void	free_split_array(char **split);
 
 //-----------tokenizer.c---------
 int	get_quoted_type(char c);
