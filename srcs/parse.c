@@ -70,6 +70,26 @@ static void	open_redir_file(int *fd, const char *filename, int mode)
 		*fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
 }
 
+void add_heredoc(t_cmd *cmd, const char *delimiter)
+{
+	t_heredoc 	*new_array;
+	int			i;
+   
+	new_array = malloc(sizeof(t_heredoc) * (cmd->heredoc_count + 1));
+	i = 0;
+	if (!new_array)
+	        return ;
+	while (i < cmd->heredoc_count)
+	{
+	        new_array[i] = cmd->heredocs[i];
+	        i++;
+	}
+	new_array[cmd->heredoc_count].delimiter = ft_strdup(delimiter);
+	free(cmd->heredocs);
+	cmd->heredocs = new_array;
+	cmd->heredoc_count++;
+}
+
 /* Handles a word token depending on the expected redirection type.
  * Opens files for redirections or adds the word to the command.
  * Resets expected redirection type after processing.
@@ -95,8 +115,9 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 	}
 	else if (*expect_redir == HEREDOC)
 	{
-		cmd -> heredoc = 1;
-		cmd -> heredoc_delim = ft_strdup(tokens->value);
+		//cmd -> heredoc = 1;
+		//cmd -> heredoc_delim = ft_strdup(tokens->value);
+		add_heredoc(cmd, tokens->value);
 	}
 	else
 		add_word(cmd, tokens->value);

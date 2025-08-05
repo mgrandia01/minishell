@@ -78,6 +78,10 @@ typedef struct s_exp_data
     char    **env;
 }   t_exp_data;
 
+typedef struct s_heredoc
+{
+	char *delimiter;
+} t_heredoc;
 typedef struct s_cmd
 {
 	char			**argv;			// Lista de argumentos: [""ls"", "-l", NULL]
@@ -85,10 +89,11 @@ typedef struct s_cmd
 //	int				err_infile;	//perror		
 	int				outfile;	// fd 1:STDOUT, 2: STDERR, >=3 a archivo de salida: "> out.txt" o ">> out.txt" 
 //	int				err_outfile;	//perror		
-	int				heredoc;	// 1 si heredoc, 0 si no
-	char			*heredoc_delim;		// delimitador del heredoc: "<< EOF"
-	char			*heredoc_delim_1;// == NULL es que solo hay 1 !=NULL inicio lectura
-	char			*heredoc_delim_2;		// delimitador del heredoc: "<< EOF"
+	//int				heredoc;	// 1 si heredoc, 0 si no
+	//char			*heredoc_delim;		// delimitador del heredoc: "<< EOF"
+	t_heredoc		*heredocs; //array dinamico
+	int				heredoc_count;// cuantos hay
+	
 	struct s_cmd	*next;				// siguiente comando en el pipe
 }	t_cmd;
 

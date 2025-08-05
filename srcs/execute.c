@@ -193,7 +193,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			perror("Minishell: pipe");
 			break ;
 		}
-		if (cmd->heredoc == 1 && cmd->heredoc_delim)
+		/*if (cmd->heredoc == 1 && cmd->heredoc_delim)
 		{
 			cmd->infile = ft_create_heredoc(cmd->heredoc_delim);
 			if (cmd->infile == -1)
@@ -201,7 +201,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 				ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);
 				return ;
 			}
-		}
+		}*/
 		pid = fork();
 		if (pid == -1)
 		{

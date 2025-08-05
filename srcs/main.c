@@ -78,11 +78,11 @@ void	print_commands(t_cmd *cmd_list)
 		printf("outfile: %d\n", cmd_list->outfile);
 
 		// Heredoc
-		if (cmd_list->heredoc)
+	/*	if (cmd_list->heredocs)
 			printf("heredoc: sí, delimitador = \"%s\"\n", cmd_list->heredoc_delim);
 		else
 			printf("heredoc: no\n");
-
+*/
 		printf("\n");
 		cmd_list = cmd_list->next;
 		cmd_num++;

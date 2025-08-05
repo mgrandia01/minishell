@@ -79,8 +79,8 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 		{
 			ptr_next = (*lst)->next;
 			del((*lst)->argv);
-			if ((*lst)->heredoc_delim)
-				free((*lst)->heredoc_delim);
+			//if ((*lst)->heredoc_delim)
+			//	free((*lst)->heredoc_delim);
 			free(*lst);
 			*lst = ptr_next;
 		}
