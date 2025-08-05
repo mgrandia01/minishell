@@ -64,6 +64,7 @@ static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir)
  */
 static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 {
+	//TODO si hi ha més d'un < en un costat del pipex, obrirlos tots pero només passar l'ultim! fer una prova printant el infile a veure que passa
 	if (*expect_redir == INFILE)
 	{
 		cmd->infile = open(tokens->value, O_RDONLY);

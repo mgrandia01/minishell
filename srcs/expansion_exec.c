@@ -11,8 +11,43 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+// pseudocódigo simplificado
 
-// FIXME Une tokens consecutivos con end == 1
+/*void join_tokens_with_end(t_token **tokens)
+{
+    t_token *curr;
+    t_token *next;
+    char    *joined;
+    
+    printf("DEBUG: Entrando a join_tokens_with_end\n");
+    
+    curr = *tokens;
+    while (curr)
+    {
+        printf("DEBUG: Procesando token '%s' con end=%d\n", curr->value, curr->end);
+        
+        // Mientras el token actual tenga end == 1 Y haya un siguiente token
+        while (curr->end == 1 && curr->next && curr->next->type != TOKEN_EOF)
+        {
+            next = curr->next;
+            printf("DEBUG: Uniendo '%s' + '%s'\n", curr->value, next->value);
+            
+            joined = ft_strjoin(curr->value, next->value);
+            free(curr->value);
+            curr->value = joined;
+            curr->end = next->end;
+            curr->next = next->next;
+            free(next->value);
+            free(next);
+            
+            printf("DEBUG: Resultado: '%s' con end=%d\n", curr->value, curr->end);
+        }
+        curr = curr->next;
+    }
+    
+    printf("DEBUG: Saliendo de join_tokens_with_end\n");
+}*/
+
 void	join_tokens_with_end(t_token **tokens)
 {
 	t_token	*curr;
@@ -30,7 +65,9 @@ void	join_tokens_with_end(t_token **tokens)
 			joined = ft_strjoin(curr->value, next->value);
 			free(curr->value);
 			curr->value = joined;
-			curr->end = next->end;
+			if (next->end == 1)
+				curr->end = 1;
+			//curr->end = next->end;
 			curr->next = next->next;
 			free(next->value);
 			free(next);
