@@ -197,6 +197,7 @@ void	ft_free_env(void *content);
 void	ft_free_tab(char **tab);
 void	ft_free_argv(char **ptr);
 void	ft_cmdclear(t_cmd **lst, void (*del)(char **));
+void	ft_cmddelone(t_cmd *lst, void (*del)(char **));
 
 //----------- builtin_export_2.c----------------
 void	ft_export_assign_var(char *key, char *value, t_list **l_env);
@@ -207,6 +208,8 @@ int	ft_create_heredoc(const char *delim);
 //----------- execute_2.c----------------
 void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
 void	ft_parent_process(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
-void	ft_child_process(t_cmd *cmd, t_list *l_env);
+void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[]);
+void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
+void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[]);
 
 #endif

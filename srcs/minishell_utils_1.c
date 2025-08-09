@@ -81,10 +81,26 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 			del((*lst)->argv);
 			if ((*lst)->heredoc_delim)
 				free((*lst)->heredoc_delim);
+			/*if ((*lst)->heredoc_delim_1)
+				free((*lst)->heredoc_delim_1);
+			if ((*lst)->heredoc_delim_2)
+				free((*lst)->heredoc_delim_2);*/
 			free(*lst);
 			*lst = ptr_next;
 		}
 	}
+}
+
+void	ft_cmddelone(t_cmd *lst, void (*del)(char **))
+{
+	del((lst)->argv);
+	if ((lst)->heredoc_delim)
+		free((lst)->heredoc_delim);
+	/*if ((*lst)->heredoc_delim_1)
+		free((*lst)->heredoc_delim_1);
+	if ((*lst)->heredoc_delim_2)
+		free((*lst)->heredoc_delim_2);*/
+	free (lst);
 }
 
 void	ft_free_argv(char **ptr)
