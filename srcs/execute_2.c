@@ -257,16 +257,15 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 
 void	ft_manage_heredoc(t_cmd *cmd)
 {
-	(void) cmd;
-	/*if (cmd->heredoc == 1 && cmd->heredoc_delim)
+	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
-		cmd->infile = ft_create_heredoc(cmd->heredoc_delim);
+		cmd->infile = ft_create_heredoc(cmd->heredocs[0].delimiter);
 		if (cmd->infile == -1)
 		{
 			ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);
 			return ;
 		}
-	}*/
+	}
 }
 
 void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
