@@ -147,6 +147,30 @@ void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 	}
 }
 
+static int	ft_command_exist(char *cmd, t_list *l_env)
+{
+	char	**envp_exec;
+	char	*path;
+	int	ret;
+	
+	path = NULL;
+	ret = 0;
+	envp_exec = ft_build_envp_array(l_env);
+	if (cmd)
+	{
+		path = find_path(cmd, envp_exec);
+		if (path)
+		{
+			free(path);
+			ret = 1;
+		}
+		else
+			ret = 0;
+			
+	}
+	ft_free_tab(envp_exec);
+	return (ret);
+}
 
 void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 {
@@ -164,12 +188,13 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	signal(SIGINT, SIG_DFL);	// Restablece comportamiento por defecto
 	signal(SIGQUIT, SIG_DFL);	// Para Ctrl+\ también
 	printf("\nEXECUTE HIJO-----------------------");fflush(0);
+	
 	if (cmd->infile == -1)
 	{
 		//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
 		// el parser es el que tiene el noimbre del fichero
 		// minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
-		ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
+		//ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
 		ft_lstclear(&l_env, ft_free_env);
 		ft_cmdclear (&cmd, ft_free_argv);
 		if (pipefd[0] != -1)
@@ -190,7 +215,7 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	}
 	if (cmd->outfile == -1)
 	{
-		ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->outfile, strerror(errno));
+		//ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->outfile, strerror(errno));
 		ft_cmdclear (&cmd, ft_free_argv);
 		ft_lstclear(&l_env, ft_free_env);
 		if (pipefd[0] != -1)
@@ -207,11 +232,14 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	else if (cmd->next)
 	{
 		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
+		if (ft_command_exist(cmd->argv[0], l_env))
+		{
+			dup2(pipefd[1], STDOUT_FILENO);
+		}
 		close(pipefd[1]);
 	}
-	//if (pipefd[0] != -1)
-	//	close(pipefd[0]);
+	if (pipefd[0] != -1)
+		close(pipefd[0]);
 	ft_child_process_execute(cmd, l_env, pipefd);
 	ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 	if (cmd->infile > 2)
