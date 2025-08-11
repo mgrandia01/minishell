@@ -15,7 +15,6 @@
 
 int g_exit_status = 0;
 
-
 void print_tokens(t_token *tokens)
 {
     while (tokens)
@@ -49,8 +48,6 @@ void print_tokens(t_token *tokens)
     }
 }
 
-#include <stdio.h>
-
 void	print_commands(t_cmd *cmd_list)
 {
 	int i;
@@ -78,16 +75,24 @@ void	print_commands(t_cmd *cmd_list)
 		printf("outfile: %d\n", cmd_list->outfile);
 
 		// Heredoc
-		if (cmd_list->heredoc)
-			printf("heredoc: sí, delimitador = \"%s\"\n", cmd_list->heredoc_delim);
-		else
-			printf("heredoc: no\n");
-
+		if (cmd_list->heredoc_count > 0 && cmd_list->heredocs)
+		{
+		        printf("heredocs: %d delimitador(es):\n", cmd_list->heredoc_count);
+		        for (i = 0; i < cmd_list->heredoc_count; i++)
+		        {
+        		    printf("  heredoc[%d]: \"%s\"\n", i, cmd_list->heredocs[i].delimiter);
+      			  }
+    		}
+   		 else
+  		  {
+  		      printf("heredoc: no\n");
+ 	}
 		printf("\n");
 		cmd_list = cmd_list->next;
 		cmd_num++;
 	}
 }
+
 
 
 /*void ft_exe_tests(t_cmd *cmd_ignore, char *envp[])
@@ -177,7 +182,7 @@ int	main(int argc, char *argv[], char *envp[])
 	size_t len;
 	t_list *l_env;
 	char    **envp_exec;
-
+       
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
@@ -221,26 +226,38 @@ int	main(int argc, char *argv[], char *envp[])
 		tokens = ft_tokenize(input);
 		free(input);
 		input = NULL;
-		print_tokens(tokens);
 		if (!tokens)
 			break ;
+		print_tokens(tokens);
 		envp_exec = ft_build_envp_array(l_env);
 		//crear un print para esta funcion y ver si se parece a envp
+		
+		if (!envp_exec) // check tras crear envp
+		{
+		        free_tokens(tokens);
+        		ft_printf(STDERR_FILENO, "Error: falló la creación de envp\n");
+        		continue;
+    		}
 		process_token_expansion(&tokens, envp_exec);
 		ft_free_tab(envp_exec);
 		join_tokens_with_end(&tokens);
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);
+		free_tokens(tokens);
+		if (!cmds) // check tras parsear
+   		 {
+   		     ft_printf(STDERR_FILENO, "Error: falló el parseo\n");
+   		     continue;
+   		 }
 		print_commands(cmds);
 		// ATENCION . Valorar si las asginaciones de nuevas variables se anyaden
 		// entre el parser y executer ya que en ejecucion solo hay strcut de comandos 
-		free_tokens(tokens);
-		tokens = NULL;
+		/*tokens = NULL;
 		if (!cmds)
 			break ;
-		
+		*/
 		// iterate list and execute cmds
-		//ft_execute(cmds, envp);
+	//	ft_execute(cmds, envp);
 		//aqui ya le pasaremos la nueva struct de varaibles, no vale la pena pasar envp
 		//VAR 1 = EEEE crea variable con export=0
 		//export VAR1 pondra export=1

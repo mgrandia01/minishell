@@ -12,7 +12,6 @@
 
 #include "../includes/minishell.h"
 
-// FIXME Une tokens consecutivos con end == 1
 void	join_tokens_with_end(t_token **tokens)
 {
 	t_token	*curr;
@@ -30,7 +29,8 @@ void	join_tokens_with_end(t_token **tokens)
 			joined = ft_strjoin(curr->value, next->value);
 			free(curr->value);
 			curr->value = joined;
-			curr->end = next->end;
+			if (next->end == 1)
+				curr->end = 1;
 			curr->next = next->next;
 			free(next->value);
 			free(next);

@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 12:13:07 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/06/29 12:13:29 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/11 10:08:41 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	pid_t	pid;
 	pid_t	last_pid;
 
+	(void)g_exit_status;
+	(void)last_pid;
 	last_pid = -1;
 	prev_fd = -1;
 	pipefd[0] = -1;
@@ -156,7 +158,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			perror("Minishell: pipe");
 			break ;
 		}
-		if (cmd->heredoc == 1 && cmd->heredoc_delim)
+		/*if (cmd->heredoc == 1 && cmd->heredoc_delim)
 		{
 			cmd->infile = ft_create_heredoc(cmd->heredoc_delim);
 			if (cmd->infile == -1)
@@ -166,7 +168,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			}
 		}
 		
-		/*if (cmd->infile == -1 || cmd->outfile == -1)
+		if (cmd->infile == -1 || cmd->outfile == -1)
 		{
 			//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
 			// el parser es el que tiene el noimbre del fichero
@@ -181,8 +183,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			
 			cmd = cmd->next;
 			continue ;
+		}
 		}*/
-
 		pid = fork();
 		if (pid == -1)
 		{

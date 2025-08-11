@@ -15,7 +15,7 @@
 /*
  * Advances position past consecutive whitespace characters.
  */
-static void	skip_whitespace(char *input, t_pos_data *data)
+void	skip_whitespace(char *input, t_pos_data *data)
 {
 	while (input[data->pos] == ' ' || input[data->pos] == '\t')
 		data->pos++;

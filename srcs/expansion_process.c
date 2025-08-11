@@ -24,10 +24,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 	}
 	else
 	{
-		if (q != 0)
-			end = 1;
-		else
-			end = c->end;
+		end = c->end;
 		add_token(n_lst, c->type, *r, end);
 	}
 	*r = NULL;

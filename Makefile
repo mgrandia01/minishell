@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/07/26 12:25:26 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/08/11 10:07:11 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,8 +17,7 @@ NAME = minishell
 CC = cc
 AR = ar rcs
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -g 
-
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 # ─────────────────────────────────────────────────────────────
 # COLORESSSSSS
 # ─────────────────────────────────────────────────────────────
@@ -43,7 +42,9 @@ SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       parse.c builtin.c builtin_export.c minishell_utils_1.c\
       builtin_unset.c signals.c env_expansion.c split_utils.c\
       tokenizer.c expansion_process.c expansion_exec.c\
-      quotes.c builtin_export_2.c heredoc.c execute_2.c
+      quotes.c builtin_export_2.c heredoc.c execute_2.c\
+      split.c
+
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)
 LIBFT = ./libft/libft.a

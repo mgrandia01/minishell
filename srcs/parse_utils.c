@@ -52,8 +52,8 @@ t_cmd	*init_comand(void)
 	cmd -> argv = NULL;
 	cmd -> infile = 0;
 	cmd -> outfile = 1;
-	cmd -> heredoc = 0;
-	cmd -> heredoc_delim = NULL;
+	cmd -> heredocs = NULL;
+	cmd -> heredoc_count = 0;
 	cmd -> next = NULL;
 	return (cmd);
 }
