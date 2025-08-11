@@ -264,7 +264,6 @@ int	main(int argc, char *argv[], char *envp[])
 		//atencion export VAR=1 funciona
 		// pero export VAR1="1" no funciona, DEBE ELIMINAR LAS COMILLAS
 		
-		
 		ft_exe_pipeline(cmds, l_env);
 		
 		// preparacion de datos mientras no esta el parser
@@ -284,7 +283,7 @@ int	main(int argc, char *argv[], char *envp[])
 		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
-		ft_cmdclear (&cmds, ft_free_argv);
+		//ft_cmdclear (&cmds, ft_free_argv);
 		
        	}
  	ft_lstclear(&l_env, ft_free_env);      	
