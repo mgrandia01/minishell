@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/02 13:07:42 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/11 11:38:15 by arcmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,22 @@ static void	add_word(t_cmd *cmd, char *word)
 /* Checks for errors when opening redirection files.
  * Prints an error message if a file descriptor is invalid.
  */
-static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir)
+static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *value)
 {
 	if (*expect_redir == INFILE)
 	{
 		if (cmd -> infile < 0)
-			perror("open infile");
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", value, strerror(errno));
 	}
 	else if (*expect_redir == OUTFILE)
 	{
 		if (cmd -> outfile < 0)
-			perror("open outfile");
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", value, strerror(errno));
 	}
 	else if (*expect_redir == APPEND)
 	{
 		if (cmd -> outfile < 0)
-			perror("open outfile append");
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", value, strerror(errno));
 	}
 }
 
@@ -101,17 +101,17 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 	if (*expect_redir == INFILE)
 	{
 		open_redir_file(&cmd->infile, tokens->value, 1);
-		handle_error_file(cmd, expect_redir);
+		handle_error_file(cmd, expect_redir, tokens->value);
 	}
 	else if (*expect_redir == OUTFILE)
 	{
 		open_redir_file(&cmd->outfile, tokens->value, 2);
-		handle_error_file(cmd, expect_redir);
+		handle_error_file(cmd, expect_redir, tokens->value);
 	}
 	else if (*expect_redir == APPEND)
 	{
 		open_redir_file(&cmd->outfile, tokens->value, 3);
-		handle_error_file(cmd, expect_redir);
+		handle_error_file(cmd, expect_redir, tokens->value);
 	}
 	else if (*expect_redir == HEREDOC)
 	{

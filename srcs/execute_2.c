@@ -210,8 +210,8 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
 	}
-	if (pipefd[0] != -1)
-		close(pipefd[0]);
+	//if (pipefd[0] != -1)
+	//	close(pipefd[0]);
 	ft_child_process_execute(cmd, l_env, pipefd);
 	ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 	if (cmd->infile > 2)

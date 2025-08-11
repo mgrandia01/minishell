@@ -235,6 +235,7 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!envp_exec) // check tras crear envp
 		{
 		        free_tokens(tokens);
+        		tokens = NULL;
         		ft_printf(STDERR_FILENO, "Error: falló la creación de envp\n");
         		continue;
     		}
@@ -244,6 +245,7 @@ int	main(int argc, char *argv[], char *envp[])
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);
 		free_tokens(tokens);
+		tokens = NULL;
 		if (!cmds) // check tras parsear
    		 {
    		     ft_printf(STDERR_FILENO, "Error: falló el parseo\n");
