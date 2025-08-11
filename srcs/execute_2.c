@@ -34,11 +34,15 @@ static void	ft_change_std_fds(t_cmd	*cmd)
 void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env)
 {
 	int		status[2];
+	int		exit_code;
 
+	exit_code = 53;
 	status[0] = dup(STDIN_FILENO);
 	status[1] = dup(STDOUT_FILENO);
 	ft_change_std_fds(cmd);
-	if (ft_execute_builtin(cmd->argv, l_env))
+	if (ft_strcmp(cmd->argv[0], "exit") == 0)
+		exit_code = ft_builtin_exit(cmd, l_env);
+	else if (ft_execute_builtin(cmd, l_env))
 	{
 		//para ek futuro. PWD no hace falta
 		//error
@@ -47,6 +51,8 @@ void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env)
 	dup2(status[1], STDOUT_FILENO);
 	close(status[0]);
 	close(status[1]);
+	if (exit_code != 53)
+		exit(exit_code);
 	return ;
 }
 
@@ -117,7 +123,7 @@ void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 
 	if (cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{
-		exit_code = ft_execute_builtin(cmd->argv, l_env); // cuidado, yo creo que aqui l_env habra que cambiar a por redferencia pq se modicica !!!!!!
+		exit_code = ft_execute_builtin(cmd, l_env); // cuidado, yo creo que aqui l_env habra que cambiar a por redferencia pq se modicica !!!!!!
 		ft_lstclear(&l_env, ft_free_env);
 		ft_cmdclear (&cmd, ft_free_argv);
 		/*if (cmd->infile > 2)
@@ -259,13 +265,15 @@ void	ft_manage_heredoc(t_cmd *cmd)
 {
 	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
-		cmd->infile = ft_create_heredoc(cmd->heredocs[0].delimiter);
+		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count);
 		if (cmd->infile == -1)
 		{
 			ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);
 			return ;
 		}
+		
 	}
+	ft_free_heredoc(cmd);
 }
 
 void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
@@ -273,20 +281,28 @@ void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
 	pid_t	pid;
 
 	pid = 0;
-	if (cmd->next && pipe(pipefd) == -1)
+	if (cmd->next && cmd->argv && pipe(pipefd) == -1)
 	{
 		perror("Minishell: pipe");
 		return ;	// estaba a break ;
 	}
-	ft_manage_heredoc(cmd);
-	pid = fork();
-	if (pid == -1)
+	else if (cmd->next && !cmd->argv)
 	{
-		perror("Minishell: fork");
+		perror("Minisfgxdfxdgxdghell: pipe");
 		return ;	// estaba a break ;
 	}
-	if (pid == 0) // hijo
-		ft_child_process(cmd, l_env, pipefd, *prev_fd);
-	else // padre
-		ft_parent_process(cmd, prev_fd, pipefd, pid);
+	else
+	{
+		ft_manage_heredoc(cmd);
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("Minishell: fork");
+			return ;	// estaba a break ;
+		}
+		if (pid == 0) // hijo
+			ft_child_process(cmd, l_env, pipefd, *prev_fd);
+		else // padre
+			ft_parent_process(cmd, prev_fd, pipefd, pid);
+	}
 }
