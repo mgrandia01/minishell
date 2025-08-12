@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/12 11:08:35 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:14:05 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,13 @@ static char	*ft_process_input_line(void)
 }
 
 // Función auxiliar 3: Escribir línea al pipe si corresponde
-static void	ft_write_to_pipe(int pipefd_w, char *line, int flag, int h_count)
+static void	ft_w_pipe(int pipefd_w, char *line, t_heredoc *del, int i_heredoc)
 {
 	int	line_len;
+	int	is_final_delimiter;
 
-	if (flag == 1 || h_count == 1)
+	is_final_delimiter = ft_strcmp(line, del[i_heredoc].delimiter) == 0;
+	if (!is_final_delimiter)
 	{
 		line_len = ft_strlen(line);
 		write(pipefd_w, line, line_len);
@@ -103,22 +105,21 @@ static int	ft_update_h_ind(int *i_heredoc, int heredoc_count, int *flag)
 }
 
 // Función auxiliar 6: Procesar bucle principal
-static int	ft_process_heredoc_loop(int pipefd, t_heredoc *del, int h_count)
+static int	ft_pro_h_loop(int pipefd, t_heredoc *delim, int h_count, int flag)
 {
 	char	*line;
 	int		i_heredoc;
-	int		flag;
 	int		should_break;
 
 	i_heredoc = 0;
-	flag = 0;
 	while (1)
 	{
 		line = ft_process_input_line();
 		if (!line)
 			break ;
-		ft_write_to_pipe(pipefd, line, flag, h_count);
-		if (ft_is_delimiter(line, del, i_heredoc))
+		if ((flag == 1 || h_count == 1))
+			ft_w_pipe(pipefd, line, delim, i_heredoc);
+		if (ft_is_delimiter(line, delim, i_heredoc))
 		{
 			should_break = ft_update_h_ind(&i_heredoc, h_count, &flag);
 			if (should_break)
@@ -142,12 +143,11 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count)
 	pipe_result = pipe(pipefd);
 	if (pipe_result == -1)
 		return (-1);
-	ft_process_heredoc_loop(pipefd[1], delim, heredoc_count);
+	ft_pro_h_loop(pipefd[1], delim, heredoc_count, 0);
 	close(pipefd[1]);
 	return (pipefd[0]);
 }
 /*
-
 int	ft_create_heredoc(t_heredoc *delim, int heredoc_count)
 {
 	int					pipefd[2];
