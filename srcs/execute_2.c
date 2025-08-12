@@ -34,32 +34,37 @@ static void	ft_change_std_fds(t_cmd	*cmd)
 void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env)
 {
 	int		status[2];
-	int		exit_code;
+	//int		exit_code;
+	int		is_exit;
 
-	exit_code = 53;
+	//exit_code = 53;
+	is_exit = 0;
 	status[0] = dup(STDIN_FILENO);
 	status[1] = dup(STDOUT_FILENO);
 	ft_change_std_fds(cmd);
 	if (ft_strcmp(cmd->argv[0], "exit") == 0)
+		is_exit = 1;
+	/*if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		exit_code = ft_builtin_exit(cmd, l_env);
 	else if (ft_execute_builtin(cmd, l_env))
 	{
 		//para ek futuro. PWD no hace falta
 		//error
-	}
+	}*/
+	g_exit_status = ft_execute_builtin(cmd, l_env);
 	dup2(status[0], STDIN_FILENO);
 	dup2(status[1], STDOUT_FILENO);
 	close(status[0]);
 	close(status[1]);
-	if (exit_code != 53)
-		exit(exit_code);
+	if (is_exit == 1)
+		exit(g_exit_status);
 	return ;
 }
 
 void	ft_manage_parent_exit_status(int pid)
 {
 	int	wstatus;
-	int	g_exit_status; // atencion, en el main esta como global, segun enunciado parece global
+	//int	g_exit_status; // atencion, en el main esta como global, segun enunciado parece global
 
 	wstatus = 0;
 	g_exit_status = 0;
@@ -145,6 +150,8 @@ void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 			path = NULL;
 		ft_lstclear(&l_env, ft_free_env);
 		ft_command_not_found(path, cmd, envp_exec);
+		// cuidado, quizas haya que hacer un access aqui para controlar
+		//el global_exit_status a 126
 		execve(path, cmd->argv, envp_exec);
 		if (pipefd[1] != -1)
 			close(pipefd[1]);
