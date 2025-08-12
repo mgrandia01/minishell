@@ -17,7 +17,7 @@ NAME = minishell
 CC = cc
 AR = ar rcs
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -fsanitize=address
 # ─────────────────────────────────────────────────────────────
 # COLORESSSSSS
 # ─────────────────────────────────────────────────────────────

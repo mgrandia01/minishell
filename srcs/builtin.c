@@ -112,6 +112,7 @@ int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 	if (!args[1])
 	{
 		ft_cmdclear (&cmds, ft_free_argv);
+		g_exit_status = 0;
 		return (0);
 	}
 	if (!ft_is_numeric(args[1]))
@@ -119,15 +120,18 @@ int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 		ft_cmdclear (&cmds, ft_free_argv);
 		ft_printf(STDERR_FILENO, "minishell: exit: ");
 		ft_printf(STDERR_FILENO, "%s: numeric argument required\n", args[1]);
+		g_exit_status = 255;
 		return (255);
 	}
 	if (args[2])
 	{
 		ft_cmdclear (&cmds, ft_free_argv);
 		ft_printf(STDERR_FILENO, "minishell: exit: too many arguments\n");
+		g_exit_status = 1;
 		return (1);
 	}
 	arg1 = ft_atoi(args[1]) % 256;
 	ft_cmdclear (&cmds, ft_free_argv);
+	g_exit_status = arg1;
 	return (arg1);
 }
