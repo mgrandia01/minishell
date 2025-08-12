@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 12:13:07 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/11 10:08:41 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/12 10:36:11 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,6 @@ int	ft_execute_builtin(t_cmd *cmd, t_list *l_env)
         }
 }*/
 
-
-
 void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
 	int		pipefd[2];
@@ -136,7 +134,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	if (!cmd)
 		return ;
 	// Ejecutar built-in directamente en el padre si es un único comando
-	// Teoricamente (bash???) ejecuta los builtin dentro de pipes pero pierde el resultado
+	// Teoricamente (bash???) ejecuta los builtin dentro de pipes pero pierde 
+	// el resultado
 	// asi que solo guardamos el estado si es el primer comando
 	if (cmd->next == NULL && cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{

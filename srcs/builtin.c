@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 11:31:40 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/07/19 11:31:43 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/12 10:24:01 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ int	ft_builtin_env(char **args, t_list *l_env)
 int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 {
 	char	**args;
-	int	arg1;
-	
+	int		arg1;
+
 	args = cmds->argv;
-	ft_lstclear(&l_env, ft_free_env);  
+	ft_lstclear(&l_env, ft_free_env);
 	ft_printf(STDOUT_FILENO, "exit\n");
 	if (!args[1])
 	{
