@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 12:13:07 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/11 10:08:41 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/12 10:36:11 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,22 @@ int	ft_is_builtin(char *cmd)
 	return (0);
 }
 
-int	ft_execute_builtin(char **cmd, t_list *l_env)
+int	ft_execute_builtin(t_cmd *cmd, t_list *l_env)
 {
-	if (ft_strcmp(cmd[0], "pwd") == 0)
+	if (ft_strcmp(cmd->argv[0], "pwd") == 0)
 		return (ft_builtin_pwd());
-	if (ft_strcmp(cmd[0], "cd") == 0)
-		return (ft_builtin_cd(cmd));
-	if (ft_strcmp(cmd[0], "echo") == 0)
-		return (ft_builtin_echo(cmd));
-	if (ft_strcmp(cmd[0], "env") == 0)
-		return (ft_builtin_env(cmd, l_env));
-	if (ft_strcmp(cmd[0], "exit") == 0)
-		return (ft_builtin_exit(cmd));
-	if (ft_strcmp(cmd[0], "export") == 0)
-		return (ft_builtin_export(cmd, l_env));
-	if (ft_strcmp(cmd[0], "unset") == 0)
-		return (ft_builtin_unset(cmd, &l_env));
+	if (ft_strcmp(cmd->argv[0], "cd") == 0)
+		return (ft_builtin_cd(cmd->argv));
+	if (ft_strcmp(cmd->argv[0], "echo") == 0)
+		return (ft_builtin_echo(cmd->argv));
+	if (ft_strcmp(cmd->argv[0], "env") == 0)
+		return (ft_builtin_env(cmd->argv, l_env));
+	if (ft_strcmp(cmd->argv[0], "exit") == 0)
+		return (ft_builtin_exit(cmd, l_env));
+	if (ft_strcmp(cmd->argv[0], "export") == 0)
+		return (ft_builtin_export(cmd->argv, l_env));
+	if (ft_strcmp(cmd->argv[0], "unset") == 0)
+		return (ft_builtin_unset(cmd->argv, &l_env));
 	return (1); // error
 }
 
@@ -121,8 +121,6 @@ int	ft_execute_builtin(char **cmd, t_list *l_env)
         }
 }*/
 
-
-
 void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
 	int		pipefd[2];
@@ -136,7 +134,8 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	if (!cmd)
 		return ;
 	// Ejecutar built-in directamente en el padre si es un único comando
-	// Teoricamente (bash???) ejecuta los builtin dentro de pipes pero pierde el resultado
+	// Teoricamente (bash???) ejecuta los builtin dentro de pipes pero pierde 
+	// el resultado
 	// asi que solo guardamos el estado si es el primer comando
 	if (cmd->next == NULL && cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{

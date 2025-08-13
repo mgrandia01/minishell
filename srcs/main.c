@@ -209,6 +209,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 		if (!input || !ft_strncmp(input,"esc",3))
 		{
+			g_exit_status = 0;
 			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
 		}

@@ -34,26 +34,37 @@ static void	ft_change_std_fds(t_cmd	*cmd)
 void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env)
 {
 	int		status[2];
+	//int		exit_code;
+	int		is_exit;
 
+	//exit_code = 53;
+	is_exit = 0;
 	status[0] = dup(STDIN_FILENO);
 	status[1] = dup(STDOUT_FILENO);
 	ft_change_std_fds(cmd);
-	if (ft_execute_builtin(cmd->argv, l_env))
+	if (ft_strcmp(cmd->argv[0], "exit") == 0)
+		is_exit = 1;
+	/*if (ft_strcmp(cmd->argv[0], "exit") == 0)
+		exit_code = ft_builtin_exit(cmd, l_env);
+	else if (ft_execute_builtin(cmd, l_env))
 	{
 		//para ek futuro. PWD no hace falta
 		//error
-	}
+	}*/
+	g_exit_status = ft_execute_builtin(cmd, l_env);
 	dup2(status[0], STDIN_FILENO);
 	dup2(status[1], STDOUT_FILENO);
 	close(status[0]);
 	close(status[1]);
+	if (is_exit == 1)
+		exit(g_exit_status);
 	return ;
 }
 
 void	ft_manage_parent_exit_status(int pid)
 {
 	int	wstatus;
-	int	g_exit_status; // atencion, en el main esta como global, segun enunciado parece global
+	//int	g_exit_status; // atencion, en el main esta como global, segun enunciado parece global
 
 	wstatus = 0;
 	g_exit_status = 0;
@@ -117,7 +128,7 @@ void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 
 	if (cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{
-		exit_code = ft_execute_builtin(cmd->argv, l_env); // cuidado, yo creo que aqui l_env habra que cambiar a por redferencia pq se modicica !!!!!!
+		exit_code = ft_execute_builtin(cmd, l_env); // cuidado, yo creo que aqui l_env habra que cambiar a por redferencia pq se modicica !!!!!!
 		ft_lstclear(&l_env, ft_free_env);
 		ft_cmdclear (&cmd, ft_free_argv);
 		/*if (cmd->infile > 2)
@@ -139,6 +150,8 @@ void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 			path = NULL;
 		ft_lstclear(&l_env, ft_free_env);
 		ft_command_not_found(path, cmd, envp_exec);
+		// cuidado, quizas haya que hacer un access aqui para controlar
+		//el global_exit_status a 126
 		execve(path, cmd->argv, envp_exec);
 		if (pipefd[1] != -1)
 			close(pipefd[1]);
@@ -147,6 +160,30 @@ void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 	}
 }
 
+static int	ft_command_exist(char *cmd, t_list *l_env)
+{
+	char	**envp_exec;
+	char	*path;
+	int	ret;
+	
+	path = NULL;
+	ret = 0;
+	envp_exec = ft_build_envp_array(l_env);
+	if (cmd)
+	{
+		path = find_path(cmd, envp_exec);
+		if (path)
+		{
+			free(path);
+			ret = 1;
+		}
+		else
+			ret = 0;
+			
+	}
+	ft_free_tab(envp_exec);
+	return (ret);
+}
 
 void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 {
@@ -164,12 +201,13 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	signal(SIGINT, SIG_DFL);	// Restablece comportamiento por defecto
 	signal(SIGQUIT, SIG_DFL);	// Para Ctrl+\ también
 	printf("\nEXECUTE HIJO-----------------------");fflush(0);
+	
 	if (cmd->infile == -1)
 	{
 		//ft_putstr_fd("minishell: error redirección de entrada\n", 2);
 		// el parser es el que tiene el noimbre del fichero
 		// minishell: inputfile.xxx: No such file or directory (lo coge de strerror(errno))
-		ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
+		//ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->infile, strerror(errno));
 		ft_lstclear(&l_env, ft_free_env);
 		ft_cmdclear (&cmd, ft_free_argv);
 		if (pipefd[0] != -1)
@@ -190,7 +228,7 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	}
 	if (cmd->outfile == -1)
 	{
-		ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->outfile, strerror(errno));
+		//ft_printf(STDERR_FILENO, "minishell: %d: %s\n", cmd->outfile, strerror(errno));
 		ft_cmdclear (&cmd, ft_free_argv);
 		ft_lstclear(&l_env, ft_free_env);
 		if (pipefd[0] != -1)
@@ -207,11 +245,14 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	else if (cmd->next)
 	{
 		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
+		if (ft_command_exist(cmd->argv[0], l_env))
+		{
+			dup2(pipefd[1], STDOUT_FILENO);
+		}
 		close(pipefd[1]);
 	}
-	//if (pipefd[0] != -1)
-	//	close(pipefd[0]);
+	if (pipefd[0] != -1)
+		close(pipefd[0]);
 	ft_child_process_execute(cmd, l_env, pipefd);
 	ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 	if (cmd->infile > 2)
@@ -229,16 +270,17 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 
 void	ft_manage_heredoc(t_cmd *cmd)
 {
-	(void) cmd;
-	/*if (cmd->heredoc == 1 && cmd->heredoc_delim)
+	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
-		cmd->infile = ft_create_heredoc(cmd->heredoc_delim);
+		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count);
 		if (cmd->infile == -1)
 		{
 			ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);
 			return ;
 		}
-	}*/
+		
+	}
+	ft_free_heredoc(cmd);
 }
 
 void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
@@ -246,20 +288,28 @@ void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
 	pid_t	pid;
 
 	pid = 0;
-	if (cmd->next && pipe(pipefd) == -1)
+	if (cmd->next && cmd->argv && pipe(pipefd) == -1)
 	{
 		perror("Minishell: pipe");
 		return ;	// estaba a break ;
 	}
-	ft_manage_heredoc(cmd);
-	pid = fork();
-	if (pid == -1)
+	else if (cmd->next && !cmd->argv)
 	{
-		perror("Minishell: fork");
+		perror("Minisfgxdfxdgxdghell: pipe");
 		return ;	// estaba a break ;
 	}
-	if (pid == 0) // hijo
-		ft_child_process(cmd, l_env, pipefd, *prev_fd);
-	else // padre
-		ft_parent_process(cmd, prev_fd, pipefd, pid);
+	else
+	{
+		ft_manage_heredoc(cmd);
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("Minishell: fork");
+			return ;	// estaba a break ;
+		}
+		if (pid == 0) // hijo
+			ft_child_process(cmd, l_env, pipefd, *prev_fd);
+		else // padre
+			ft_parent_process(cmd, prev_fd, pipefd, pid);
+	}
 }

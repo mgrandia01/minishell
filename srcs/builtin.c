@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 11:31:40 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/07/19 11:31:43 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/12 10:24:01 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,21 +101,37 @@ int	ft_builtin_env(char **args, t_list *l_env)
 	return (0);
 }
 
-int	ft_builtin_exit(char **args)
+int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 {
+	char	**args;
+	int		arg1;
+
+	args = cmds->argv;
+	ft_lstclear(&l_env, ft_free_env);
 	ft_printf(STDOUT_FILENO, "exit\n");
 	if (!args[1])
-		exit (0);
+	{
+		ft_cmdclear (&cmds, ft_free_argv);
+		g_exit_status = 0;
+		return (0);
+	}
 	if (!ft_is_numeric(args[1]))
 	{
+		ft_cmdclear (&cmds, ft_free_argv);
 		ft_printf(STDERR_FILENO, "minishell: exit: ");
 		ft_printf(STDERR_FILENO, "%s: numeric argument required\n", args[1]);
-		exit (255);
+		g_exit_status = 255;
+		return (255);
 	}
 	if (args[2])
 	{
+		ft_cmdclear (&cmds, ft_free_argv);
 		ft_printf(STDERR_FILENO, "minishell: exit: too many arguments\n");
+		g_exit_status = 1;
 		return (1);
 	}
-	exit(ft_atoi(args[1]) % 256);
+	arg1 = ft_atoi(args[1]) % 256;
+	ft_cmdclear (&cmds, ft_free_argv);
+	g_exit_status = arg1;
+	return (arg1);
 }

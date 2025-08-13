@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/11 11:38:15 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/12 10:21:55 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,22 @@ static void	add_word(t_cmd *cmd, char *word)
 /* Checks for errors when opening redirection files.
  * Prints an error message if a file descriptor is invalid.
  */
-static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *value)
+static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v)
 {
 	if (*expect_redir == INFILE)
 	{
 		if (cmd -> infile < 0)
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", value, strerror(errno));
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
 	}
 	else if (*expect_redir == OUTFILE)
 	{
 		if (cmd -> outfile < 0)
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", value, strerror(errno));
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
 	}
 	else if (*expect_redir == APPEND)
 	{
 		if (cmd -> outfile < 0)
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", value, strerror(errno));
+			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
 	}
 }
 
@@ -70,19 +70,19 @@ static void	open_redir_file(int *fd, const char *filename, int mode)
 		*fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
 }
 
-void add_heredoc(t_cmd *cmd, const char *delimiter)
+void	add_heredoc(t_cmd *cmd, const char *delimiter)
 {
-	t_heredoc 	*new_array;
+	t_heredoc	*new_array;
 	int			i;
-   
+
 	new_array = malloc(sizeof(t_heredoc) * (cmd->heredoc_count + 1));
 	i = 0;
 	if (!new_array)
-	        return ;
+		return ;
 	while (i < cmd->heredoc_count)
 	{
-	        new_array[i] = cmd->heredocs[i];
-	        i++;
+		new_array[i] = cmd->heredocs[i];
+		i++;
 	}
 	new_array[cmd->heredoc_count].delimiter = ft_strdup(delimiter);
 	free(cmd->heredocs);

@@ -180,14 +180,13 @@ void	ft_setup_signals(void);
 void	handle_sigint(int sig);
 
 //---------- execute.c----------------
-int	ft_execute_builtin(char **cmd, t_list *l_env);
+int	ft_execute_builtin(t_cmd *cmd, t_list *l_env);
 int	ft_is_builtin(char *cmd);
 void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env);
 
 void	ft_free_cmds(t_cmd *cmds);
 
 extern int	g_exit_status;
-int		ft_create_heredoc(const char *delim);
 int		ft_strcmp(const char *s1, const char *s2);
 
 //----------- builtin.c----------------
@@ -195,7 +194,7 @@ int		ft_builtin_pwd(void);
 int		ft_builtin_cd(char **args);
 int		ft_builtin_echo(char **args);
 int		ft_builtin_env(char **cmd, t_list *l_env);
-int		ft_builtin_exit(char **args);
+int		ft_builtin_exit(t_cmd *cmd, t_list *l_env);
 int		ft_builtin_export(char **args, t_list *l_env);
 int		ft_builtin_unset(char **cmd, t_list **l_env);
 
@@ -217,7 +216,8 @@ void	ft_cmddelone(t_cmd *lst, void (*del)(char **));
 void	ft_export_assign_var(char *key, char *value, t_list **l_env);
 
 //----------- heredoc.c----------------
-int	ft_create_heredoc(const char *delim);
+int	ft_create_heredoc(t_heredoc *delim, int heredoc_count);
+void	ft_free_heredoc(t_cmd *cmd);
 
 //----------- execute_2.c----------------
 void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
