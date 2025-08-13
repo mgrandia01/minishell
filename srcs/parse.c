@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/12 10:21:55 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:31:55 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,20 @@ static void	add_word(t_cmd *cmd, char *word)
  */
 static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v)
 {
+	int	fd;
+
+	fd = -1;
 	if (*expect_redir == INFILE)
+		fd = cmd -> infile; 
+	if (*expect_redir == OUTFILE || *expect_redir == APPEND)
+		fd = cmd -> outfile; 
+	if (fd < 0)
 	{
+		ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
+		cmd->error = 1;
+	}
+
+	/*{
 		if (cmd -> infile < 0)
 			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
 	}
@@ -55,7 +67,7 @@ static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v)
 	{
 		if (cmd -> outfile < 0)
 			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
-	}
+	}*/
 }
 
 static void	open_redir_file(int *fd, const char *filename, int mode)
@@ -99,17 +111,26 @@ void	add_heredoc(t_cmd *cmd, const char *delimiter)
 static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 {
 	if (*expect_redir == INFILE)
-	{
+	{	
+		if (cmd->error)
+			return ;
+	
 		open_redir_file(&cmd->infile, tokens->value, 1);
 		handle_error_file(cmd, expect_redir, tokens->value);
 	}
 	else if (*expect_redir == OUTFILE)
 	{
+		if (cmd->error)
+			return ;
+	
 		open_redir_file(&cmd->outfile, tokens->value, 2);
 		handle_error_file(cmd, expect_redir, tokens->value);
 	}
 	else if (*expect_redir == APPEND)
 	{
+		if (cmd->error)
+			return ;
+	
 		open_redir_file(&cmd->outfile, tokens->value, 3);
 		handle_error_file(cmd, expect_redir, tokens->value);
 	}

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/11 11:33:09 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:21:45 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ typedef struct s_cmd
 	int				heredoc_count;// cuantos hay
 	
 	struct s_cmd	*next;				// siguiente comando en el pipe
+	int	error;
 }	t_cmd;
 
 typedef struct s_env
@@ -160,6 +161,7 @@ void	free_split_array(char **split);
 int	get_quoted_type(char c);
 char	*literal_tok(char **result, int *size);
 void	handle_exit_status(int *i);
+void	handle_echo_exit_status(t_exp_data *data);
 void	handle_literal_char(const char *t_val, int *i, char **r, int *s);
 
 //----------expansion_exec.c--------------------

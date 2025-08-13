@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/26 15:27:44 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:02:14 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,22 @@ void	handle_exit_status(int *i)
 {
 	//FIXME Crec que podriem necessitar una variable global
 	//TODO
+	ft_printf(STDERR_FILENO, "minishell: %d: command not found\n", g_exit_status);//FIXME sempre es command not found?
 	*i += 2;
+}
+
+void	handle_echo_exit_status(t_exp_data *data)
+{
+	char	*tmp;
+	int	j;
+
+	tmp = ft_itoa(g_exit_status);
+	j = 0;
+	
+	while (tmp[j])
+		handle_literal_char(tmp, &j, &(data->result), &(data->s));
+	free (tmp);
+	data->i +=2;
 }
 
 // Add current char to result string and update indices
