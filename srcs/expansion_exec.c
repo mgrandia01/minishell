@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 16:00:22 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 16:07:06 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	join_tokens_with_end(t_token **tokens)
 }
 
 // Initialize expansion state (quote type, index, result buffer, etc.)
-void	init_exp_data(t_exp_data *data, char first_char, char *env[])
+void	init_exp_data(t_dat *data, char first_char, char *env[])
 {
 	data->quote = get_quoted_type(first_char);
 	data->i = 0;
@@ -51,7 +51,7 @@ void	init_exp_data(t_exp_data *data, char first_char, char *env[])
 }
 
 // Loop through token string and process variable expansions or literals
-void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_exp_data *d)
+void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 {
 	char	*literal;
 
@@ -84,7 +84,7 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_exp_data *d)
 }
 
 // Add final literal token if any characters were left unprocessed
-void	finalize_expansion(t_token **n_lst, t_token *c, t_exp_data *data)
+void	finalize_expansion(t_token **n_lst, t_token *c, t_dat *data)
 {
 	if (data->s > 0)
 		add_tok(n_lst, c->type, literal_tok(&(data->result), &(data->s)), 0);

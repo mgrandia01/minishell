@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 16:01:53 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 16:15:28 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct s_exp_data
 	char		*result;
 	int			s;
 	char		**env;
-}	t_exp_data;
+}	t_dat;
 
 typedef struct s_heredoc
 {
@@ -156,14 +156,14 @@ void			free_split_array(char **split);
 int				get_quoted_type(char c);
 char			*literal_tok(char **result, int *size);
 void			handle_exit_status(int *i);
-void			handle_echo_exit_status(t_exp_data *data);
+void			handle_echo_exit_status(t_dat *data);
 void			handle_literal_ch(const char *t_val, int *i, char **r, int *s);
 
 //----------expansion_exec.c--------------------
 
-void			init_exp_data(t_exp_data *data, char first_char, char *env[]);
-void			p_exp(const char *t_val, t_token **n_lst, t_token *c, t_exp_data *d);
-void			finalize_expansion(t_token **n_lst, t_token *c, t_exp_data *data);
+void			init_exp_data(t_dat *data, char first_char, char *env[]);
+void			p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
+void			finalize_expansion(t_token **n_lst, t_token *c, t_dat *data);
 
 //-----------expansion_process.c-----------------
 void			handle_exp_result(t_token **n_lst, t_token *c, char **r, int q);
@@ -218,9 +218,9 @@ void			ft_free_heredoc(t_cmd *cmd);
 
 //----------- execute_2.c----------------
 void			ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
-void			ft_parent_process(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
-void			ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[]);
-void			ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
+void			ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
+void			ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[]);
+void			ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
 void			ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[]);
 
 #endif

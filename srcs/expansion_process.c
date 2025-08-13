@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 15:36:49 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 16:05:16 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 // Expand variables inside token value and add tokens to the new list
 static void	exp_tok_val(const char *val, t_token **n_l, t_token *c, char *env[])
 {
-	t_exp_data	data;
+	t_dat	data;
 
 	init_exp_data(&data, val[0], env);
 	p_exp(val, n_l, c, &data);

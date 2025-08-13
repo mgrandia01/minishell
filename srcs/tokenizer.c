@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 15:55:11 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 16:04:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	handle_exit_status(int *i)
 	*i += 2;
 }
 
-void	handle_echo_exit_status(t_exp_data *data)
+void	handle_echo_exit_status(t_dat *data)
 {
 	char	*tmp;
 	int	j;

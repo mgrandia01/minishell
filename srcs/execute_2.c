@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 11:12:33 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/03 11:12:35 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/13 16:14:09 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	ft_manage_parent_exit_status(int pid)
 	}
 }
 
-void	ft_parent_process(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid)
+void	ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid)
 {
 	if (cmd->argv)
 	{
@@ -120,7 +120,7 @@ static void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 	}
 }
 
-void	ft_child_process_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
+void	ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 {
 	int		exit_code;
 	char	**envp_exec;
@@ -185,7 +185,7 @@ static int	ft_command_exist(char *cmd, t_list *l_env)
 	return (ret);
 }
 
-void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
+void	ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 {
 	if (cmd->argv)
 	{
@@ -253,7 +253,7 @@ void	ft_child_process(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	}
 	if (pipefd[0] != -1)
 		close(pipefd[0]);
-	ft_child_process_execute(cmd, l_env, pipefd);
+	ft_child_pro_execute(cmd, l_env, pipefd);
 	ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd->argv[0], strerror(errno));
 	if (cmd->infile > 2)
 		close(cmd->infile);
@@ -295,7 +295,7 @@ void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
 	}
 	else if (cmd->next && !cmd->argv)
 	{
-		perror("Minisfgxdfxdgxdghell: pipe");
+		perror("Minishell: pipe");//TODO mirar si es comand not found
 		return ;	// estaba a break ;
 	}
 	else
@@ -308,8 +308,8 @@ void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
 			return ;	// estaba a break ;
 		}
 		if (pid == 0) // hijo
-			ft_child_process(cmd, l_env, pipefd, *prev_fd);
+			ft_c_pro(cmd, l_env, pipefd, *prev_fd);
 		else // padre
-			ft_parent_process(cmd, prev_fd, pipefd, pid);
+			ft_parent_pro(cmd, prev_fd, pipefd, pid);
 	}
 }
