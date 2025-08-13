@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 12:31:55 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:16:54 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,8 @@ static void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v)
 	{
 		ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
 		cmd->error = 1;
+		cmd -> outfile = -1;
 	}
-
-	/*{
-		if (cmd -> infile < 0)
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
-	}
-	else if (*expect_redir == OUTFILE)
-	{
-		if (cmd -> outfile < 0)
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
-	}
-	else if (*expect_redir == APPEND)
-	{
-		if (cmd -> outfile < 0)
-			ft_printf(STDERR_FILENO, "minishell: %s: %s\n", v, strerror(errno));
-	}*/
 }
 
 static void	open_redir_file(int *fd, const char *filename, int mode)
@@ -102,6 +88,62 @@ void	add_heredoc(t_cmd *cmd, const char *delimiter)
 	cmd->heredoc_count++;
 }
 
+//TODO liberacion de outfile_name de la funcion add_outfile_name
+void	free_outfiles(t_cmd *cmd)
+{
+	int i;
+
+	i = 0;
+	if (!cmd || !cmd->outfile_name)
+		return ;
+
+	while (i < cmd->outfile_count)
+	{
+		free(cmd->outfile_name[i]);
+		i++;
+	}
+	free(cmd->outfile_name);
+	cmd->outfile_name = NULL;
+	cmd->outfile_count = 0;
+}
+
+static void	add_outfile_name(t_cmd *cmd, const char *filename)
+{
+	char	**new_array;
+	int	i;
+
+	i = 0;
+	if (!cmd || !filename)
+		return ;
+	if (cmd->outfile_name == NULL)
+	{
+		//TODO free outfiles
+		cmd->outfile_name = malloc(sizeof(char *));
+		if (cmd->outfile_name != NULL)
+		{
+			cmd->outfile_name[0] = ft_strdup(filename);
+			cmd->outfile_count = 1;
+		}
+	}
+	else
+	{
+		new_array = malloc(sizeof(char *) * (cmd->outfile_count + 1));
+		if (new_array != NULL)
+		{
+			while ( i < cmd->outfile_count)
+			{
+				new_array[i] = cmd->outfile_name[i];
+				i++;
+			}
+			new_array[cmd->outfile_count] = ft_strdup(filename);
+			free(cmd->outfile_name);
+			cmd->outfile_name = new_array;
+			cmd->outfile_count++;
+		}
+	}
+}
+
+
 /* Handles a word token depending on the expected redirection type.
  * Opens files for redirections or adds the word to the command.
  * Resets expected redirection type after processing.
@@ -110,6 +152,9 @@ void	add_heredoc(t_cmd *cmd, const char *delimiter)
  */
 static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 {
+	int	mode;
+
+	mode = 0;
 	if (*expect_redir == INFILE)
 	{	
 		if (cmd->error)
@@ -118,22 +163,20 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 		open_redir_file(&cmd->infile, tokens->value, 1);
 		handle_error_file(cmd, expect_redir, tokens->value);
 	}
-	else if (*expect_redir == OUTFILE)
+	else if (*expect_redir == OUTFILE || *expect_redir == APPEND)
 	{
+		if (*expect_redir == OUTFILE)
+			mode = 2;
+		else
+			mode = 3;
 		if (cmd->error)
 			return ;
 	
-		open_redir_file(&cmd->outfile, tokens->value, 2);
+		open_redir_file(&cmd->outfile, tokens->value, mode);
 		handle_error_file(cmd, expect_redir, tokens->value);
+		add_outfile_name(cmd, tokens->value);
 	}
-	else if (*expect_redir == APPEND)
-	{
-		if (cmd->error)
-			return ;
-	
-		open_redir_file(&cmd->outfile, tokens->value, 3);
-		handle_error_file(cmd, expect_redir, tokens->value);
-	}
+
 	else if (*expect_redir == HEREDOC)
 	{
 		add_heredoc(cmd, tokens->value);

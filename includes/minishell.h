@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 12:21:45 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:59:24 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,9 @@ typedef struct s_cmd
 {
 	char			**argv;			// Lista de argumentos: [""ls"", "-l", NULL]
 	int				infile;		// fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
-//	int				err_infile;	//perror		
 	int				outfile;	// fd 1:STDOUT, 2: STDERR, >=3 a archivo de salida: "> out.txt" o ">> out.txt" 
-//	int				err_outfile;	//perror		
-	//int				heredoc;	// 1 si heredoc, 0 si no
-	//char			*heredoc_delim;		// delimitador del heredoc: "<< EOF"
+	char		**outfile_name;
+	int		outfile_count;
 	t_heredoc		*heredocs; //array dinamico
 	int				heredoc_count;// cuantos hay
 	

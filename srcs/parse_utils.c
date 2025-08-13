@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 16:48:20 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 12:37:18 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:58:55 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ t_cmd	*init_comand(void)
 	cmd -> argv = NULL;
 	cmd -> infile = 0;
 	cmd -> outfile = 1;
+	cmd -> outfile_name = NULL;
+	cmd -> outfile_count = 0;
 	cmd -> heredocs = NULL;
 	cmd -> heredoc_count = 0;
 	cmd -> next = NULL;

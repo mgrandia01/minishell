@@ -6,15 +6,27 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:03:55 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/07/15 14:03:57 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:36:50 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+/*
+void	cleanup_outfiles(t_cmd *cmd)
+{
+	int i;
 
+	if (!cmd || !cmd->outfile_name)
+		return;
+
+	for (i = 0; i < cmd->outfile_count; i++)
+		unlink(cmd->outfile_name[i]); // borra el archivo del sistema
+}
+*/
 void	ft_handle_sigint(int sig)
 {
 	(void)sig;
+//	cleanup_outfiles(global_cmd);
 	write(STDOUT_FILENO, "\n", 1);
 	//rl_on_new_line();		// resetea línea interna de readline
 	//rl_replace_line("", 0);		// limpia línea actual
