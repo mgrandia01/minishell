@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/02 15:10:15 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:36:49 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 	else
 	{
 		end = c->end;
-		add_token(n_lst, c->type, *r, end);
+		add_tok(n_lst, c->type, *r, end);
 	}
 	*r = NULL;
 }
@@ -53,7 +53,7 @@ void	process_token_expansion(t_token **tokens, char *envp[])
 		if (ft_strchr(c->value, '$'))
 			exp_tok_val(c->value, &new_list, c, envp);
 		else
-			add_token(&new_list, c->type, ft_strdup(c->value), c->end);
+			add_tok(&new_list, c->type, ft_strdup(c->value), c->end);
 		c = c->next;
 	}
 	free_tokens(*tokens);

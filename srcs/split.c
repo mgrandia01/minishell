@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/26 15:27:44 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:51:53 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,16 @@ static char	**ft_split_whitespace(char const *s, int i)
 	return (result);
 }
 
-void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
+void	split_tok(t_token **n_lst, t_token_type t, char *t_e, int e_fl)
 {
 	char	**split;
 	int		i;
 	int		end;
 	int		debug;
 
-	if (!t_exp)
+	if (!t_e)
 		return ;
-	split = ft_split_whitespace(t_exp, 0);
+	split = ft_split_whitespace(t_e, 0);
 	if (!split)
 		return ;
 	debug = 0;
@@ -62,7 +62,7 @@ void	split_tok(t_token **n_lst, t_token_type type, char *t_exp, int e_fl)
 		end = 0;
 		if (split[i + 1] == NULL)
 			end = e_fl;
-		add_token(n_lst, type, ft_strdup(split[i]), end);
+		add_tok(n_lst, t, ft_strdup(split[i]), end);
 		i++;
 	}
 	free_split_array(split);

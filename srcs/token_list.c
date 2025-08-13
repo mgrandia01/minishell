@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/02 15:51:50 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:44:34 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
  * Creates a new token and adds it to the end of the token list.
  * Returns 1 on success, 0 on failure.
  */
-int	add_token(t_token **lst, t_token_type type, char *val, int end)
+int	add_tok(t_token **lst, t_token_type type, char *val, int end)
 {
 	t_token	*new;
 
@@ -65,7 +65,7 @@ int	handle_quotes(char *input, t_token **list, t_pos_data *data)
 	char	quote;
 	int		end;
 
-	process_previous_word(input, list, data);
+	process_pre_word(input, list, data);
 	quote = input[data->pos];
 	data->pos++;
 	start = process_q_cont(input, &data->pos, quote, list);
@@ -75,14 +75,14 @@ int	handle_quotes(char *input, t_token **list, t_pos_data *data)
 		data->pos++;
 	val = ft_substr(input, (start - 1), (data->pos + 1 - start));
 	end = handle_end(input[data->pos]);
-	add_token(list, TOKEN_WORD, val, end);
+	add_tok(list, TOKEN_WORD, val, end);
 	return (0);
 }
 
 /*
  * Extracts and adds the previous word as a token if there is one.
  */
-void	process_previous_word(char *input, t_token **list, t_pos_data *data)
+void	process_pre_word(char *input, t_token **list, t_pos_data *data)
 {
 	char	*val;
 	int		end;
@@ -91,6 +91,6 @@ void	process_previous_word(char *input, t_token **list, t_pos_data *data)
 	{
 		val = ft_substr(input, data->start, data->pos - data->start);
 		end = handle_end(input[data->pos]);
-		add_token(list, TOKEN_WORD, val, end);
+		add_tok(list, TOKEN_WORD, val, end);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:27:00 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/07/15 16:02:41 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:48:49 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 	}
 	else if (data->state == 0 && (input[data->pos] == ' '
 			|| input[data->pos] == '\t'))
-		handle_whitespace(input, list, data);
+		hand_whitespace(input, list, data);
 	else if (input[data->pos] == '>' || input[data->pos] == '<'
 		|| input[data->pos] == '|')
 		handle_operators(input, list, data);
@@ -66,6 +66,6 @@ t_token	*ft_tokenize(char *input)
 		if (process_special_chars(input, &list, &data) == -1)
 			return (NULL);
 	}
-	finalize_tokenization(input, &list, &data);
+	fin_tokenization(input, &list, &data);
 	return (list);
 }

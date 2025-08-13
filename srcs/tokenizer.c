@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 12:02:14 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:55:11 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,13 @@ void	handle_echo_exit_status(t_exp_data *data)
 	j = 0;
 	
 	while (tmp[j])
-		handle_literal_char(tmp, &j, &(data->result), &(data->s));
+		handle_literal_ch(tmp, &j, &(data->result), &(data->s));
 	free (tmp);
 	data->i +=2;
 }
 
 // Add current char to result string and update indices
-void	handle_literal_char(const char *t_val, int *i, char **r, int *s)
+void	handle_literal_ch(const char *t_val, int *i, char **r, int *s)
 {
 	*r = ft_realloc(*r, *s, *s + 1);
 	(*r)[*s] = t_val[*i];
