@@ -186,7 +186,7 @@ int	main(int argc, char *argv[], char *envp[])
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
-    	ft_setup_signals();
+    	ft_setup_signals(1);
     	input = NULL;
     	tokens = NULL;
     	cmds = NULL;
@@ -286,7 +286,7 @@ int	main(int argc, char *argv[], char *envp[])
 		/*(void)tokens;
 		cmds = NULL;
 		ft_exe_tests(cmds, envp);*/
-		//ft_cmdclear (&cmds, ft_free_argv);
+		ft_cmdclear (&cmds, ft_free_argv);
 		
        	}
  	ft_lstclear(&l_env, ft_free_env);      	

@@ -24,8 +24,6 @@
 # include <signal.h>
 # include <limits.h>
 
-
-
 // un nodo por comando. fin de comando si hay pipe
 // para crear la lista se guardaran los tokens argv hasta encontrar un pipe. 
 // Si es un operador:
@@ -176,7 +174,7 @@ void	process_token_expansion(t_token **tokens, char *envp[]);
 char	*find_path(char *cmd, char *env[]);
 
 //---------- signals.c----------------	
-void	ft_setup_signals(void);
+void	ft_setup_signals(int enable);
 void	handle_sigint(int sig);
 
 //---------- execute.c----------------

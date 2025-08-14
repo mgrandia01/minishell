@@ -49,6 +49,22 @@ int	ft_builtin_pwd(void)
 	return (0);
 }
 
+static int	ft_echo_is_n(char *arg)
+{
+	int i;
+
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	i = 2;
+    	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	ft_builtin_echo(char **args)
 {
 	int	i;
@@ -56,7 +72,7 @@ int	ft_builtin_echo(char **args)
 
 	add_cr = 1;
 	i = 1;
-	if (args[i] && !ft_strncmp(args[i], "-n", 3))
+	if (args[i] && ft_echo_is_n(args[i]))
 	{
 		add_cr = 0;
 		i++;
