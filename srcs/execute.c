@@ -12,6 +12,79 @@
 
 #include "../includes/minishell.h"
 
+/*void	ft_proc_pipeline_redir(int **pipeline, int proc, int n_proc)
+{
+	if (n_proc < 2)
+		return ;
+	if (proc == 0)
+	{
+		close(pipeline[0][0]);
+		dup2(pipeline[0][1], STDOUT_FILENO);
+		close(pipeline[0][1]);
+		close(pipeline[1][0]);
+		close(pipeline[1][1]);
+		close(pipeline[2][0]);
+		close(pipeline[2][1]);
+		close(pipeline[3][0]);
+		close(pipeline[3][1]);
+	}
+
+	if (proc == 1)
+	{
+		dup2(pipeline[0][0], STDIN_FILENO);
+		close(pipeline[0][0]);
+		close(pipeline[0][1]);
+		close(pipeline[1][0]);
+		dup2(pipeline[1][1], STDOUT_FILENO);
+		close(pipeline[1][1]);
+		close(pipeline[2][0]);
+		close(pipeline[2][1]);
+		close(pipeline[3][0]);
+		close(pipeline[3][1]);
+	}
+	
+	if (proc == 2)
+	{
+		close(pipeline[0][0]);
+		close(pipeline[0][1]);
+		dup2(pipeline[1][0], STDIN_FILENO);
+		close(pipeline[1][0]);
+		close(pipeline[1][1]);
+		close(pipeline[2][0]);
+		dup2(pipeline[2][1], STDOUT_FILENO);
+		close(pipeline[2][1]);
+		close(pipeline[3][0]);
+		close(pipeline[3][1]);
+	}
+	
+	if (proc == 3)
+	{
+		close(pipeline[0][0]);
+		close(pipeline[0][1]);
+		close(pipeline[1][0]);
+		close(pipeline[1][1]);
+		dup2(pipeline[2][0], STDIN_FILENO);
+		close(pipeline[2][0]);
+		close(pipeline[2][1]);
+		close(pipeline[3][0]);
+		dup2(pipeline[3][1], STDOUT_FILENO);
+		close(pipeline[3][1]);
+	}
+	
+	if (proc == 4)
+	{
+		close(pipeline[0][0]);
+		close(pipeline[0][1]);
+		close(pipeline[1][0]);
+		close(pipeline[1][1]);
+		close(pipeline[2][0]);
+		close(pipeline[2][1]);
+		dup2(pipeline[3][0], STDIN_FILENO);
+		close(pipeline[3][0]);
+		close(pipeline[3][1]);
+	}
+}*/
+
 int	ft_validate_fds(t_cmd *cmd)
 {
 	while (cmd)
@@ -121,7 +194,7 @@ int	ft_execute_builtin(t_cmd *cmd, t_list *l_env)
         }
 }*/
 
-void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
+/*void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
 	int		pipefd[2];
 	int		prev_fd;
@@ -155,4 +228,262 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 		cmd = cmd_temp;
 	}
 	ft_setup_signals();
+}*/
+
+// free all pipeline closing only opened pipes
+void	ft_free_pipeline(int **pipeline)
+{
+	int	i;
+	
+	if (!pipeline)
+		return ;
+	i = 0;
+	while (pipeline[i] != NULL)
+	{
+		if (pipeline[i][0] >= 0)
+		{
+			close(pipeline[i][0]);
+			pipeline[i][0] = -1;
+		}
+		if (pipeline[i][1] >= 0)
+		{
+			close(pipeline[i][1]);
+			pipeline[i][1] = -1;
+		}
+		free(pipeline[i]);
+		i++;
+	}
+	free(pipeline);
 }
+
+// pipeline is a **int null-finished containing int[2] to store pipes
+// pipes are opened
+int	ft_create_pipes(int ***pipeline, int n_pipes)
+{
+	int	i;
+	
+	*pipeline = (int **) malloc ((n_pipes + 1) * 2 * sizeof(int *));
+	if (!*pipeline)
+		return (0);
+	i = 0;
+	while (i < n_pipes)
+	{
+		(*pipeline)[i] = (int *) malloc (2 * sizeof(int));
+		if (!(*pipeline)[i])
+			return (0);
+		i++;
+	}
+	(*pipeline)[i] = NULL;
+	i = 0;
+	while (i < n_pipes)
+	{
+		if (pipe((*pipeline)[i]) == -1)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+// n_pipes is n_procs - 1
+int	ft_calculate_pipes(t_cmd *cmd)
+{
+	int 	n_pipes;
+	t_cmd	*current;
+
+	n_pipes = 0;
+	current = cmd;
+	while (current)
+	{
+		n_pipes++;
+		current = current->next;
+	}
+	return (n_pipes - 1);
+}
+
+int	ft_search_cmd(char *path, char *cmd)
+{
+	if (!path)
+	{
+		if (cmd)
+			ft_printf(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		return (0);
+	}
+	return (1);
+}
+
+void	ft_handle_execve_error(char *cmd)
+{
+	ft_printf(STDERR_FILENO, "minishell: %s: %s\n", cmd, strerror(errno));
+	if (errno == ENOENT)
+		g_exit_status = 127;
+	else if (errno == EACCES)
+		g_exit_status = 126;
+	else
+        	g_exit_status = 1;
+}
+
+void	ft_execute_process(t_cmd *cmd, t_list *l_env)
+{
+	char	**envp_exec;
+	char	*path;
+
+	if (cmd->argv && ft_is_builtin(cmd->argv[0]))
+	{
+		g_exit_status = ft_execute_builtin(cmd, l_env);
+		ft_lstclear(&l_env, ft_free_env);
+	}
+	else
+	{
+		envp_exec = ft_build_envp_array(l_env);
+		if (cmd->argv)
+			path = find_path(cmd->argv[0], envp_exec);
+		else
+			path = NULL;
+		ft_lstclear(&l_env, ft_free_env);
+		if (ft_search_cmd(path, cmd->argv[0]))
+			if (execve(path, cmd->argv, envp_exec) == -1)
+				 ft_handle_execve_error(cmd->argv[0]);
+		ft_free_tab(envp_exec);
+		free(path); // liberar la mem del main (input, token y cmd). provocar el fallo con /usr/bin echo "paco" (con el espacio)
+	}
+}
+
+int	ft_proc_files_redir(t_cmd *cmd, t_list *l_env)
+{
+	int	ret_val;
+	
+	ret_val = 1;
+	if (cmd->infile > 2)
+	{
+		dup2(cmd->infile, STDIN_FILENO);
+		close(cmd->infile);
+	}
+	if (cmd->outfile > 2)
+	{
+		dup2(cmd->outfile, STDOUT_FILENO);
+		close(cmd->outfile);
+	}
+	if (cmd->infile == -1)
+	{
+		close(STDIN_FILENO);
+		ret_val = 0;
+	}
+	if (cmd->outfile == -1)
+	{
+		close(STDOUT_FILENO);
+		ret_val = 0;
+	}
+	if (ret_val == 0)
+		ft_lstclear(&l_env, ft_free_env);
+	return (ret_val);
+	// cambio de ultima hora despues de mergear cerrando las STDIN
+	// y STDOUT direcmtante. tambien liberando la lista de entorno
+	// (ya se libera tres veces por funciones separadas, ver si se
+	// puede hacer una sola vez).
+	// fake_cmd | wc -l da 1 en vez de 0, probar bien esto por si
+	// tiene que ver con estos cambios de ultima hora para evitar leaks
+}
+
+void	ft_close_pipes(int **pipeline, int n_pipes)
+{
+	int	i;
+
+	i = 0;
+	while (i < n_pipes)
+	{
+		if (pipeline[i][0])
+			close(pipeline[i][0]);
+		if (pipeline[i][1])
+			close(pipeline[i][1]);
+		i++;
+	}
+}
+
+void	ft_proc_pipeline_redir(int **pipeline, int proc, int n_procs)
+{
+	if (!pipeline || n_procs < 2)
+		return ;
+	if (proc > 0)
+		dup2(pipeline[proc - 1][0], STDIN_FILENO);
+	if (proc < (n_procs - 1))
+		dup2(pipeline[proc][1], STDOUT_FILENO);
+	ft_close_pipes(pipeline, n_procs - 1);
+}
+
+// parent needs to close pipes before waiting. OK!
+int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
+{
+	int	i;
+	pid_t	pid;
+	pid_t	wpid;
+	t_cmd	*curr_cmd;
+
+	curr_cmd = cmd;
+	i = 0;
+	printf("Proc padre: PID = %d\n", getpid());
+	while (i < n_procs && curr_cmd)
+	{
+		pid = fork();
+		if (pid < 0)
+			return (0);
+		else if (pid == 0)
+		{
+			ft_proc_pipeline_redir(pipeline, i, n_procs);
+			printf("Proc hijo %d con PID %d\n", i, getpid());fflush(0);
+			if (ft_proc_files_redir(curr_cmd, l_env))
+				ft_execute_process(curr_cmd, l_env);
+			ft_free_pipeline(pipeline); // cierro pipes. Incluyo liberacion de mallocs pipeline
+			//ft_lstclear(&l_env, ft_free_env); // aunque haya ido mal se habra liberado antes de execve
+			ft_cmdclear (&cmd, ft_free_argv);
+            		exit (g_exit_status);
+        	}
+        	curr_cmd = curr_cmd->next;
+        	i++;
+        }
+        ft_close_pipes(pipeline, n_procs - 1);
+        i = 0;
+	while (i < n_procs)
+	{
+	        wpid = wait(NULL);
+       		printf("Finalizando...Proc hijo con PID %d ha terminado\n", wpid);fflush(0);
+       		i++;
+        }
+   	printf("Proc padre: todos los hijos han terminado. PID = %d\n", getpid());
+
+	return (1);
+}
+
+// Ignorar SIGINT en el padre mientras se ejecutan comandos
+// calcular n_pipes, crear array de pipes dinamicamente, crear procesos
+// liberar array de pipes y restaurar senyales
+void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
+{
+	int	n_pipes;
+	int	**pipeline;
+
+	if (!cmd)
+		return ;
+	ft_setup_signals(0);
+	n_pipes = ft_calculate_pipes(cmd);
+	ft_printf(STDOUT_FILENO, "\nnumero de pipes %d\n", n_pipes);
+	if (!ft_create_pipes(&pipeline, n_pipes))
+	{
+		perror("minishell: pipe");
+		g_exit_status = 1;
+		ft_free_pipeline(pipeline);
+		return ;
+	}
+	for(int i=0; i<n_pipes; i++)
+		ft_printf(1,"Pipe %d: [0]%d [1]%d\n",i, pipeline[i][0], pipeline[i][1]);
+	if (!ft_create_process(n_pipes + 1, pipeline, cmd, l_env))
+	{
+		perror("minishell: fork");
+		g_exit_status = 1;
+		ft_free_pipeline(pipeline);
+		return ;
+	}
+	ft_free_pipeline(pipeline);
+	ft_setup_signals(1);
+}
+
+

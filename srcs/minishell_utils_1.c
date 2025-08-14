@@ -85,6 +85,10 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 				free((*lst)->heredoc_delim_1);
 			if ((*lst)->heredoc_delim_2)
 				free((*lst)->heredoc_delim_2);*/
+			if ((*lst)->infile > 2) //anyadido a raiz del superpipe
+				close((*lst)->infile);
+			if ((*lst)->outfile > 2) //anyadido a raiz del superpipe
+				close((*lst)->outfile);
 			free(*lst);
 			*lst = ptr_next;
 		}

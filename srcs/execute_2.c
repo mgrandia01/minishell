@@ -108,7 +108,7 @@ void	ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid)
 	fflush(0);
 }
 
-static void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
+void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 {
 	if (!path)
 	{

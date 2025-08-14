@@ -45,8 +45,18 @@ void	ft_handle_sigquit(int sig)
 	// cuidado con usar tgetstr(), tgoto() y tputs() pq pueden interferir con readline
 }
 
-void	ft_setup_signals(void)
+// SIGINT CTRL + C
+// SIGQUIT CTRL + contrabrarra
+void	ft_setup_signals(int enable)
 {
-    signal(SIGINT, ft_handle_sigint);	// Ctrl+C
-    signal(SIGQUIT, ft_handle_sigquit);		// Ctrl+ contrabarra
+	if (enable)
+	{
+		signal(SIGINT, ft_handle_sigint);
+		signal(SIGQUIT, ft_handle_sigquit);
+	}
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+	}
 }
