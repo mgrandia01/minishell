@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 11:12:33 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/13 16:14:09 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/18 16:16:04 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ void	ft_manage_heredoc(t_cmd *cmd)
 {
 	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
-		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count);
+		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count, cmd);
 		if (cmd->infile == -1)
 		{
 			ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);

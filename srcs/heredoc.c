@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/12 13:14:05 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/18 16:24:11 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	sigint_handler_heredoc(int sig)
         g_exit_status = 130;
 }
 
-int	ft_create_heredoc(t_heredoc *delim, int heredoc_count)
+int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd)
 {
 	int					pipefd[2];
 	char				*line;
@@ -47,9 +47,12 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count)
 	struct sigaction	sa_old;
 	int					i_heredoc;
 	int					flag;
-	
+	int	i;
+
 	flag = 0;
 	i_heredoc = 0;
+	i = 0;
+	(void)cmd;
 	
 	// Guardar el handler actual (tu ft_handle_sigint)
 	sigaction(SIGINT, NULL, &sa_old);
@@ -89,6 +92,14 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count)
 			// si no hay más datos disponibles
 			
 			//g_exit_status = 130;
+			if (g_exit_status == 130)
+			{
+				while(i < cmd->outfile_count)
+				{
+					unlink(cmd->outfile_name[i]);
+					i++;
+				}
+			}
 			return (-1);
 		}
 		

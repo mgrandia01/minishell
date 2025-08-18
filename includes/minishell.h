@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 16:15:28 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/18 16:15:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ void			ft_cmddelone(t_cmd *lst, void (*del)(char **));
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);
 
 //----------- heredoc.c----------------
-int				ft_create_heredoc(t_heredoc *delim, int heredoc_count);
+int				ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd);
 void			ft_free_heredoc(t_cmd *cmd);
 
 //----------- execute_2.c----------------
