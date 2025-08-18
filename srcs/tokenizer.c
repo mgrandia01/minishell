@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 16:04:31 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/18 17:01:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,21 @@ char	*literal_tok(char **result, int *size)
 
 void	handle_exit_status(int *i)
 {
-	//FIXME Crec que podriem necessitar una variable global
-	//TODO
-	ft_printf(STDERR_FILENO, "minishell: %d: command not found\n", g_exit_status);//FIXME sempre es command not found?
+	ft_printf(STDERR_FILENO, "minishell: %d: command not found\n", g_exit_status);
 	*i += 2;
 }
 
 void	handle_echo_exit_status(t_dat *data)
 {
 	char	*tmp;
-	int	j;
+	int		j;
 
 	tmp = ft_itoa(g_exit_status);
 	j = 0;
-	
 	while (tmp[j])
 		handle_literal_ch(tmp, &j, &(data->result), &(data->s));
 	free (tmp);
-	data->i +=2;
+	data->i + =2;
 }
 
 // Add current char to result string and update indices

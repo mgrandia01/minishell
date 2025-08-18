@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 14:16:54 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/18 17:06:35 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	free_outfiles(t_cmd *cmd)
 static void	add_outfile_name(t_cmd *cmd, const char *filename)
 {
 	char	**new_array;
-	int	i;
+	int		i;
 
 	i = 0;
 	if (!cmd || !filename)
