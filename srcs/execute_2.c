@@ -283,7 +283,7 @@ void	ft_manage_heredoc(t_cmd *cmd)
 	ft_free_heredoc(cmd);
 }
 
-void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
+/*void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
 {
 	pid_t	pid;
 
@@ -312,4 +312,4 @@ void	ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[2])
 		else // padre
 			ft_parent_pro(cmd, prev_fd, pipefd, pid);
 	}
-}
+}*/
