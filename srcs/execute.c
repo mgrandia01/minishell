@@ -322,6 +322,20 @@ void	ft_handle_execve_error(char *cmd)
         	g_exit_status = 1;
 }
 
+void	ft_proc_files_redir_cmd(t_cmd *cmd)
+{
+	if (cmd->infile > 2)
+	{
+		dup2(cmd->infile, STDIN_FILENO);
+		close(cmd->infile);
+	}
+	if (cmd->outfile > 2)
+	{
+		dup2(cmd->outfile, STDOUT_FILENO);
+		close(cmd->outfile);
+	}
+}
+
 void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 {
 	char	**envp_exec;
@@ -341,20 +355,24 @@ void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 			path = NULL;
 		ft_lstclear(&l_env, ft_free_env);
 		if (ft_search_cmd(path, cmd->argv[0]))
+		{
+			ft_proc_files_redir_cmd(cmd);
 			if (execve(path, cmd->argv, envp_exec) == -1)
 				 ft_handle_execve_error(cmd->argv[0]);
-		ft_handle_execve_error(cmd->argv[0]);
+		}
+		else
+			g_exit_status = 127;
 		ft_free_tab(envp_exec);
 		free(path); // liberar la mem del main (input, token y cmd). provocar el fallo con /usr/bin echo "paco" (con el espacio)
 	}
 }
 
-int	ft_proc_files_redir(t_cmd *cmd, t_list *l_env)
+int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env)
 {
 	int	ret_val;
 	
 	ret_val = 1;
-	if (cmd->infile > 2)
+	/*if (cmd->infile > 2)
 	{
 		dup2(cmd->infile, STDIN_FILENO);
 		close(cmd->infile);
@@ -363,7 +381,7 @@ int	ft_proc_files_redir(t_cmd *cmd, t_list *l_env)
 	{
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
-	}
+	}*/
 	if (cmd->infile == -1)
 	{
 		close(STDIN_FILENO);
@@ -433,7 +451,7 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 		{
 			ft_proc_pipeline_redir(pipeline, i, n_procs, cmd);
 			printf("Proc hijo %d con PID %d\n", i, getpid());fflush(0);
-			if (ft_proc_files_redir(curr_cmd, l_env))
+			if (ft_proc_files_redir_error(curr_cmd, l_env))
 				ft_execute_process(curr_cmd, l_env);
 			ft_free_pipeline(pipeline); // cierro pipes. Incluyo liberacion de mallocs pipeline
 			//ft_lstclear(&l_env, ft_free_env); // aunque haya ido mal se habra liberado antes de execve
@@ -450,18 +468,18 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 	        //wpid = wait(NULL);
 	        if (i == n_procs - 1)
 	        {
-	        wstatus = 0;
-	        waitpid(pid, &wstatus, 0);
-		if (WIFEXITED(wstatus))
-			g_exit_status = WEXITSTATUS(wstatus);
-		else
-		{
-			if (WIFSIGNALED(wstatus))
-				g_exit_status = 128 + WTERMSIG(wstatus);
+			wstatus = 0;
+			waitpid(pid, &wstatus, 0);
+			if (WIFEXITED(wstatus))
+				g_exit_status = WEXITSTATUS(wstatus);
+			else
+			{
+				if (WIFSIGNALED(wstatus))
+					g_exit_status = 128 + WTERMSIG(wstatus);
+			}
 		}
-		}
-       		printf("Finalizando...Proc hijo con PID %d ha terminado\n", pid);fflush(0);
-       		i++;
+		printf("Finalizando...Proc hijo con PID %d ha terminado\n", pid);fflush(0);
+		i++;
         }
    	printf("Proc padre: todos los hijos han terminado. PID = %d\n", getpid());
 	return (1);
