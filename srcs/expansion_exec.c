@@ -66,10 +66,7 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			}
 			if (t_val[d->i + 1] == '?')
 			{
-				if (*n_lst && ft_strncmp((*n_lst)->value, "echo", 5) == 0)
-					handle_echo_exit_status(d);
-				else
-					handle_exit_status(&(d->i));
+				handle_echo_exit_status(d);
 			}
 			else
 			{

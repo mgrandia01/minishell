@@ -33,12 +33,7 @@ char	*literal_tok(char **result, int *size)
 	return (*result);
 }
 
-void	handle_exit_status(int *i)
-{
-	ft_printf(STDERR_FILENO, "minishell: %d: command not found\n", g_exit_status);
-	*i += 2;
-}
-
+// TODO	ft_printf(STDERR_FILENO, "minishell: %d: command not found\n", g_exit_status);
 void	handle_echo_exit_status(t_dat *data)
 {
 	char	*tmp;

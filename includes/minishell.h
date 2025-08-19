@@ -219,7 +219,7 @@ void			ft_free_heredoc(t_cmd *cmd);
 //----------- execute_2.c----------------
 void			ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
 void			ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
-void			ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[]);
+void			ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2]);
 void			ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
 void			ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[]);
 void			ft_manage_heredoc(t_cmd *cmd);

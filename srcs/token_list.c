@@ -40,7 +40,8 @@ int	add_tok(t_token **lst, t_token_type type, char *val, int end)
 		*lst = new;
 	return (1);
 }
-
+// Checks if the given character marks the end of a token (returns 0)
+// or not (returns 1)
 static int	handle_end(char c)
 {
 	int	end;
