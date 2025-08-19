@@ -13,39 +13,27 @@
 #include "../includes/minishell.h"
 #include <stdio.h>
 
-int g_exit_status = 0;
+int	g_exit_status = 0;
 
-void print_tokens(t_token *tokens)
+void	print_tokens(t_token *tokens)
 {
-    while (tokens)
-    {
-        const char *type_str;
- //       const char *quote_str;
-
-        switch (tokens->type)
-        {
-            case TOKEN_WORD:          type_str = "WORD"; break;
-            case TOKEN_PIPE:          type_str = "PIPE"; break;
-            case TOKEN_REDIR_IN:      type_str = "REDIR_IN"; break;
-            case TOKEN_REDIR_OUT:     type_str = "REDIR_OUT"; break;
-            case TOKEN_REDIR_APPEND:  type_str = "REDIR_APPEND"; break;
-            case TOKEN_HEREDOC:       type_str = "HEREDOC"; break;
-            case TOKEN_EOF:           type_str = "EOF"; break;
-            default:                  type_str = "UNKNOWN"; break;
-        }
-
-/*        switch (tokens->quote)
-        {
-            case 0: quote_str = "NORMAL"; break;
-            case 1: quote_str = "SINGLE_QUOTE"; break;
-            case 2: quote_str = "DOUBLE_QUOTE"; break;
-            default: quote_str = "UNKNOWN_QUOTE"; break;
-        }
-*/
-        printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
-        //printf("Token type: %s, value: '%s', quote: %s, end: %d\n", type_str, tokens->value, quote_str, tokens->end);
-        tokens = tokens->next;
-    }
+	const char *type_str;
+	while (tokens)
+	{
+	switch (tokens->type)
+	{
+		case TOKEN_WORD:		type_str = "WORD"; break;
+		case TOKEN_PIPE:		type_str = "PIPE"; break;
+		case TOKEN_REDIR_IN:		type_str = "REDIR_IN"; break;
+		case TOKEN_REDIR_OUT:		type_str = "REDIR_OUT"; break;
+		case TOKEN_REDIR_APPEND:	type_str = "REDIR_APPEND"; break;
+		case TOKEN_HEREDOC:		type_str = "HEREDOC"; break;
+		case TOKEN_EOF:			type_str = "EOF"; break;
+		default:			type_str = "UNKNOWN"; break;
+	}
+	printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
+	tokens = tokens->next;
+	}
 }
 
 void	print_commands(t_cmd *cmd_list)
@@ -178,11 +166,11 @@ int	main(int argc, char *argv[], char *envp[])
 	char	*input;
 	t_token	*tokens;
 	t_cmd	*cmds;
+	size_t	len;
+	t_list	*l_env;
+	char	**envp_exec;
 	//char	*path;
-	size_t len;
-	t_list *l_env;
-	char    **envp_exec;
-       
+	
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
