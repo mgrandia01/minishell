@@ -44,7 +44,7 @@ void	handle_echo_exit_status(t_dat *data)
 	while (tmp[j])
 		handle_literal_ch(tmp, &j, &(data->result), &(data->s));
 	free (tmp);
-	data->i +=  2;
+	data->i += 2;
 }
 
 // Add current char to result string and update indices
