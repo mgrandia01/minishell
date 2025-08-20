@@ -12,28 +12,69 @@
 
 #include "../includes/minishell.h"
 
-int	ft_builtin_cd(char **args)
+/*char	*ft_getenv(char *name, t_list *env)
 {
-	if (!args[1])
+	size_t	len;
+	char	*key;
+	
+	len = ft_strlen(name);
+	while (env)
 	{
-		write(STDERR_FILENO, "minishell: cd: missing argument\n", 32);
-		return (1);
+		key = (char *)env->content;
+		if (ft_strncmp(entry, name, len) == 0 && entry[len] == '=')
+		 	return &entry[len + 1];
+        env = env->next;
 	}
-	if (chdir(args[1]) != 0)
-	{
-		write(STDERR_FILENO, "minishell: cd: ", 15);
-		write(STDERR_FILENO, args[1], ft_strlen(args[1]));
-		write(STDERR_FILENO, ": ", 2);
-		write(STDERR_FILENO, strerror(errno), ft_strlen(strerror(errno)));
-		write(STDERR_FILENO, "\n", 1);
-		return (1);
-	}
-	return (0);
+	return (NULL);
 }
 
 int	ft_builtin_pwd(void)
 {
+	char	*pwd;
+	
+	pwd = ft_getenv("PWD", l_env);
+	if (pwd)
+	{
+		ft_printf(STDOUT_FILENO, "%s\n", pwd);
+		return (0);
+	}
+	else
+	{
+		ft_printf(STDERR_FILENO, "minishell: pwd: PWD not set\n");
+		return (1);
+	}
+}*/
+
+// si el getpwd no falla y no esta en la papelera, muestro el getpwd
+// si el getpwd falla o esta en la papelera, muestro el PWD
+int	ft_builtin_pwd(t_list *l_env)
+{
 	char	buffer[PATH_MAX];
+	char	*pwd;
+
+	pwd = NULL;
+	pwd = getcwd(buffer, sizeof(buffer));
+	if (pwd && ft_strnstr(pwd, "/.local/share/Trash", ft_strlen(pwd)) != NULL)
+	{
+		write(STDOUT_FILENO, buffer, ft_strlen(buffer));
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	else
+	{
+		pwd = ft_get_env_value("PWD", l_env);
+		if (pwd)
+			ft_printf(STDOUT_FILENO, "%s\n", pwd);
+		else
+			ft_printf(STDERR_FILENO, "minishell: pwd: PWD not set\n");
+	}
+	return (0);
+}
+
+/*int	ft_builtin_pwd(t_list *l_env)
+{
+	char	buffer[PATH_MAX];
+	char	*home;
+
 
 	if (getcwd(buffer, sizeof(buffer)))
 	{
@@ -42,21 +83,36 @@ int	ft_builtin_pwd(void)
 	}
 	else
 	{
+		// el back to home se puede reutilizar con CD y pasar al utils
 		write(STDERR_FILENO, "minishell: pwd: ", 16);
 		write(STDERR_FILENO, strerror(errno), ft_strlen(strerror(errno)));
+		write(STDERR_FILENO, "\nminishell: pwd: Back to HOME\n", 30);
+		home = ft_get_env_value("HOME", l_env);
+		if (!home)
+		{
+			write(STDERR_FILENO, "minishell: pwd: HOME not set\n", 29);
+			return (1);
+		}
+		if (chdir(home) != 0)
+		{
+			ft_printf(STDERR_FILENO, "minishell: pwd: %s: ", home);
+			ft_printf(STDERR_FILENO, "%s\n", strerror(errno));
+			return (1);
+		}
+		ft_export_assign_var(ft_strdup("PWD"), ft_strdup(home), &l_env);
 		return (1);
 	}
 	return (0);
 }
-
+*/
 static int	ft_echo_is_n(char *arg)
 {
-	int i;
+	int	i;
 
 	if (!arg || arg[0] != '-' || arg[1] != 'n')
 		return (0);
 	i = 2;
-    	while (arg[i])
+	while (arg[i])
 	{
 		if (arg[i] != 'n')
 			return (0);
