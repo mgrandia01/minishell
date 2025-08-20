@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/08/11 10:07:11 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/08/20 14:23:04 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NAME = minishell
 CC = cc
 AR = ar rcs
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 # ─────────────────────────────────────────────────────────────
 # COLORESSSSSS
 # ─────────────────────────────────────────────────────────────
