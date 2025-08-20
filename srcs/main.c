@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/02 13:18:21 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/20 10:52:22 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,8 +190,8 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
     	{
         	//ft_printf("minishell \u25B8 ");
-        	//if (isatty(STDIN_FILENO))
-        	//	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
+        	if (isatty(STDIN_FILENO))
+        		ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
         	input = get_next_line(STDIN_FILENO);
         	//input = readline("\033[1;32mminishell \u25B8\033[0m ");//FIXME historial
 		//("\nminishell \u25B8 "); //para las senales y el history ira bien
