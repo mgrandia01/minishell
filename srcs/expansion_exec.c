@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 16:07:06 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/20 14:47:05 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,7 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			}
 			if (t_val[d->i + 1] == '?')
 			{
-				if (*n_lst && ft_strncmp((*n_lst)->value, "echo", 5) == 0)
-					handle_echo_exit_status(d);
-				else
-					handle_exit_status(&(d->i));
+				handle_echo_exit_status(d);
 			}
 			else
 			{

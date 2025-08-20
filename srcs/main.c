@@ -6,46 +6,34 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/02 13:18:21 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/20 10:52:22 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <stdio.h>
 
-int g_exit_status = 0;
+int	g_exit_status = 0;
 
-void print_tokens(t_token *tokens)
+void	print_tokens(t_token *tokens)
 {
-    while (tokens)
-    {
-        const char *type_str;
- //       const char *quote_str;
-
-        switch (tokens->type)
-        {
-            case TOKEN_WORD:          type_str = "WORD"; break;
-            case TOKEN_PIPE:          type_str = "PIPE"; break;
-            case TOKEN_REDIR_IN:      type_str = "REDIR_IN"; break;
-            case TOKEN_REDIR_OUT:     type_str = "REDIR_OUT"; break;
-            case TOKEN_REDIR_APPEND:  type_str = "REDIR_APPEND"; break;
-            case TOKEN_HEREDOC:       type_str = "HEREDOC"; break;
-            case TOKEN_EOF:           type_str = "EOF"; break;
-            default:                  type_str = "UNKNOWN"; break;
-        }
-
-/*        switch (tokens->quote)
-        {
-            case 0: quote_str = "NORMAL"; break;
-            case 1: quote_str = "SINGLE_QUOTE"; break;
-            case 2: quote_str = "DOUBLE_QUOTE"; break;
-            default: quote_str = "UNKNOWN_QUOTE"; break;
-        }
-*/
-        printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
-        //printf("Token type: %s, value: '%s', quote: %s, end: %d\n", type_str, tokens->value, quote_str, tokens->end);
-        tokens = tokens->next;
-    }
+	const char *type_str;
+	while (tokens)
+	{
+	switch (tokens->type)
+	{
+		case TOKEN_WORD:		type_str = "WORD"; break;
+		case TOKEN_PIPE:		type_str = "PIPE"; break;
+		case TOKEN_REDIR_IN:		type_str = "REDIR_IN"; break;
+		case TOKEN_REDIR_OUT:		type_str = "REDIR_OUT"; break;
+		case TOKEN_REDIR_APPEND:	type_str = "REDIR_APPEND"; break;
+		case TOKEN_HEREDOC:		type_str = "HEREDOC"; break;
+		case TOKEN_EOF:			type_str = "EOF"; break;
+		default:			type_str = "UNKNOWN"; break;
+	}
+	printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
+	tokens = tokens->next;
+	}
 }
 
 void	print_commands(t_cmd *cmd_list)
@@ -178,11 +166,11 @@ int	main(int argc, char *argv[], char *envp[])
 	char	*input;
 	t_token	*tokens;
 	t_cmd	*cmds;
+	size_t	len;
+	t_list	*l_env;
+	char	**envp_exec;
 	//char	*path;
-	size_t len;
-	t_list *l_env;
-	char    **envp_exec;
-       
+	
 	(void) argc;
 	(void) argv;
 	// cambio el estado de las senyales que luego devolvere si hago forks
@@ -205,7 +193,8 @@ int	main(int argc, char *argv[], char *envp[])
         	if (isatty(STDIN_FILENO))
         		ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
         	input = get_next_line(STDIN_FILENO);
-        	//input = readline("\nminishell \u25B8 "); //para las senales y el history ira bien
+        	//input = readline("\033[1;32mminishell \u25B8\033[0m ");//FIXME historial
+		//("\nminishell \u25B8 "); //para las senales y el history ira bien
 
 		if (!input || !ft_strncmp(input,"esc",3))
 		{
@@ -213,6 +202,8 @@ int	main(int argc, char *argv[], char *envp[])
 			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
 		}
+		//if (*input)
+		//	add_history(input); //FIXME historial
 		if (!ft_strncmp(input,"\n",2))
 		{
 			free(input);
