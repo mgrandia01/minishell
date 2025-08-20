@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/18 17:06:35 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/20 16:51:53 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ static void	add_outfile_name(t_cmd *cmd, const char *filename)
 		create_outfile_name(cmd, filename);
 	else
 	{
-		new_array = malloc(sizeof(char *) * (cmd->outfile_count + 1));
+		new_array = malloc(sizeof(char *) * (cmd->outfile_count + 2));
 		if (new_array != NULL)
 		{
 			while (i < cmd->outfile_count)
@@ -141,6 +141,7 @@ static void	add_outfile_name(t_cmd *cmd, const char *filename)
 			free(cmd->outfile_name);
 			cmd->outfile_name = new_array;
 			cmd->outfile_count++;
+			new_array[cmd->outfile_count] = NULL;
 		}
 	}
 }
