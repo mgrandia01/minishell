@@ -120,9 +120,9 @@ int	ft_is_builtin(char *cmd)
 int	ft_execute_builtin(t_cmd *cmd, t_list *l_env)
 {
 	if (ft_strcmp(cmd->argv[0], "pwd") == 0)
-		return (ft_builtin_pwd());
+		return (ft_builtin_pwd(l_env));
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		return (ft_builtin_cd(cmd->argv));
+		return (ft_builtin_cd(cmd->argv, l_env));
 	if (ft_strcmp(cmd->argv[0], "echo") == 0)
 		return (ft_builtin_echo(cmd->argv));
 	if (ft_strcmp(cmd->argv[0], "env") == 0)
@@ -343,6 +343,7 @@ void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 
 	if (cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{
+		ft_proc_files_redir_cmd(cmd);
 		g_exit_status = ft_execute_builtin(cmd, l_env);
 		ft_lstclear(&l_env, ft_free_env);
 	}
@@ -485,6 +486,11 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 	return (1);
 }
 
+
+// el caso de builtin sin pipes se ha de ejecutar fuera de la pipeline y de los hijos
+// para conservar el entorno (los hijos pierden el entorno cuando finalizan
+
+
 // Ignorar SIGINT en el padre mientras se ejecutan comandos
 // calcular n_pipes, crear array de pipes dinamicamente, crear procesos
 // liberar array de pipes y restaurar senyales
@@ -495,6 +501,25 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 
 	if (!cmd)
 		return ;
+	
+	
+	//valorar si filtrar solo por los builtin que cambian estado y
+	// que tienen que ir en el padre
+	if (!cmd->next && cmd->argv && ft_is_builtin(cmd->argv[0]))
+	{
+    		//ft_manage_heredoc(curr_cmd);
+		// no hay pipe, el redir de pipes no tiene sentido, pero ver que
+		// hacer si el infile o outfile es -1, es el redir_err de  abajo
+		//ft_proc_files_redir_error(curr_cmd, l_env)
+		int saved_stdout = dup(STDOUT_FILENO); // Guardamos el original
+		ft_proc_files_redir_cmd(cmd);
+    		g_exit_status = ft_execute_builtin(cmd, l_env);
+    		dup2(saved_stdout, STDOUT_FILENO); // Restauramos STDOUT
+    		close(saved_stdout);
+		return ;
+	}
+	
+	
 	ft_setup_signals(0);
 	n_pipes = ft_calculate_pipes(cmd);
 	ft_printf(STDOUT_FILENO, "\nnumero de pipes %d\n", n_pipes);

@@ -187,8 +187,8 @@ extern int		g_exit_status;
 int				ft_strcmp(const char *s1, const char *s2);
 
 //----------- builtin.c----------------
-int				ft_builtin_pwd(void);
-int				ft_builtin_cd(char **args);
+int				ft_builtin_pwd(t_list *l_env);
+int				ft_builtin_cd(char **args, t_list *l_env);
 int				ft_builtin_echo(char **args);
 int				ft_builtin_env(char **cmd, t_list *l_env);
 int				ft_builtin_exit(t_cmd *cmd, t_list *l_env);
@@ -208,6 +208,9 @@ void			ft_free_tab(char **tab);
 void			ft_free_argv(char **ptr);
 void			ft_cmdclear(t_cmd **lst, void (*del)(char **));
 void			ft_cmddelone(t_cmd *lst, void (*del)(char **));
+
+//----------- minishell_utils_2.c----------------
+char	*ft_get_env_value(const char *key, t_list *env);
 
 //----------- builtin_export_2.c----------------
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);

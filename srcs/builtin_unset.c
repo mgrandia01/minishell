@@ -68,3 +68,49 @@ int	ft_builtin_unset(char **args, t_list **l_env)
 	}
 	return (status);
 }
+
+/*int	ft_builtin_unset(char **args, t_list **l_env)
+{
+	int		i;
+	t_list	*curr;
+	t_list	*prev;
+	t_env	*env;
+	int	status;
+
+	i = 1;
+	status = 0;
+	while (args[i])
+	{
+		if (!ft_is_valid_key(args[i]))
+		{
+			write(STDERR_FILENO, "unset: '", 8);
+			write(STDERR_FILENO, args[i], ft_strlen(args[i]));
+            		write(STDERR_FILENO, "': not a valid identifier\n", 26);
+            		status = 1;
+			i++;
+			continue ;
+		}
+		curr = *l_env;
+		prev = NULL;
+		while (curr)
+		{
+			env = (t_env *)curr->content;
+			if (env && ft_strcmp(env->key, args[i]) == 0)
+			{
+				if (prev)
+					prev->next = curr->next;
+				else
+					*l_env = curr->next;
+				free(env->key);
+				free(env->kval);
+				free(env);
+				free(curr);
+				break ;
+			}
+			prev = curr;
+			curr = curr->next;
+		}
+		i++;
+	}
+	return (status);
+}*/

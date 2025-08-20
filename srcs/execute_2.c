@@ -61,7 +61,7 @@ void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env)
 	return ;
 }
 
-void	ft_manage_parent_exit_status(int pid)
+/*void	ft_manage_parent_exit_status(int pid)
 {
 	int	wstatus;
 	//int	g_exit_status; // atencion, en el main esta como global, segun enunciado parece global
@@ -106,7 +106,7 @@ void	ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid)
 	ft_manage_parent_exit_status(pid);
 	printf("\nFIN PADRE--------------------cmd->next: %p----------------------FIN PADRE\n", cmd);
 	fflush(0);
-}
+}*/
 
 void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 {
@@ -120,7 +120,7 @@ void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 	}
 }
 
-void	ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
+/*void	ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 {
 	int		exit_code;
 	char	**envp_exec;
@@ -131,12 +131,12 @@ void	ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2])
 		exit_code = ft_execute_builtin(cmd, l_env); // cuidado, yo creo que aqui l_env habra que cambiar a por redferencia pq se modicica !!!!!!
 		ft_lstclear(&l_env, ft_free_env);
 		ft_cmdclear (&cmd, ft_free_argv);
-		/*if (cmd->infile > 2)
-			close(cmd->infile);
-		if (cmd->outfile > 2)
-			close(cmd->outfile);
-		if (prev_fd != -1)
-			close(prev_fd);*/
+		//if (cmd->infile > 2)
+		//	close(cmd->infile);
+		//if (cmd->outfile > 2)
+		//	close(cmd->outfile);
+		//if (prev_fd != -1)
+		//	close(prev_fd);
 		if (pipefd[1] != -1)
 			close(pipefd[1]);
 		exit(exit_code);
@@ -266,7 +266,7 @@ void	ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	printf("\nFIN HIJO------(ha petado %s un execvce para haber llegado aqui----------------FIN HIJO", cmd->argv[0]);fflush(0);
 	ft_cmdclear (&cmd, ft_free_argv);
 	exit(127);
-}
+}*/
 
 void	ft_manage_heredoc(t_cmd *cmd)
 {
