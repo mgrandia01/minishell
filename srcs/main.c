@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/20 10:52:22 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/20 16:10:07 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,7 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		*/
 		// iterate list and execute cmds
-	//	ft_execute(cmds, envp);
+//		ft_execute(cmds, envp);
 		//aqui ya le pasaremos la nueva struct de varaibles, no vale la pena pasar envp
 		//VAR 1 = EEEE crea variable con export=0
 		//export VAR1 pondra export=1
