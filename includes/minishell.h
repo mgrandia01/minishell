@@ -19,6 +19,7 @@
 
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <termios.h>
 # include <sys/wait.h>
 # include <errno.h>
 # include <signal.h>

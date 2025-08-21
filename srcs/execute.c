@@ -450,6 +450,8 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 			return (0);
 		else if (pid == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			ft_proc_pipeline_redir(pipeline, i, n_procs, cmd);
 			printf("Proc hijo %d con PID %d\n", i, getpid());fflush(0);
 			if (ft_proc_files_redir_error(curr_cmd, l_env))

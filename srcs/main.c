@@ -13,6 +13,17 @@
 #include "../includes/minishell.h"
 #include <stdio.h>
 
+void    disable_sigquit_echo(void)
+{
+    struct termios  term;
+
+    if (tcgetattr(STDIN_FILENO, &term) == -1)
+        return ;
+    term.c_cc[VQUIT] = _POSIX_VDISABLE;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+
 int	g_exit_status = 0;
 
 void	print_tokens(t_token *tokens)
@@ -192,14 +203,15 @@ int	main(int argc, char *argv[], char *envp[])
  	       printf("key=%s, value=%s, exported=%d\n", var->key, var->kval, var->kexp);
  	       env_list2 = env_list2->next;
     	}*/
+	disable_sigquit_echo();
 	while (1)
     	{
         	//ft_printf("minishell \u25B8 ");
-        	if (isatty(STDIN_FILENO))
-        		ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
-        	input = get_next_line(STDIN_FILENO);
-        	//input = readline("\033[1;32mminishell \u25B8\033[0m ");//FIXME historial
-		//("\nminishell \u25B8 "); //para las senales y el history ira bien
+        	//if (isatty(STDIN_FILENO))
+        	//	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
+        	//input = get_next_line(STDIN_FILENO);
+        	input = readline("\033[1;32mminishell \u25B8\033[0m ");//FIXME historial
+        	//("\nminishell \u25B8 "); //para las senales y el history ira bien
 
 		if (!input || !ft_strncmp(input,"esc",3))
 		{
@@ -207,8 +219,8 @@ int	main(int argc, char *argv[], char *envp[])
 			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
 		}
-		//if (*input)
-		//	add_history(input); //FIXME historial
+		if (*input)
+			add_history(input); //FIXME historial
 		if (!ft_strncmp(input,"\n",2))
 		{
 			free(input);
