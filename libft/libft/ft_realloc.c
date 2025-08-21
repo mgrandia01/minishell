@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 20:06:53 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/20 16:53:16 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/21 10:15:27 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 	ft_memcpy(new_ptr, ptr, copy_size);
 	if (new_size > old_size)
 		ft_bzero((char *)new_ptr + old_size, new_size - old_size);
+	free(ptr);
 	return (new_ptr);
 }

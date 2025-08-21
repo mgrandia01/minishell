@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/20 14:37:38 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/21 11:26:56 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,17 @@ int	get_quoted_type(char c)
 char	*literal_tok(char **result, int *size)
 {
 	char	*tmp;
+	char	*literal_copy;
 
 	tmp = ft_realloc(*result, *size, *size + 1);
 	*result = tmp;
 	(*result)[*size] = '\0';
-	return (*result);
+
+	literal_copy = ft_strdup(*result);
+	free(*result);
+	*result = NULL;
+	*size = 0;
+	return (literal_copy);
 }
 
 /*char	*literal_tok(char **result, int *size)

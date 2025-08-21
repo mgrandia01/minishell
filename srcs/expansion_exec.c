@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/20 16:08:41 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/21 10:21:46 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,5 @@ void	finalize_expansion(t_token **n_lst, t_token *c, t_dat *data)
 {
 	if (data->s > 0)
 		add_tok(n_lst, c->type, literal_tok(&(data->result), &(data->s)), 0);
+	
 }
