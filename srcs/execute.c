@@ -300,12 +300,12 @@ int	ft_calculate_pipes(t_cmd *cmd)
 	return (n_pipes - 1);
 }
 
-int	ft_search_cmd(char *path, char *cmd)
+int	ft_search_cmd(char *path, t_cmd *cmd)
 {
 	if (!path)
 	{
-		if (cmd)
-			ft_printf(STDERR_FILENO, "minishell: %s: command notdfdffdfd found\n", cmd);
+		if (cmd && cmd->argv && cmd->argv[0])
+			ft_printf(STDERR_FILENO, "minishell: %s: command notdfdffdfd found\n", cmd->argv[0]);
 		return (0);
 	}
 	return (1);
@@ -355,7 +355,7 @@ void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 		else
 			path = NULL;
 		ft_lstclear(&l_env, ft_free_env);
-		if (ft_search_cmd(path, cmd->argv[0]))
+		if (ft_search_cmd(path, cmd))
 		{
 			ft_proc_files_redir_cmd(cmd);
 			if (execve(path, cmd->argv, envp_exec) == -1)
@@ -498,24 +498,32 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 {
 	int	n_pipes;
 	int	**pipeline;
+	int	parent_stdout;
+	int	parent_stdin;
 
 	if (!cmd)
 		return ;
 	
-	
 	//valorar si filtrar solo por los builtin que cambian estado y
 	// que tienen que ir en el padre
+	parent_stdout =  0;
+	parent_stdin =  0;
 	if (!cmd->next && cmd->argv && ft_is_builtin(cmd->argv[0]))
 	{
-    		//ft_manage_heredoc(curr_cmd);
+		if (ft_strcmp(cmd->argv[0], "exit") == 0)
+			g_exit_status = ft_execute_builtin(cmd, l_env);
+		parent_stdin = dup(STDIN_FILENO);
+		parent_stdout = dup(STDOUT_FILENO);
+    		ft_manage_heredoc(cmd);
 		// no hay pipe, el redir de pipes no tiene sentido, pero ver que
 		// hacer si el infile o outfile es -1, es el redir_err de  abajo
 		//ft_proc_files_redir_error(curr_cmd, l_env)
-		int saved_stdout = dup(STDOUT_FILENO); // Guardamos el original
 		ft_proc_files_redir_cmd(cmd);
     		g_exit_status = ft_execute_builtin(cmd, l_env);
-    		dup2(saved_stdout, STDOUT_FILENO); // Restauramos STDOUT
-    		close(saved_stdout);
+    		dup2(parent_stdin, STDIN_FILENO);
+    		dup2(parent_stdout, STDOUT_FILENO); // Restauramos STDOUT
+    		close(parent_stdin);
+    		close(parent_stdout);
 		return ;
 	}
 	
@@ -523,21 +531,30 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	ft_setup_signals(0);
 	n_pipes = ft_calculate_pipes(cmd);
 	ft_printf(STDOUT_FILENO, "\nnumero de pipes %d\n", n_pipes);
+	
+	//(void) pipeline; //QUITAR ESTO PARA PROBAR TEMA LEAKS
+	// ME HE QUEDADO EN ESTE BLOQUE PARA EL TEMA LEAKS
+	// PERO FALTA PROBAR EL EXIT DE LOS BUILTIN Y TODOS CON EL SANITIZE
+	
 	if (!ft_create_pipes(&pipeline, n_pipes))
 	{
-		perror("minishell: pipe");
+		perror("minishell: creating pipe error");
 		g_exit_status = 1;
 		ft_free_pipeline(pipeline);
-		return ;
+		ft_cmdclear (&cmd, ft_free_argv);
+		ft_lstclear(&l_env, ft_free_env);
+		exit (g_exit_status);
 	}
 	for(int i=0; i<n_pipes; i++)
 		ft_printf(1,"Pipe %d: [0]%d [1]%d\n",i, pipeline[i][0], pipeline[i][1]);
 	if (!ft_create_process(n_pipes + 1, pipeline, cmd, l_env))
 	{
-		perror("minishell: fork");
+		perror("minishell: creating fork error");
 		g_exit_status = 1;
 		ft_free_pipeline(pipeline);
-		return ;
+		ft_cmdclear (&cmd, ft_free_argv);
+		ft_lstclear(&l_env, ft_free_env);
+		exit (g_exit_status);
 	}
 	ft_free_pipeline(pipeline);
 	ft_setup_signals(1);

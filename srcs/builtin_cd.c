@@ -51,17 +51,29 @@ static int	ft_cd_oldpwd_error(t_list *l_env)
 	return (1);
 }
 
+static int	ft_manage_cd_arguments(char **args)
+{
+	if (!args || !args[1])
+	{
+		write(STDERR_FILENO, "minishell: cd: missing argument\n", 32);
+		return (0);
+	}
+	if (args[2])
+	{
+		write(STDERR_FILENO, "minishell: cd: too many arguments\n", 34);
+		return (0);
+	}
+	return (1);
+}
+
 // ft_builtin_cd updates the current folder. Also OLDPWD and PWD env variables
 // ft_export_assign_var is managing free of local variable path
 int	ft_builtin_cd(char **args, t_list *l_env)
 {
 	char	*path;
 
-	if (!args[1])
-	{
-		write(STDERR_FILENO, "minishell: cd: missing argument\n", 32);
+	if (!ft_manage_cd_arguments(args))
 		return (1);
-	}
 	path = getcwd(NULL, 0);
 	if (!path)
 		return (ft_cd_oldpwd_error(l_env));
