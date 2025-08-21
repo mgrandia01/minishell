@@ -89,7 +89,7 @@ void	add_heredoc(t_cmd *cmd, const char *delimiter)
 }
 
 //TODO liberacion de outfile_name de la funcion add_outfile_name
-void	free_outfiles(t_cmd *cmd)
+/*void	free_outfiles(t_cmd *cmd)
 {
 	int	i;
 
@@ -104,7 +104,7 @@ void	free_outfiles(t_cmd *cmd)
 	free(cmd->outfile_name);
 	cmd->outfile_name = NULL;
 	cmd->outfile_count = 0;
-}
+}*/
 
 static void	create_outfile_name(t_cmd *cmd, const char *filename)
 {

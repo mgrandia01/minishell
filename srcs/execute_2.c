@@ -275,6 +275,7 @@ void	ft_manage_heredoc(t_cmd *cmd)
 		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count, cmd);
 		if (cmd->infile == -1)
 		{
+			ft_free_heredoc(cmd);
 			ft_putstr_fd("minishell: error creando heredoc\n", STDERR_FILENO);
 			return ;
 		}

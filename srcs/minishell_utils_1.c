@@ -69,9 +69,12 @@ void	ft_free_tab(char **tab)
 	free(tab);
 }
 
+// function to free structure
+// heredoc free is done in another function where managing heredoc
 void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 {
 	t_cmd	*ptr_next;
+	int	i;
 
 	if (lst && del)
 	{
@@ -81,14 +84,21 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 			del((*lst)->argv);
 			//if ((*lst)->heredoc_delim)
 			//	free((*lst)->heredoc_delim);
-			/*if ((*lst)->heredoc_delim_1)
-				free((*lst)->heredoc_delim_1);
-			if ((*lst)->heredoc_delim_2)
-				free((*lst)->heredoc_delim_2);*/
 			if ((*lst)->infile > 2) //anyadido a raiz del superpipe
 				close((*lst)->infile);
 			if ((*lst)->outfile > 2) //anyadido a raiz del superpipe
 				close((*lst)->outfile);
+			
+			i = 0;
+			if ((*lst)->outfile_count>0)
+			{
+			while (i < (*lst)->outfile_count)
+			{
+				free((*lst)->outfile_name[i]);
+				i++;
+			}	
+			free((*lst)->outfile_name);
+			}
 			free(*lst);
 			*lst = ptr_next;
 		}

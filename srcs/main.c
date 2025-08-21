@@ -179,6 +179,11 @@ int	main(int argc, char *argv[], char *envp[])
     	tokens = NULL;
     	cmds = NULL;
     	l_env = ft_init_env(envp);
+    	if (!l_env)
+	{
+		ft_putstr_fd("minishell: Error entorno no disponible\n", STDERR_FILENO);	
+		return (1);
+	}
 	envp_exec = NULL;
     	/*t_list *env_list2 = l_env;
     	while (env_list2)

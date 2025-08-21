@@ -173,6 +173,7 @@ int	ft_builtin_env(char **args, t_list *l_env)
 	return (0);
 }
 
+/*
 int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 {
 	char	**args;
@@ -206,4 +207,32 @@ int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 	ft_cmdclear (&cmds, ft_free_argv);
 	g_exit_status = arg1;
 	return (arg1);
+}
+*/
+
+int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
+{
+	if (!cmds || !cmds->argv)
+		return (1);
+	ft_printf(STDOUT_FILENO, "exit\n");
+	if (!cmds->argv[1])
+	{
+		g_exit_status = 0;
+	}
+	else if (!ft_is_numeric(cmds->argv[1]))
+	{
+		ft_printf(STDERR_FILENO, "minishell: exit: %s: ", cmds->argv[1]);
+		ft_printf(STDERR_FILENO, "numeric argument required\n");
+		g_exit_status = 2;
+	}
+	else if (cmds->argv[2])
+	{
+		ft_printf(STDERR_FILENO, "minishell: exit: too many arguments\n");
+		g_exit_status = 1;
+	}
+	else
+		g_exit_status = ft_atoi(cmds->argv[1]) % 256;
+	ft_lstclear(&l_env, ft_free_env);
+	ft_cmdclear (&cmds, ft_free_argv);
+	exit(g_exit_status);
 }
