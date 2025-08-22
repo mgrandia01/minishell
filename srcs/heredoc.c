@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 10:54:17 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 13:41:08 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_count_heredocs(t_token *tokens)
 	int	count;
 
 	count = 0;
-	while(tokens)
+	while (tokens)
 	{
 		if (tokens->type == TOKEN_HEREDOC)
 			count ++;
@@ -37,24 +37,18 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	if (!tokens)
 		return (line);
 	envp_exec = ft_build_envp_array(l_env);
-	if (!envp_exec) // check tras crear envp
+	if (!envp_exec)
 	{
 		free_tokens(tokens);
 		tokens = NULL;
 		return (line);
-    	}
-	
-	
-	// hasta no expandimos nada porque habra fallado el tokenizador
-	// aqui ya expandimos
-	
+	}
 	process_token_expansion(&tokens, envp_exec);
 	join_tokens_with_end(&tokens);
 	remove_quotes_from_token_list(tokens);
-		
 	line_expansed2 = NULL;
 	line_expansed1 = NULL;
-	while(tokens && ft_strncmp(tokens->value, "EOF", 3))
+	while (tokens && ft_strncmp(tokens->value, "EOF", 3))
 	{
 		if (tokens->value)
 		{
@@ -63,14 +57,13 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 				line_expansed2 = ft_strjoin(line_expansed1, " ");
 				free(line_expansed1);
 				line_expansed1 = ft_strdup(line_expansed2);
-				line_expansed2 =  ft_strjoin(line_expansed1, tokens->value);
+				line_expansed2 = ft_strjoin(line_expansed1, tokens->value);
 				free(line_expansed1);
 			}
 			else
 			{
-				line_expansed2 =  ft_strdup(tokens->value);
+				line_expansed2 = ft_strdup(tokens->value);
 			}
-			
 			line_expansed1 = ft_strdup(line_expansed2);
 		}
 		tokens = tokens->next;
@@ -82,7 +75,6 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	ft_free_tab(envp_exec);
 	free_tokens(tokens);
 	return (line_expansed2);
-	
 }
 
 int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
