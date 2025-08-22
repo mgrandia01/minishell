@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 10:26:53 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 14:02:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ char			**ft_build_envp_array(t_list *l_env);
 int				ft_is_numeric(const char *str);
 int				ft_is_valid_key(const char *key);
 int				ft_strcmp(const char *s1, const char *s2);
+char	*ft_strjoin_triple(const char *s1, const char *s2, const char *s3);
 
 //----------- minishell_utils_1.c----------------
 t_list			*ft_init_env(char **envp);

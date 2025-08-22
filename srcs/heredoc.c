@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 13:41:08 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 14:12:06 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,41 @@ int	ft_count_heredocs(t_token *tokens)
 	return (count);
 }
 
+static char	*ft_line_expanded(t_token *tokens, char *l_exp2)
+{
+	char	*l_exp1;
+
+	l_exp1 = NULL;
+	while (tokens && ft_strncmp(tokens->value, "EOF", 3))
+	{
+		if (tokens->value)
+		{
+			if (l_exp2 != NULL)
+			{
+				l_exp2 = ft_strjoin_triple(l_exp1, " ", tokens->value);
+				free(l_exp1);
+			}
+			else
+				l_exp2 = ft_strdup(tokens->value);
+			l_exp1 = ft_strdup(l_exp2);
+		}
+		tokens = tokens->next;
+	}
+	if (l_exp1)
+		free(l_exp1);
+	if (!l_exp2)
+		l_exp2 = (char *)malloc(sizeof(char));
+	return (l_exp2);
+}
+
 static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 {
 	t_token	*tokens;
 	char	**envp_exec;
-	char	*line_expansed1;
 	char	*line_expansed2;
 
 	tokens = ft_tokenize(line);
+	line_expansed2 = NULL;
 	if (!tokens)
 		return (line);
 	envp_exec = ft_build_envp_array(l_env);
@@ -46,32 +73,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	process_token_expansion(&tokens, envp_exec);
 	join_tokens_with_end(&tokens);
 	remove_quotes_from_token_list(tokens);
-	line_expansed2 = NULL;
-	line_expansed1 = NULL;
-	while (tokens && ft_strncmp(tokens->value, "EOF", 3))
-	{
-		if (tokens->value)
-		{
-			if (line_expansed2 != NULL)
-			{
-				line_expansed2 = ft_strjoin(line_expansed1, " ");
-				free(line_expansed1);
-				line_expansed1 = ft_strdup(line_expansed2);
-				line_expansed2 = ft_strjoin(line_expansed1, tokens->value);
-				free(line_expansed1);
-			}
-			else
-			{
-				line_expansed2 = ft_strdup(tokens->value);
-			}
-			line_expansed1 = ft_strdup(line_expansed2);
-		}
-		tokens = tokens->next;
-	}
-	if (line_expansed1)
-		free(line_expansed1);
-	if (!line_expansed2)
-		line_expansed2 = (char *)malloc(sizeof(char));
+	line_expansed2 = ft_line_expanded(tokens, line_expansed2);
 	ft_free_tab(envp_exec);
 	free_tokens(tokens);
 	return (line_expansed2);
@@ -153,7 +155,6 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l
 			else if (i_heredoc == heredoc_count - 1)
 			{
 				free(line);
-				//free(line_expansed);
 				sigaction(SIGINT, &sa_old, NULL);
 				sigaction(SIGQUIT, &sa_old_quit, NULL);
 				close(pipefd[1]);
