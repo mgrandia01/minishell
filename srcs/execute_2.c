@@ -268,11 +268,11 @@ void	ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd)
 	exit(127);
 }*/
 
-void	ft_manage_heredoc(t_cmd *cmd)
+void	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 {
 	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
-		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count, cmd);
+		cmd->infile = ft_create_heredoc(cmd->heredocs, cmd->heredoc_count, cmd, l_env);
 		if (cmd->infile == -1)
 		{
 			ft_free_heredoc(cmd);

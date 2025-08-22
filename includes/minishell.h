@@ -224,7 +224,7 @@ char	*ft_get_env_value(const char *key, t_list *env);
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);
 
 //----------- heredoc.c----------------
-int				ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd);
+int				ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env);
 
 //-----------heredoc_2------------------
 void	ft_free_heredoc(t_cmd *cmd);
@@ -239,6 +239,6 @@ void			ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
 void			ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2]);
 void			ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
 void			ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[]);
-void			ft_manage_heredoc(t_cmd *cmd);
+void			ft_manage_heredoc(t_cmd *cmd, t_list *l_env);
 
 #endif
