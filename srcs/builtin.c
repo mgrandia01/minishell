@@ -128,7 +128,7 @@ int	ft_builtin_echo(char **args)
 
 	add_cr = 1;
 	i = 1;
-	if (args[i] && ft_echo_is_n(args[i]))
+	while (args[i] && ft_echo_is_n(args[i]))
 	{
 		add_cr = 0;
 		i++;
@@ -141,9 +141,7 @@ int	ft_builtin_echo(char **args)
 		i++;
 	}
 	if (add_cr)
-	{
 		write(STDOUT_FILENO, "\n", 1);
-	}
 	return (0);
 }
 
