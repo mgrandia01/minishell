@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 09:13:10 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 10:08:01 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 
 	while (t_val[d->i] != '\0')
 	{
-		if (t_val[d->i] == '$' && d->quote != 1)
+		if (t_val[d->i] == '$' && d->quote != 1 && t_val[d->i+1])
 		{
 			if (d->s > 0)
 			{
 				literal = literal_tok(&(d->result), &(d->s));
-				add_tok(n_lst, c->type, literal, 0);
+				add_tok(n_lst, c->type, literal, 1);//0
 			}
 			if (t_val[d->i + 1] == '?')
 			{
