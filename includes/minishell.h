@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/18 16:15:31 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 09:00:48 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,13 @@ t_cmd			*init_comand(void);
 
 //----------parse.c--------------
 struct s_cmd	*ft_parse(t_token *tokens);
+
+//----------parse_2.c----------------
+void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v);
+void	open_redir_file(int *fd, const char *filename, int mode);
+void	create_outfile_name(t_cmd *cmd, const char *filename);
+void	add_outfile_name(t_cmd *cmd, const char *filename);
+int	find_mode(t_redir_type *expect_redir);
 
 //---------env_expansion.c-----------
 char			*exp_var_at_index(const char *t_val, int *i, char *envp[]);

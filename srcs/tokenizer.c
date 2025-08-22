@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/21 11:26:56 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 09:15:04 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ char	*literal_tok(char **result, int *size)
 	tmp = ft_realloc(*result, *size, *size + 1);
 	*result = tmp;
 	(*result)[*size] = '\0';
-
 	literal_copy = ft_strdup(*result);
 	free(*result);
 	*result = NULL;
@@ -42,15 +41,6 @@ char	*literal_tok(char **result, int *size)
 	return (literal_copy);
 }
 
-/*char	*literal_tok(char **result, int *size)
-{
-	*result = ft_realloc(*result, *size, *size + 1);
-	(*result)[*size] = '\0';
-	return (*result);
-}*/
-
-
-// TODO	ft_printf(STDERR_FILENO, "minishell: %d: command not found\n", g_exit_status);
 void	handle_echo_exit_status(t_dat *data)
 {
 	char	*tmp;

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 16:48:20 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/21 10:18:56 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 09:16:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,33 +31,18 @@ int	argv_num(char **argv)
 char	**expand_argv(char **argv, int s)
 {
 	char	**n_argv;
-	//char	*tmp;
 
 	if (argv)
 	{
-		//tmp = (char *)argv;
 		n_argv = ft_realloc(argv, s * sizeof(char *), (s + 2) * sizeof(char *));
 		if (!n_argv)
 			return (NULL);
-		//free(tmp);
 	}
 	else
 		n_argv = malloc(2 * sizeof(char *));
 	return (n_argv);
 }
 
-/*
-char	**expand_argv(char **argv, int s)
-{
-	char	**n_argv;
-
-	if (argv)
-		n_argv = ft_realloc(argv, s * sizeof(char *), (s + 2) * sizeof(char *));
-	else
-		n_argv = malloc(2 * sizeof(char *));
-	return (n_argv);
-}
-*/
 /* Allocates and initializes a new command structure.
  * Sets default values for redirections, heredoc, and argv.
  */

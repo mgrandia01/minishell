@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 12:13:07 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/12 10:36:11 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 09:11:46 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,7 @@ int	ft_execute_builtin(t_cmd *cmd, t_list *l_env)
 void	ft_free_pipeline(int **pipeline)
 {
 	int	i;
-	
+
 	if (!pipeline)
 		return ;
 	i = 0;
@@ -261,7 +261,7 @@ void	ft_free_pipeline(int **pipeline)
 int	ft_create_pipes(int ***pipeline, int n_pipes)
 {
 	int	i;
-	
+
 	*pipeline = (int **) malloc ((n_pipes + 1) * 2 * sizeof(int *));
 	if (!*pipeline)
 		return (0);
@@ -287,7 +287,7 @@ int	ft_create_pipes(int ***pipeline, int n_pipes)
 // n_pipes is n_procs - 1
 int	ft_calculate_pipes(t_cmd *cmd)
 {
-	int 	n_pipes;
+	int	n_pipes;
 	t_cmd	*current;
 
 	n_pipes = 0;
@@ -319,7 +319,7 @@ void	ft_handle_execve_error(char *cmd)
 	else if (errno == EACCES)
 		g_exit_status = 126;
 	else
-        	g_exit_status = 1;
+		g_exit_status = 1;
 }
 
 void	ft_proc_files_redir_cmd(t_cmd *cmd)
@@ -359,7 +359,7 @@ void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 		{
 			ft_proc_files_redir_cmd(cmd);
 			if (execve(path, cmd->argv, envp_exec) == -1)
-				 ft_handle_execve_error(cmd->argv[0]);
+				ft_handle_execve_error(cmd->argv[0]);
 		}
 		else
 			g_exit_status = 127;
@@ -371,7 +371,7 @@ void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env)
 {
 	int	ret_val;
-	
+
 	ret_val = 1;
 	/*if (cmd->infile > 2)
 	{
@@ -435,10 +435,10 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 {
 	int	i;
 	pid_t	pid;
-	//pid_t	wpid;
 	t_cmd	*curr_cmd;
 	int	wstatus;
 
+	//pid_t	wpid;
 	curr_cmd = cmd;
 	i = 0;
 	printf("Proc padre: PID = %d\n", getpid());
@@ -459,7 +459,7 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 			ft_free_pipeline(pipeline); // cierro pipes. Incluyo liberacion de mallocs pipeline
 			//ft_lstclear(&l_env, ft_free_env); // aunque haya ido mal se habra liberado antes de execve
 			ft_cmdclear (&cmd, ft_free_argv);
-            		exit (g_exit_status);
+			exit (g_exit_status);
         	}
         	curr_cmd = curr_cmd->next;
         	i++;
