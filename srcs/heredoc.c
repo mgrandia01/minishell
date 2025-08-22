@@ -6,11 +6,25 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 09:29:31 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 10:54:17 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	ft_count_heredocs(t_token *tokens)
+{
+	int	count;
+
+	count = 0;
+	while(tokens)
+	{
+		if (tokens->type == TOKEN_HEREDOC)
+			count ++;
+		tokens = tokens->next;
+	}
+	return (count);
+}
 
 int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd)
 {
