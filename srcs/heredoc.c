@@ -6,62 +6,11 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 09:23:10 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 09:29:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void	ft_free_heredoc(t_cmd *cmd)
-{
-	int	i;
-
-	i = 0;
-	if (cmd)
-	{
-		while (i < cmd->heredoc_count)
-		{
-			free((cmd->heredocs[i]).delimiter);
-			i++;
-		}
-		free(cmd->heredocs);
-	}
-}
-
-static void	sigint_handler_heredoc(int sig)
-{
-	(void)sig;
-	write(STDOUT_FILENO, "\n", 1);
-	g_exit_status = 130;
-}
-
-void	disable_sigquit(void)
-{
-	struct termios	term;
-
-	if (tcgetattr(STDIN_FILENO, &term) == -1)
-		return ;
-	term.c_cc[VQUIT] = _POSIX_VDISABLE;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
-
-void	enable_sigquit(void)
-{
-	struct termios	term;
-
-	if (tcgetattr(STDIN_FILENO, &term) == -1)
-		return ;
-	if (term.c_cc[VQUIT] == _POSIX_VDISABLE)
-		term.c_cc[VQUIT] = 28;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
-
-static void	sigquit_handler_heredoc(int sig)
-{
-	(void)sig;
-	write(STDOUT_FILENO, "\n", 1);
-	write(STDOUT_FILENO, "\b\b  \b\b", 6);
-}
 
 int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd)
 {
