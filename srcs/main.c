@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/20 16:10:07 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 10:56:30 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,11 +233,18 @@ int	main(int argc, char *argv[], char *envp[])
 			add_history(input);*/
 		
 		tokens = ft_tokenize(input);
+		//int her_count = ft_count_heredocs(tokens);
+		//printf("\n number of heredocs: %d\n", her_count);
 		free(input);
 		input = NULL;
 		if (!tokens)
 			break ;
 		print_tokens(tokens);
+		if (ft_count_heredocs(tokens) > 16)
+		{
+			ft_printf(STDERR_FILENO, "minishell: maximum here-document count exceeded\n");
+			break ;
+		}
 		envp_exec = ft_build_envp_array(l_env);
 		//crear un print para esta funcion y ver si se parece a envp
 		
