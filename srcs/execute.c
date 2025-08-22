@@ -444,7 +444,7 @@ int	ft_create_process(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 	printf("Proc padre: PID = %d\n", getpid());
 	while (i < n_procs && curr_cmd)
 	{
-		ft_manage_heredoc(curr_cmd);
+		ft_manage_heredoc(curr_cmd, l_env);
 		pid = fork();
 		if (pid < 0)
 			return (0);
@@ -516,7 +516,7 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 			g_exit_status = ft_execute_builtin(cmd, l_env);
 		parent_stdin = dup(STDIN_FILENO);
 		parent_stdout = dup(STDOUT_FILENO);
-    		ft_manage_heredoc(cmd);
+    		ft_manage_heredoc(cmd, l_env);
 		// no hay pipe, el redir de pipes no tiene sentido, pero ver que
 		// hacer si el infile o outfile es -1, es el redir_err de  abajo
 		//ft_proc_files_redir_error(curr_cmd, l_env)
