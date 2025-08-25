@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 10:45:56 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 11:50:50 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void			fin_tokenization(char *input, t_token **list, t_pos_data *data);
 void			ft_add_history(char *input);
 //--------------------------------
 void			free_tokens(t_token *lst);
-t_token			*ft_tokenize(char *input);
+t_token			*ft_tokenize(char *input, int heredoc);
 
 //-----------parse_utils.c----------
 int				argv_num(char **argv);
@@ -171,11 +171,12 @@ void			handle_literal_ch(const char *t_val, int *i, char **r, int *s);
 
 void			init_exp_data(t_dat *data, char first_char, char *env[]);
 void			p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
+void			p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
 void			finalize_expansion(t_token **n_lst, t_token *c, t_dat *data);
 
 //-----------expansion_process.c-----------------
 void			handle_exp_result(t_token **n_lst, t_token *c, char **r, int q);
-void			process_token_expansion(t_token **tokens, char *envp[]);
+void			process_token_expansion(t_token **tokens, char *envp[], int here);
 
 //----------path.c------------------
 char			*find_path(char *cmd, char *env[]);

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 10:32:36 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 11:48:23 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	main(int argc, char *argv[], char *envp[])
 		len = ft_strlen(input);
 		if (len > 0 && input[len - 1] == '\n')
 			input[len - 1] = '\0';
-		tokens = ft_tokenize(input);
+		tokens = ft_tokenize(input, 0);
 		free(input);
 		input = NULL;
 		if (!tokens)
@@ -107,7 +107,7 @@ int	main(int argc, char *argv[], char *envp[])
 			ft_printf(STDERR_FILENO, "Error: falló la creación de envp\n");
 			continue ;
 		}
-		process_token_expansion(&tokens, envp_exec);
+		process_token_expansion(&tokens, envp_exec, 0);
 		ft_free_tab(envp_exec);
 		join_tokens_with_end(&tokens);
 		remove_quotes_from_token_list(tokens);

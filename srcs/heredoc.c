@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 14:12:06 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 11:51:03 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	char	**envp_exec;
 	char	*line_expansed2;
 
-	tokens = ft_tokenize(line);
+	tokens = ft_tokenize(line, 1);
 	line_expansed2 = NULL;
 	if (!tokens)
 		return (line);
@@ -70,9 +70,9 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 		tokens = NULL;
 		return (line);
 	}
-	process_token_expansion(&tokens, envp_exec);
+	process_token_expansion(&tokens, envp_exec, 1);
 	join_tokens_with_end(&tokens);
-	remove_quotes_from_token_list(tokens);
+	//remove_quotes_from_token_list(tokens);
 	line_expansed2 = ft_line_expanded(tokens, line_expansed2);
 	ft_free_tab(envp_exec);
 	free_tokens(tokens);

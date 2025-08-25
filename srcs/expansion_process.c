@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 10:46:25 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 11:32:09 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,20 @@ static void	exp_tok_val(const char *val, t_token **n_l, t_token *c, char *env[])
 	finalize_expansion(n_l, c, &data);
 }
 
+static void	exp_tok_heredoc(const char *val, t_token **n_l, t_token *c, char *env[])
+{
+	t_dat	data;
+
+	init_exp_data(&data, val[0], env);
+	p_exp_all(val, n_l, c, &data);
+	finalize_expansion(n_l, c, &data);
+
+
+}
+
+
 // Go through all tokens and expand variables when needed
-void	process_token_expansion(t_token **tokens, char *envp[])
+void	process_token_expansion(t_token **tokens, char *envp[], int here)
 {
 	t_token		*new_list;
 	t_token		*c;
@@ -51,7 +63,10 @@ void	process_token_expansion(t_token **tokens, char *envp[])
 	while (c != NULL)
 	{
 		if (ft_strchr(c->value, '$'))
-			exp_tok_val(c->value, &new_list, c, envp);
+			if (here == 0)
+				exp_tok_val(c->value, &new_list, c, envp);
+			else
+				exp_tok_heredoc(c->value, &new_list, c, envp);
 		else
 			add_tok(&new_list, c->type, ft_strdup(c->value), c->end);
 		c = c->next;
