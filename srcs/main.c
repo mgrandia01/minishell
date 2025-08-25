@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 12:03:31 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 13:29:15 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	disable_sigquit_echo(void)
 	term.c_cc[VQUIT] = _POSIX_VDISABLE;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
-
+/*
 void	print_tokens(t_token *tokens)
 {
 	const char *type_str;
@@ -45,6 +45,7 @@ void	print_tokens(t_token *tokens)
 	tokens = tokens->next;
 	}
 }
+*/
 
 // Función para inicializar el entorno y configuración inicial
 static t_list	*ft_init_minishell(char *envp[], int *exit_code)
@@ -53,9 +54,7 @@ static t_list	*ft_init_minishell(char *envp[], int *exit_code)
 
 	ft_setup_signals(1);
 	disable_sigquit_echo();
-
 	l_env = ft_init_env(envp);
-
 	if (!l_env)
 	{
 		ft_putstr_fd("minishell: Error entorno no disponible\n", STDERR_FILENO);
@@ -72,28 +71,22 @@ static char	*ft_handle_input(void)
 	size_t	len;
 
 	input = readline("\033[1;32mminishell \u25B8\033[0m ");
-
 	if (!input || !ft_strncmp(input, "esc", 3))
 	{
 		g_exit_status = 0;
 		ft_printf(STDOUT_FILENO, "exit\n");
 		return (NULL);
 	}
-
 	if (*input)
 		add_history(input);
-
 	if (!ft_strncmp(input, "\n", 2))
 	{
 		free(input);
 		return (ft_handle_input());
 	}
-
 	len = ft_strlen(input);
-
 	if (len > 0 && input[len - 1] == '\n')
 		input[len - 1] = '\0';
-
 	return (input);
 }
 
@@ -101,14 +94,9 @@ static char	*ft_handle_input(void)
 static int	ft_process_tokens(t_token **tokens, char *input)
 {
 	*tokens = ft_tokenize(input, 0);
-
 	free(input);
-
 	if (!*tokens)
 		return (0);
-
-	print_tokens(*tokens);
-
 	if (ft_count_heredocs(*tokens) > 16)
 	{
 		ft_printf(STDERR_FILENO, "minishell: maximum here-document count exceeded\n");
@@ -123,7 +111,6 @@ static int	ft_expand_and_prepare(t_token **tokens, t_list *l_env)
 	char	**envp_exec;
 
 	envp_exec = ft_build_envp_array(l_env);
-
 	if (!envp_exec)
 	{
 		free_tokens(*tokens);
@@ -131,15 +118,10 @@ static int	ft_expand_and_prepare(t_token **tokens, t_list *l_env)
 		ft_printf(STDERR_FILENO, "Error: falló la creación de envp\n");
 		return (0);
 	}
-
 	process_token_expansion(tokens, envp_exec, 0);
-
 	ft_free_tab(envp_exec);
-
 	join_tokens_with_end(tokens);
-
 	remove_quotes_from_token_list(*tokens);
-
 	return (1);
 }
 
@@ -149,17 +131,13 @@ static void	ft_parse_and_execute(t_token *tokens, t_list *l_env)
 	t_cmd	*cmds;
 
 	cmds = ft_parse(tokens);
-
 	free_tokens(tokens);
-
 	if (!cmds)
 	{
 		ft_printf(STDERR_FILENO, "Error: falló el parseo\n");
-		return;
+		return ;
 	}
-
 	ft_exe_pipeline(cmds, l_env);
-
 	ft_cmdclear(&cmds, ft_free_argv);
 }
 
@@ -172,16 +150,12 @@ static void	ft_main_loop(t_list *l_env)
 	while (1)
 	{
 		input = ft_handle_input();
-
 		if (!input)
-			break;
-
+			break ;
 		if (!ft_process_tokens(&tokens, input))
-			break;
-
+			break ;
 		if (!ft_expand_and_prepare(&tokens, l_env))
-			continue;
-
+			continue ;
 		ft_parse_and_execute(tokens, l_env);
 	}
 }
@@ -190,13 +164,10 @@ static void	ft_main_loop(t_list *l_env)
 static void	ft_cleanup_minishell(t_list **l_env, char *input, t_token *tokens)
 {
 	ft_lstclear(l_env, ft_free_env);
-
 	if (input)
 		free(input);
-
 	if (tokens)
 		free_tokens(tokens);
-
 	rl_clear_history();
 }
 
@@ -206,26 +177,18 @@ int	main(int argc, char *argv[], char *envp[])
 	char	*input;
 	t_token	*tokens;
 	t_list	*l_env;
-	int	exit_code;
+	int		exit_code;
 
 	(void) argc;
 	(void) argv;
-
 	input = NULL;
-
 	tokens = NULL;
-
 	exit_code = 0;
-
 	l_env = ft_init_minishell(envp, &exit_code);
-
 	if (!l_env)
 		return (exit_code);
-
 	ft_main_loop(l_env);
-
 	ft_cleanup_minishell(&l_env, input, tokens);
-
 	return (0);
 }
 /*
