@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 15:44:34 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 10:29:58 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ static int	handle_end(char c)
 
 	if (((c == ' ') || (c == '\t') || (c == '\0')))
 		end = 0;
+	
 	else if ((c == '>') || (c == '<') || (c == '|'))
 		end = 0;
+	
 	else
 		end = 1;
 	return (end);

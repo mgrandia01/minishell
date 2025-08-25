@@ -6,13 +6,13 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:27:00 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/13 15:48:49 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 10:21:01 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_add_history(char *input);
+//void	ft_add_history(char *input);
 
 void	free_tokens(t_token *lst)
 {

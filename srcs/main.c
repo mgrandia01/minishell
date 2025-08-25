@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 13:36:43 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 10:32:36 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,27 @@ void	disable_sigquit_echo(void)
 		return ;
 	term.c_cc[VQUIT] = _POSIX_VDISABLE;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+void	print_tokens(t_token *tokens)
+{
+	const char *type_str;
+	while (tokens)
+	{
+	switch (tokens->type)
+	{
+		case TOKEN_WORD:		type_str = "WORD"; break;
+		case TOKEN_PIPE:		type_str = "PIPE"; break;
+		case TOKEN_REDIR_IN:		type_str = "REDIR_IN"; break;
+		case TOKEN_REDIR_OUT:		type_str = "REDIR_OUT"; break;
+		case TOKEN_REDIR_APPEND:	type_str = "REDIR_APPEND"; break;
+		case TOKEN_HEREDOC:		type_str = "HEREDOC"; break;
+		case TOKEN_EOF:			type_str = "EOF"; break;
+		default:			type_str = "UNKNOWN"; break;
+	}
+	printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
+	tokens = tokens->next;
+	}
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -72,6 +93,7 @@ int	main(int argc, char *argv[], char *envp[])
 		input = NULL;
 		if (!tokens)
 			break ;
+		print_tokens(tokens);
 		if (ft_count_heredocs(tokens) > 16)
 		{
 			ft_printf(STDERR_FILENO, "minishell: maximum here-document count exceeded\n");

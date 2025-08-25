@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 14:02:31 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 10:45:56 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void	add_outfile_name(t_cmd *cmd, const char *filename);
 int	find_mode(t_redir_type *expect_redir);
 
 //---------env_expansion.c-----------
-char			*exp_var_at_index(const char *t_val, int *i, char *envp[]);
+char			*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c);
 void			join_tokens_with_end(t_token **tokens);
 
 //----------quotes.c-----------	
