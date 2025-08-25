@@ -74,7 +74,7 @@ void	ft_free_tab(char **tab)
 void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 {
 	t_cmd	*ptr_next;
-	int	i;
+	int		i;
 
 	if (lst && del)
 	{
@@ -88,16 +88,15 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 				close((*lst)->infile);
 			if ((*lst)->outfile > 2) //anyadido a raiz del superpipe
 				close((*lst)->outfile);
-			
 			i = 0;
-			if ((*lst)->outfile_count>0)
+			if ((*lst)->outfile_count > 0)
 			{
-			while (i < (*lst)->outfile_count)
-			{
-				free((*lst)->outfile_name[i]);
-				i++;
-			}	
-			free((*lst)->outfile_name);
+				while (i < (*lst)->outfile_count)
+				{
+					free((*lst)->outfile_name[i]);
+					i++;
+				}	
+				free((*lst)->outfile_name);
 			}
 			free(*lst);
 			*lst = ptr_next;
@@ -111,10 +110,6 @@ void	ft_cmddelone(t_cmd *lst, void (*del)(char **))
 	ft_free_heredoc(lst);
 	//if ((lst)->heredoc_delim)
 	//	free((lst)->heredoc_delim);
-	/*if ((*lst)->heredoc_delim_1)
-		free((*lst)->heredoc_delim_1);
-	if ((*lst)->heredoc_delim_2)
-		free((*lst)->heredoc_delim_2);*/
 	free (lst);
 }
 

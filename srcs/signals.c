@@ -56,10 +56,15 @@ void	ft_handle_sigquit(int sig)
 // SIGQUIT CTRL + contrabrarra
 void	ft_setup_signals(int enable)
 {
-	if (enable)
+	if (enable ==  1)
 	{
 		signal(SIGINT, ft_handle_sigint);
 		signal(SIGQUIT, ft_handle_sigquit);
+	}
+	else if (enable == 2)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 	}
 	else
 	{

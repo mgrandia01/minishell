@@ -85,7 +85,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	
 }
 
-int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
+int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 {
 	int							pipefd[2];
 	char						*line;

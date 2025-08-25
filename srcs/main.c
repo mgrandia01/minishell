@@ -207,10 +207,10 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
     	{
         	//ft_printf("minishell \u25B8 ");
-        	//if (isatty(STDIN_FILENO))
-        	//	ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
-        	//input = get_next_line(STDIN_FILENO);
-        	input = readline("\033[1;32mminishell \u25B8\033[0m ");//FIXME historial
+        	if (isatty(STDIN_FILENO))
+        		ft_printf(STDOUT_FILENO,"\033[1;32mminishell \u25B8\033[0m ");
+        	input = get_next_line(STDIN_FILENO);
+        	//input = readline("\033[1;32mminishell \u25B8\033[0m ");//FIXME historial
         	//("\nminishell \u25B8 "); //para las senales y el history ira bien
 
 		if (!input || !ft_strncmp(input,"esc",3))
@@ -219,8 +219,8 @@ int	main(int argc, char *argv[], char *envp[])
 			ft_printf(STDOUT_FILENO,"exit\n");
 			break;
 		}
-		if (*input)
-			add_history(input); //FIXME historial
+		//if (*input)
+		//	add_history(input); //FIXME historial
 		if (!ft_strncmp(input,"\n",2))
 		{
 			free(input);

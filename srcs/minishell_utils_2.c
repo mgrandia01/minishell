@@ -27,3 +27,17 @@ char	*ft_get_env_value(const char *key, t_list *env)
 	}
 	return (NULL);
 }
+
+void	ft_proc_files_redir_cmd(t_cmd *cmd)
+{
+	if (cmd->infile > 2)
+	{
+		dup2(cmd->infile, STDIN_FILENO);
+		close(cmd->infile);
+	}
+	if (cmd->outfile > 2)
+	{
+		dup2(cmd->outfile, STDOUT_FILENO);
+		close(cmd->outfile);
+	}
+}
