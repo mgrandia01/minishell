@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/25 11:51:03 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 11:59:15 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	}
 	process_token_expansion(&tokens, envp_exec, 1);
 	join_tokens_with_end(&tokens);
-	//remove_quotes_from_token_list(tokens);
 	line_expansed2 = ft_line_expanded(tokens, line_expansed2);
 	ft_free_tab(envp_exec);
 	free_tokens(tokens);
@@ -96,6 +95,7 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l
 	i_heredoc = 0;
 	i = 0;
 	(void)cmd;//TODO finalmente, se puede borrar?
+	
 	sigaction(SIGINT, NULL, &sa_old);
 	sa_heredoc.sa_handler = sigint_handler_heredoc;
 	sigemptyset(&sa_heredoc.sa_mask);
@@ -107,6 +107,7 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l
 	sigemptyset(&sa_heredoc_quit.sa_mask);
 	sa_heredoc_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_heredoc_quit, NULL);
+	
 	if (pipe(pipefd) == -1)
 	{
 		sigaction(SIGINT, &sa_old, NULL);
@@ -133,6 +134,7 @@ int	ft_create_heredoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l
 			}
 			return (-1);
 		}
+		
 		if (ft_strchr(line, '\n'))
 			*ft_strchr(line, '\n') = '\0';
 		if ((flag == 1 || heredoc_count == 1)
