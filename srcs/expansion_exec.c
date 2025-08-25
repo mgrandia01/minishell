@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 10:59:37 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/25 12:06:21 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,13 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			if (d->s > 0)
 			{
 				literal = literal_tok(&(d->result), &(d->s));
-				add_tok(n_lst, c->type, literal, 1);//0
+				add_tok(n_lst, c->type, literal, 1);
 			}
 			if (t_val[d->i + 1] == '?')
-			{
 				handle_echo_exit_status(d);
-			}
 			else
 			{
-				d->result = exp_var_at_index(t_val, &(d->i), d->env);
+				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
 				handle_exp_result(n_lst, c, &(d->result), d->quote);
 				d->s = 0;
 			}
@@ -79,6 +77,35 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			handle_literal_ch(t_val, &(d->i), &(d->result), &(d->s));
 	}
 }
+
+//FIXME
+void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
+{
+	char	*literal;
+
+	while (t_val[d->i] != '\0')
+	{
+		if (t_val[d->i] == '$' && t_val[d->i+1])
+		{
+			if (d->s > 0)
+			{
+				literal = literal_tok(&(d->result), &(d->s));
+				add_tok(n_lst, c->type, literal,1);
+			}
+			if (t_val[d->i + 1] == '?')
+				handle_echo_exit_status(d);
+			else
+			{
+				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
+				handle_exp_result(n_lst, c, &(d->result), d->quote);
+				d->s = 0;
+			}
+		}
+		else
+			handle_literal_ch(t_val, &(d->i), &(d->result), &(d->s));
+	}
+}
+
 
 // Add final literal token if any characters were left unprocessed
 void	finalize_expansion(t_token **n_lst, t_token *c, t_dat *data)

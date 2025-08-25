@@ -6,10 +6,9 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 09:28:59 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 09:31:16 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/22 13:38:35 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../includes/minishell.h"
 
@@ -63,5 +62,3 @@ void	sigquit_handler_heredoc(int sig)
 	write(STDOUT_FILENO, "\n", 1);
 	write(STDOUT_FILENO, "\b\b  \b\b", 6);
 }
-
-
