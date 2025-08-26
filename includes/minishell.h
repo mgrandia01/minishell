@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 11:50:50 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:15:17 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ int	find_mode(t_redir_type *expect_redir);
 
 //---------env_expansion.c-----------
 char			*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c);
-void			join_tokens_with_end(t_token **tokens);
+void			join_tokens_with_end(t_token **tokens, int here);
 
 //----------quotes.c-----------	
 char			*remove_quotes(char *str);
