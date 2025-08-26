@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/25 11:59:15 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:16:26 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 		return (line);
 	}
 	process_token_expansion(&tokens, envp_exec, 1);
-	join_tokens_with_end(&tokens);
+	join_tokens_with_end(&tokens, 1);
 	line_expansed2 = ft_line_expanded(tokens, line_expansed2);
 	ft_free_tab(envp_exec);
 	free_tokens(tokens);

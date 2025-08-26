@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 13:35:53 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:50:39 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	disable_sigquit_echo(void)
 	term.c_cc[VQUIT] = _POSIX_VDISABLE;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
-/*
 void	print_tokens(t_token *tokens)
 {
 	const char *type_str;
@@ -45,7 +44,6 @@ void	print_tokens(t_token *tokens)
 	tokens = tokens->next;
 	}
 }
-*/
 /*
 // Función para inicializar el entorno y configuración inicial
 static t_list	*ft_init_minishell(char *envp[], int *exit_code)
@@ -341,7 +339,11 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		process_token_expansion(&tokens, envp_exec, 0);
 		ft_free_tab(envp_exec);
-		join_tokens_with_end(&tokens);
+		print_tokens(tokens);
+		join_tokens_with_end(&tokens, 0);// 0 porque no hay heredoc
+		printf("\n\n---------------------\n\n");
+		print_tokens(tokens);
+		printf("\n");
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);
 		free_tokens(tokens);

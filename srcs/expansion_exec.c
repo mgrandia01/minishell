@@ -6,13 +6,13 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 12:06:21 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:49:35 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	join_tokens_with_end(t_token **tokens)
+void	join_tokens_with_end(t_token **tokens, int here)
 {
 	t_token	*curr;
 	t_token	*next;
@@ -29,10 +29,8 @@ void	join_tokens_with_end(t_token **tokens)
 			joined = ft_strjoin(curr->value, next->value);
 			free(curr->value);
 			curr->value = joined;
-			if (next->end == 1)
-				curr->end = 1;
-			/*if (next->end == 0)
-				curr->end = 0;*/
+			if (here != 1 && next->end == 0)
+				curr->end = 0;
 			curr->next = next->next;
 			free(next->value);
 			free(next);
