@@ -64,7 +64,7 @@ void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 	}
 }
 
-void	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
+/*void	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 {
 	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
@@ -76,4 +76,16 @@ void	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 		}
 	}
 	ft_free_heredoc(cmd);
+}*/
+
+int	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
+{
+	if (cmd->heredoc_count > 0 && cmd->heredocs)
+	{
+		cmd->infile = ft_cr_hdoc(cmd->heredocs, cmd->heredoc_count, cmd, l_env);
+		ft_free_heredoc(cmd);
+		if (cmd->infile == -1)
+			return (0);
+	}
+	return (1);
 }

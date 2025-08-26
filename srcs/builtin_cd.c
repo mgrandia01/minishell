@@ -68,7 +68,7 @@ static int	ft_manage_cd_arguments(char **args)
 
 // ft_builtin_cd updates the current folder. Also OLDPWD and PWD env variables
 // ft_export_assign_var is managing free of local variable path
-int	ft_builtin_cd(char **args, t_list *l_env)
+/*int	ft_builtin_cd(char **args, t_list *l_env)
 {
 	char	*path;
 
@@ -87,5 +87,37 @@ int	ft_builtin_cd(char **args, t_list *l_env)
 	if (!path)
 		return (ft_cd_newcwd_error());
 	ft_export_assign_var(ft_strdup("PWD"), path, &l_env);
+	return (0);
+}*/
+
+// ft_builtin_cd updates the current folder. Also OLDPWD and PWD env variables
+// ft_export_assign_var is managing free of local variable path
+int	ft_builtin_cd(char **args, t_list *l_env)
+{
+	char	*path;
+	char	*pwd;
+
+	if (!ft_manage_cd_arguments(args))
+		return (1);
+	path = getcwd(NULL, 0);
+	if (!path)
+		return (ft_cd_oldpwd_error(l_env));
+	if (chdir(args[1]) != 0)
+	{
+		ft_cd_chdir_error(args[1], &path);
+		return (1);
+	}
+	pwd = ft_get_env_value("PWD", l_env);
+	/*if (!pwd)
+		ft_builtin_unset("PWD", &l_env);
+		ft_builtin_unset("OLDPWD", &l_env);
+	else
+	{*/
+	ft_export_assign_var(ft_strdup("OLDPWD"), path, &l_env);
+	path = getcwd(NULL, 0);
+	if (!path)
+		return (ft_cd_newcwd_error());
+	ft_export_assign_var(ft_strdup("PWD"), path, &l_env);
+	//}
 	return (0);
 }

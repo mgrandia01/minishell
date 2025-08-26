@@ -30,7 +30,7 @@ static int	ft_search_cmd(char *path, t_cmd *cmd)
 		if (cmd && cmd->argv && cmd->argv[0])
 		{
 			ft_printf(STDERR_FILENO, "minishell: %s: ", cmd->argv[0]);
-			ft_printf(STDERR_FILENO, "command not found\n");
+			ft_putstr_fd("command not found\n", STDERR_FILENO);
 		}
 		return (0);
 	}
@@ -75,9 +75,10 @@ void	ft_execute_process(t_cmd *cmd, t_list *l_env)
 }
 
 // function to free memory in case of error in child process
-void	ft_child_erro_exit(t_cmd *cmd, int **pipeline)
+void	ft_child_erro_exit(t_cmd *cmd, int **pipeline, int *pid)
 {
 	ft_free_pipeline(pipeline);
 	ft_cmdclear (&cmd, ft_free_argv);
+	free(pid);
 	exit (g_exit_status);
 }

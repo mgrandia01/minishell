@@ -61,4 +61,5 @@ void	sigquit_handler_heredoc(int sig)
 	(void)sig;
 	write(STDOUT_FILENO, "\n", 1);
 	write(STDOUT_FILENO, "\b\b  \b\b", 6);
+	printf("ssssss");fflush(0);
 }

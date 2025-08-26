@@ -54,7 +54,7 @@ int	ft_builtin_pwd(t_list *l_env)
 
 	pwd = NULL;
 	pwd = getcwd(buffer, sizeof(buffer));
-	if (pwd && ft_strnstr(pwd, "/.local/share/Trash", ft_strlen(pwd)) != NULL)
+	if (pwd)// && ft_strnstr(pwd, "/.local/share/Trash", ft_strlen(pwd)) != NULL)
 	{
 		write(STDOUT_FILENO, buffer, ft_strlen(buffer));
 		write(STDOUT_FILENO, "\n", 1);

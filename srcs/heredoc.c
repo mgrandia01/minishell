@@ -49,7 +49,7 @@ static char	*ft_line_expanded(t_token *tokens, char *l_exp2)
 	if (l_exp1)
 		free(l_exp1);
 	if (!l_exp2)
-		l_exp2 = (char *)malloc(sizeof(char));
+		l_exp2 = ft_calloc(1, sizeof(char));	//l_exp2 = (char *)malloc(sizeof(char));
 	return (l_exp2);
 }
 
@@ -78,6 +78,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	return (line_expansed2);
 }
 
+
 int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 {
 	int							pipefd[2];
@@ -101,12 +102,13 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 	sigemptyset(&sa_heredoc.sa_mask);
 	sa_heredoc.sa_flags = 0;
 	sigaction(SIGINT, &sa_heredoc, NULL);
-	disable_sigquit();
+	
 	sigaction(SIGQUIT, NULL, &sa_old_quit);
 	sa_heredoc_quit.sa_handler = sigquit_handler_heredoc;
 	sigemptyset(&sa_heredoc_quit.sa_mask);
 	sa_heredoc_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_heredoc_quit, NULL);
+	disable_sigquit();// aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii xxxxxx
 	
 	if (pipe(pipefd) == -1)
 	{
@@ -168,6 +170,84 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 	}
 	sigaction(SIGINT, &sa_old, NULL);
 	sigaction(SIGQUIT, &sa_old_quit, NULL);
+	enable_sigquit();
 	close(pipefd[1]);
 	return (pipefd[0]);
 }
+/*
+int ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
+{
+    int     pipefd[2];
+    pid_t   pid;
+    int     status;
+
+
+    (void)cmd;
+    if (pipe(pipefd) == -1)
+        return (-1);
+
+    pid = fork();
+    
+    if (pid == -1)
+        return (-1);
+
+    if (pid == 0)
+    {
+        // Proceso hijo: escribe en el pipe
+        char    *line;
+        char    *line_expansed;
+        int     i_heredoc = 0;
+        int     flag = 0;
+
+        
+  
+        close(pipefd[0]); // Cerramos lectura
+
+        while (1)
+        {
+            write(STDOUT_FILENO, "> ", 2);
+            line = get_next_line(STDIN_FILENO);
+            if (!line)
+                break;
+
+            if (ft_strchr(line, '\n'))
+                *ft_strchr(line, '\n') = '\0';
+
+            if ((flag == 1 || heredoc_count == 1)
+                && !(ft_strcmp(line, delim[i_heredoc].delimiter) == 0
+                    && (i_heredoc == heredoc_count - 1)))
+            {
+                line_expansed = ft_expanse_heredoc(line, l_env);
+                write(pipefd[1], line_expansed, ft_strlen(line_expansed));
+                write(pipefd[1], "\n", 1);
+                free(line_expansed);
+            }
+
+            if (ft_strcmp(line, delim[i_heredoc].delimiter) == 0)
+            {
+                if (i_heredoc < heredoc_count - 2)
+                    i_heredoc++;
+                else if (i_heredoc == heredoc_count - 2)
+                {
+                    flag = 1;
+                    i_heredoc++;
+                }
+                else if (i_heredoc == heredoc_count - 1)
+                {
+                    free(line);
+                    break;
+                }
+            }
+            free(line);
+        }
+        close(pipefd[1]); // Cerramos escritura
+        exit(0);
+    }
+
+    // Proceso padre
+    close(pipefd[1]); // Cerramos escritura en el padre
+    waitpid(pid, &status, 0);
+    
+    return pipefd[0]; // Devuelve descriptor de lectura
+}
+*/

@@ -41,3 +41,39 @@ void	ft_proc_files_redir_cmd(t_cmd *cmd)
 		close(cmd->outfile);
 	}
 }
+
+// function to inform if there is a redirect file error
+int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env)
+{
+	int	ret_val;
+
+	ret_val = 1;
+	if (cmd->infile == -1)
+	{
+		//close(STDIN_FILENO);
+		ret_val = 0;
+	}
+	if (cmd->outfile == -1)
+	{
+		//close(STDOUT_FILENO);
+		ret_val = 0;
+	}
+	if (ret_val == 0)
+		ft_lstclear(&l_env, ft_free_env);
+	return (ret_val);
+}
+
+// function to redirect input and output to the correspoding to process
+//  it is taking into account if input is heredoc and also
+// is managed signals in this fucntion due to norminette restrictions
+void	ft_proc_pline_red(int **pipeline, int proc, int n_procs, t_cmd *cmd)
+{
+	ft_setup_signals(2);
+	if (!pipeline || n_procs < 2)
+		return ;
+	if (proc > 0 && cmd->heredoc_count == 0)
+		dup2(pipeline[proc - 1][0], STDIN_FILENO);
+	if (proc < (n_procs - 1))
+		dup2(pipeline[proc][1], STDOUT_FILENO);
+	ft_close_pipes(pipeline, n_procs - 1);
+}

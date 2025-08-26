@@ -221,6 +221,8 @@ void			ft_cmddelone(t_cmd *lst, void (*del)(char **));
 //----------- minishell_utils_2.c----------------
 char	*ft_get_env_value(const char *key, t_list *env);
 void			ft_proc_files_redir_cmd(t_cmd *cmd);
+int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env);
+void	ft_proc_pline_red(int **pipeline, int proc, int n_procs, t_cmd *cmd);
 
 //----------- builtin_export_2.c----------------
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);
@@ -243,7 +245,7 @@ void			ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
 void			ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2]);
 void			ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
 void			ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[]);
-void			ft_manage_heredoc(t_cmd *cmd, t_list *l_env);
+int			ft_manage_heredoc(t_cmd *cmd, t_list *l_env);
 
 //----------- builtin_utils.c----------------
 void	ft_manage_builtin_alone(t_cmd *cmd, t_list *l_env);
@@ -258,8 +260,8 @@ void	ft_free_pipeline(int **pipeline);
 void	ft_free_mem_exe(t_cmd *cmd, t_list *l_env, int **pline, int ex_v);
 void	ft_close_pipes(int **pipeline, int n_pipes);
 
-//----------- execute_5.c----------------
-void	ft_child_erro_exit(t_cmd *cmd, int **pipeline);
+//----------- execute_child.c----------------
+void	ft_child_erro_exit(t_cmd *cmd, int **pipeline, int *pid);
 void	ft_execute_process(t_cmd *cmd, t_list *l_env);
 
 #endif

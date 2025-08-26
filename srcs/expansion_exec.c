@@ -31,6 +31,8 @@ void	join_tokens_with_end(t_token **tokens)
 			curr->value = joined;
 			if (next->end == 1)
 				curr->end = 1;
+			/*if (next->end == 0)
+				curr->end = 0;*/
 			curr->next = next->next;
 			free(next->value);
 			free(next);
@@ -111,5 +113,5 @@ void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 void	finalize_expansion(t_token **n_lst, t_token *c, t_dat *data)
 {
 	if (data->s > 0)
-		add_tok(n_lst, c->type, literal_tok(&(data->result), &(data->s)), 0);
+		add_tok(n_lst, c->type, literal_tok(&(data->result), &(data->s)), c->end);
 }

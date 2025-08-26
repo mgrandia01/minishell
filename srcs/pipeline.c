@@ -102,9 +102,15 @@ void	ft_close_pipes(int **pipeline, int n_pipes)
 	while (i < n_pipes)
 	{
 		if (pipeline[i][0])
+		{
 			close(pipeline[i][0]);
+			pipeline[i][0] = -1;
+		}
 		if (pipeline[i][1])
+		{
 			close(pipeline[i][1]);
+			pipeline[i][1] = -1;
+		}
 		i++;
 	}
 }
