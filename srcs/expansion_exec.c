@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 17:44:58 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 18:01:37 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ void	join_tokens_with_end(t_token **tokens, int here)
 			joined = ft_strjoin(curr->value, next->value);
 			free(curr->value);
 			curr->value = joined;
-			if (here != 1 && next->end == 0)
+		/*	if (here != 1 && next->end == 0)
+				curr->end = 0;*/
+			(void)here;
+			if (next->end == 0)
 				curr->end = 0;
 			curr->next = next->next;
 			free(next->value);
@@ -112,7 +115,6 @@ void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 {
 	char	*literal;
 	int	end;
-	printf("entro\n");
 	while (t_val[d->i] != '\0')
 	{
 		if (t_val[d->i] == '$' && t_val[d->i+1])
@@ -126,16 +128,12 @@ void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 				handle_echo_exit_status(d);
 			else
 			{
-				printf("t_val = %s\n" , t_val);
-				printf("end = %d\n" , c->end);
-				printf("d->i = %d\n" , d->i);
-				//printf("t_val[d->i]= %c, size + %d, cap enrere = %c\n", t_val[d->i], d->i, t_val[d->i+1]);
 				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
 				if (t_val[d->i] == '$' || (t_val[d->i] == ' ' && t_val[d->i + 1] != '$'))
 					end = 1;
 				else 
 					end = 0;
-				handle_exp_result(n_lst, c, &(d->result),d->quote,c->end);// d->quote,0);// end);
+				handle_exp_result(n_lst, c, &(d->result),d->quote,end);// d->quote,0);// end);
 				d->s = 0;
 			}
 		}
