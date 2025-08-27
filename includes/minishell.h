@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/26 16:15:17 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:46:46 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ void			p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
 void			finalize_expansion(t_token **n_lst, t_token *c, t_dat *data);
 
 //-----------expansion_process.c-----------------
-void			handle_exp_result(t_token **n_lst, t_token *c, char **r, int q);
+void			handle_exp_result(t_token **n_lst, t_token *c, char **r, int q, int end);
 void			process_token_expansion(t_token **tokens, char *envp[], int here);
 
 //----------path.c------------------

@@ -6,17 +6,16 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 11:32:09 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:43:14 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // Process the result of a variable expansion: split if needed or clean quotes
-void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
+void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q, int end)
 {
-	int	end;
-
+	
 	if (ft_strchr(*r, ' ') && q == 0)
 	{
 		split_tok(n_lst, c->type, *r, c->end);
@@ -24,7 +23,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 	}
 	else
 	{
-		end = c->end;
+		//end = c->end;
 		add_tok(n_lst, c->type, *r, end);
 	}
 	*r = NULL;
@@ -34,7 +33,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q)
 static void	exp_tok_val(const char *val, t_token **n_l, t_token *c, char *env[])
 {
 	t_dat	data;
-
+	
 	init_exp_data(&data, val[0], env);
 	p_exp(val, n_l, c, &data);
 	finalize_expansion(n_l, c, &data);
@@ -50,7 +49,6 @@ static void	exp_tok_heredoc(const char *val, t_token **n_l, t_token *c, char *en
 
 
 }
-
 
 // Go through all tokens and expand variables when needed
 void	process_token_expansion(t_token **tokens, char *envp[], int here)

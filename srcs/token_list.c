@@ -6,12 +6,11 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 10:29:58 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 12:44:10 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 /*
  * Creates a new token and adds it to the end of the token list.
  * Returns 1 on success, 0 on failure.
@@ -19,7 +18,8 @@
 int	add_tok(t_token **lst, t_token_type type, char *val, int end)
 {
 	t_token	*new;
-
+//	printf("------add_token\n");
+//	printf("\nval = %s, end = %d\n", val, end);
 	new = malloc(sizeof(*new));
 	if (!new || (type == TOKEN_WORD && !val))
 		return (0);

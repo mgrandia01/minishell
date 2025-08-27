@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/26 16:50:39 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 11:30:54 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,13 +337,13 @@ int	main(int argc, char *argv[], char *envp[])
 			ft_printf(STDERR_FILENO, "Error: falló la creación de envp\n");
 			continue ;
 		}
+		print_tokens(tokens);
 		process_token_expansion(&tokens, envp_exec, 0);
 		ft_free_tab(envp_exec);
-		print_tokens(tokens);
+		//printf("\n\n---------------------\n\n");
+		//print_tokens(tokens);
 		join_tokens_with_end(&tokens, 0);// 0 porque no hay heredoc
-		printf("\n\n---------------------\n\n");
-		print_tokens(tokens);
-		printf("\n");
+		//printf("\n");
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);
 		free_tokens(tokens);
