@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 16:34:13 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:44:58 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,25 +93,11 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 				handle_echo_exit_status(d);
 			else
 			{
-
-				//printf("PRIMER d->i %d\n",d->i);
-				//printf("t_val = %c",t_val[d->i]);
-				//printf("t_cval[d->i] = %c", t_val[d->i]);
-				printf("%d\n", d->s);
 				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
-				//printf("SEGON d->i %d\n",d->i);
-				if (t_val[d->i] == '$')
-				{
-					//printf("aquiNOOO va un espai");
+				if (t_val[d->i] == '$' || (t_val[d->i] == ' ' && t_val[d->i + 1] != '$'))
 					end = 1;
-				}
-				else
-				{
-
-
-					printf("t_val[d->i] = %c aquiNOOO va un espai\n", t_val[d->i]);
+				else 
 					end = 0;
-				}
 				handle_exp_result(n_lst, c, &(d->result), d->quote, end);
 				d->s = 0;
 			}
@@ -119,16 +105,14 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 		else
 			handle_literal_ch(t_val, &(d->i), &(d->result), &(d->s));
 	}
-//	printf("POST********p_exp***********\n");
-//	p_tokens(*n_lst);
-//	printf("********p_exp***********\n");
 }
 
 //FIXME
 void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 {
 	char	*literal;
-
+	int	end;
+	printf("entro\n");
 	while (t_val[d->i] != '\0')
 	{
 		if (t_val[d->i] == '$' && t_val[d->i+1])
@@ -142,8 +126,16 @@ void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 				handle_echo_exit_status(d);
 			else
 			{
+				printf("t_val = %s\n" , t_val);
+				printf("end = %d\n" , c->end);
+				printf("d->i = %d\n" , d->i);
+				//printf("t_val[d->i]= %c, size + %d, cap enrere = %c\n", t_val[d->i], d->i, t_val[d->i+1]);
 				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
-				handle_exp_result(n_lst, c, &(d->result), d->quote, 0);
+				if (t_val[d->i] == '$' || (t_val[d->i] == ' ' && t_val[d->i + 1] != '$'))
+					end = 1;
+				else 
+					end = 0;
+				handle_exp_result(n_lst, c, &(d->result),d->quote,c->end);// d->quote,0);// end);
 				d->s = 0;
 			}
 		}

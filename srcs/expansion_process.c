@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 15:43:14 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:34:14 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	handle_exp_result(t_token **n_lst, t_token *c, char **r, int q, int end)
 		split_tok(n_lst, c->type, *r, c->end);
 		free(*r);
 	}
-	else
+	else 
 	{
 		//end = c->end;
 		add_tok(n_lst, c->type, *r, end);
