@@ -241,16 +241,14 @@ void	sigquit_handler_heredoc(int sig);
 
 //----------- execute_2.c----------------
 void			ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
-void			ft_parent_pro(t_cmd *cmd, int *prev_fd, int pipefd[2], int pid);
-void			ft_child_pro_execute(t_cmd *cmd, t_list *l_env, int pipefd[2]);
-void			ft_c_pro(t_cmd *cmd, t_list *l_env, int pipefd[2], int prev_fd);
-void			ft_process_command(t_cmd *cmd, t_list *l_env, int *prev_fd, int pipefd[]);
 int			ft_manage_heredoc(t_cmd *cmd, t_list *l_env);
+void			ft_manage_mshell_level(char *path, t_list *l_env, char ***envp_exec);
 
 //----------- builtin_utils.c----------------
 void	ft_manage_builtin_alone(t_cmd *cmd, t_list *l_env);
 int	ft_execute_builtin(t_cmd *cmd, t_list *l_env);
 int	ft_is_builtin(char *cmd);
+int	ft_cd_ret_home(char **args, t_list *l_env);
 
 
 //----------- pipeline.c----------------

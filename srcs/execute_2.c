@@ -52,7 +52,7 @@ void	ft_handle_single_builtin(t_cmd *cmd, t_list *l_env)
 	return ;
 }
 
-void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
+/*void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 {
 	if (!path)
 	{
@@ -62,7 +62,7 @@ void	ft_command_not_found(char *path, t_cmd *cmd, char **envp_exec)
 		ft_cmdclear (&cmd, ft_free_argv);
 		exit(127);
 	}
-}
+}*/
 
 /*void	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 {
@@ -88,4 +88,28 @@ int	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 			return (0);
 	}
 	return (1);
+}
+
+void	ft_manage_mshell_level(char *path, t_list *l_env, char ***envp_exec)
+{
+	char	*c_shell;
+	char	*a_shell;
+	int		i_shell;
+
+	a_shell = NULL;
+	if (path && ft_strncmp(path, "./minishell", 11) == 0)
+	{
+		c_shell = ft_get_env_value("SHLVL", l_env);
+		if (c_shell)
+		{
+			i_shell = ft_atoi(c_shell) + 1;
+			a_shell = ft_itoa(i_shell);
+		}
+		if (a_shell)
+		{
+			ft_export_assign_var(ft_strdup("SHLVL"), a_shell, &l_env);
+			ft_free_tab(*envp_exec);
+			*envp_exec = ft_build_envp_array(l_env);
+		}
+	}
 }

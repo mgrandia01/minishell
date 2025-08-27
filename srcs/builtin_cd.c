@@ -51,7 +51,7 @@ static int	ft_cd_oldpwd_error(t_list *l_env)
 	return (1);
 }
 
-static int	ft_manage_cd_arguments(char **args)
+/*static int	ft_manage_cd_arguments(char **args)
 {
 	if (!args || !args[1])
 	{
@@ -59,6 +59,22 @@ static int	ft_manage_cd_arguments(char **args)
 		return (0);
 	}
 	if (args[2])
+	{
+		write(STDERR_FILENO, "minishell: cd: too many arguments\n", 34);
+		return (0);
+	}
+	return (1);
+}*/
+
+static int	ft_cd_manage_arguments(char **args)
+{
+	if (!args)
+	{
+		perror("minishell: cd: ");
+		write(STDERR_FILENO, "\n", 1);
+		return (0);
+	}
+	if (args[1] != NULL && args[2])
 	{
 		write(STDERR_FILENO, "minishell: cd: too many arguments\n", 34);
 		return (0);
@@ -95,10 +111,11 @@ static int	ft_manage_cd_arguments(char **args)
 int	ft_builtin_cd(char **args, t_list *l_env)
 {
 	char	*path;
-	char	*pwd;
 
-	if (!ft_manage_cd_arguments(args))
+	if (!ft_cd_manage_arguments(args))
 		return (1);
+	if (ft_cd_ret_home(args, l_env))
+		return (0);
 	path = getcwd(NULL, 0);
 	if (!path)
 		return (ft_cd_oldpwd_error(l_env));
@@ -107,17 +124,13 @@ int	ft_builtin_cd(char **args, t_list *l_env)
 		ft_cd_chdir_error(args[1], &path);
 		return (1);
 	}
-	pwd = ft_get_env_value("PWD", l_env);
-	/*if (!pwd)
-		ft_builtin_unset("PWD", &l_env);
-		ft_builtin_unset("OLDPWD", &l_env);
-	else
-	{*/
 	ft_export_assign_var(ft_strdup("OLDPWD"), path, &l_env);
 	path = getcwd(NULL, 0);
 	if (!path)
 		return (ft_cd_newcwd_error());
-	ft_export_assign_var(ft_strdup("PWD"), path, &l_env);
-	//}
+	if (ft_get_env_value("PWD", l_env))
+		ft_export_assign_var(ft_strdup("PWD"), path, &l_env);
+	else
+		free(path);
 	return (0);
 }

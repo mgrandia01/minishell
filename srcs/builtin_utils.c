@@ -74,3 +74,33 @@ int	ft_is_builtin(char *cmd)
 		return (1);
 	return (0);
 }
+
+// function to move to home directory on builtin cd
+int	ft_cd_ret_home(char **args, t_list *l_env)
+{
+	char	*home;
+	char	*pwd;
+
+	if (!args[1] || ft_strncmp(args[1], "~", 1) == 0)
+	{
+		home = ft_get_env_value("HOME", l_env);
+		pwd = ft_get_env_value("PWD", l_env);
+		if (!home)
+		{
+			ft_printf(STDERR_FILENO, "minishell: cd: %s: ", home);
+			ft_printf(STDERR_FILENO, "%s\n", strerror(errno));
+			return (0);
+		}
+		if (chdir(home) != 0)
+		{
+			ft_printf(STDERR_FILENO, "minishell: cd: %s: ", home);
+			ft_printf(STDERR_FILENO, "%s\n", strerror(errno));
+			return (0);
+		}
+		if (pwd)
+			ft_export_assign_var(ft_strdup("OLDPWD"), ft_strdup(pwd), &l_env);
+		ft_export_assign_var(ft_strdup("PWD"), ft_strdup(home), &l_env);
+		return (1);
+	}
+	return (0);
+}

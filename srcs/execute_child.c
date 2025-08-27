@@ -48,6 +48,7 @@ static void	ft_execute_command(t_cmd *cmd, t_list *l_env)
 		path = find_path(cmd->argv[0], envp_exec);
 	else
 		path = NULL;
+	ft_manage_mshell_level(path, l_env, &envp_exec);
 	ft_lstclear(&l_env, ft_free_env);
 	if (ft_search_cmd(path, cmd))
 	{
