@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 11:30:54 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/27 18:10:29 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ static void	ft_cleanup_minishell(t_list **l_env, char *input, t_token *tokens)
 	ft_cleanup_minishell(&l_env, input, tokens);
 	return (0);
 }*/
-/* readline sin normi
+// readline sin normi
 int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input;
@@ -253,7 +253,7 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		process_token_expansion(&tokens, envp_exec, 0);
 		ft_free_tab(envp_exec);
-		join_tokens_with_end(&tokens);
+		join_tokens_with_end(&tokens, 0);
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);
 		free_tokens(tokens);
@@ -274,10 +274,10 @@ int	main(int argc, char *argv[], char *envp[])
 	rl_clear_history();
 	return (0);
 }
-*/
+
 
 //main gnl
-int	main(int argc, char *argv[], char *envp[])
+/*int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input;
 	t_token	*tokens;
@@ -299,7 +299,7 @@ int	main(int argc, char *argv[], char *envp[])
 		return (1);
 	}
 	envp_exec = NULL;
-	//disable_sigquit_echo();
+//	disable_sigquit_echo();//FIXME HO TENIEM COMENTAT
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
@@ -363,5 +363,5 @@ int	main(int argc, char *argv[], char *envp[])
 		free_tokens(tokens);
 	rl_clear_history();
 	return (0);
-}
+}*/
 
