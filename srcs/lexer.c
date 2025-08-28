@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 15:27:00 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 12:16:57 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:04:00 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,8 @@ static int	process_special_chars(char *input, t_token **list, t_pos_data *data)
 	return (0);
 }
 
-static int	process_special_ch_heredoc(char *input, t_token **list, t_pos_data *data)
+int	process_special_ch_heredoc(char *input, t_token **list, t_pos_data *data)
 {
-
 	if (data->state == 0 && (input[data->pos] == ' '
 			|| input[data->pos] == '\t'))
 		hand_whitespace(input, list, data);
@@ -64,7 +63,6 @@ static int	process_special_ch_heredoc(char *input, t_token **list, t_pos_data *d
 		data->pos++;
 	return (0);
 }
-
 
 /*
  * Tokenizes the input string and returns a list of tokens.

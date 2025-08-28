@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 12:06:21 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:54:08 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,8 @@ void	join_tokens_with_end(t_token **tokens)
 			joined = ft_strjoin(curr->value, next->value);
 			free(curr->value);
 			curr->value = joined;
-			if (next->end == 1)
-				curr->end = 1;
-			/*if (next->end == 0)
-				curr->end = 0;*/
+			if (next->end == 0)
+				curr->end = 0;
 			curr->next = next->next;
 			free(next->value);
 			free(next);
@@ -42,24 +40,55 @@ void	join_tokens_with_end(t_token **tokens)
 	}
 }
 
-// Initialize expansion state (quote type, index, result buffer, etc.)
-void	init_exp_data(t_dat *data, char first_char, char *env[])
+static int	end_value(const char *t_val, int i)
 {
-	data->quote = get_quoted_type(first_char);
-	data->i = 0;
-	data->result = NULL;
-	data->s = 0;
-	data->env = env;
+	int	end;
+
+	end = 0;
+	if (t_val[i] == '$' || (t_val[i] == ' '
+			&& t_val[i + 1] != '$'))
+		end = 1;
+	return (end);
 }
 
-// Loop through token string and process variable expansions or literals
+/// Loop through token string and process variable expansions or literals
 void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 {
 	char	*literal;
+	int		end;
 
 	while (t_val[d->i] != '\0')
 	{
-		if (t_val[d->i] == '$' && d->quote != 1 && t_val[d->i+1])
+		if (t_val[d->i] == '$' && d->quote != 1 && t_val[d->i + 1])
+		{
+			if (d->s > 1)
+			{
+				literal = literal_tok(&(d->result), &(d->s));
+				add_tok(n_lst, c->type, literal, 1);
+			}
+			if (t_val[d->i + 1] == '?')
+				handle_echo_exit_status(d);
+			else
+			{
+				d->result = exp_var_at_index(t_val, &(d->i), d->env);
+				end = end_value(t_val, d->i);
+				handle_exp_result(n_lst, c, d, end);
+				d->s = 0;
+			}
+		}
+		else
+			handle_literal_ch(t_val, &(d->i), &(d->result), &(d->s));
+	}
+}
+
+void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
+{
+	char	*literal;
+	int		end;
+
+	while (t_val[d->i] != '\0')
+	{
+		if (t_val[d->i] == '$' && t_val[d->i + 1])
 		{
 			if (d->s > 0)
 			{
@@ -70,8 +99,9 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 				handle_echo_exit_status(d);
 			else
 			{
-				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
-				handle_exp_result(n_lst, c, &(d->result), d->quote);
+				d->result = exp_var_at_index(t_val, &(d->i), d->env);
+				end = end_value(t_val, d->i);
+				handle_exp_result(n_lst, c, d, end);
 				d->s = 0;
 			}
 		}
@@ -79,39 +109,10 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			handle_literal_ch(t_val, &(d->i), &(d->result), &(d->s));
 	}
 }
-
-//FIXME
-void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
-{
-	char	*literal;
-
-	while (t_val[d->i] != '\0')
-	{
-		if (t_val[d->i] == '$' && t_val[d->i+1])
-		{
-			if (d->s > 0)
-			{
-				literal = literal_tok(&(d->result), &(d->s));
-				add_tok(n_lst, c->type, literal,1);
-			}
-			if (t_val[d->i + 1] == '?')
-				handle_echo_exit_status(d);
-			else
-			{
-				d->result = exp_var_at_index(t_val, &(d->i), d->env, c);
-				handle_exp_result(n_lst, c, &(d->result), d->quote);
-				d->s = 0;
-			}
-		}
-		else
-			handle_literal_ch(t_val, &(d->i), &(d->result), &(d->s));
-	}
-}
-
 
 // Add final literal token if any characters were left unprocessed
-void	finalize_expansion(t_token **n_lst, t_token *c, t_dat *data)
+void	finalize_expansion(t_token **n_lst, t_token *c, t_dat *d)
 {
-	if (data->s > 0)
-		add_tok(n_lst, c->type, literal_tok(&(data->result), &(data->s)), c->end);
+	if (d->s > 0)
+		add_tok(n_lst, c->type, literal_tok(&(d->result), &(d->s)), c->end);
 }

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 10:46:23 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:52:22 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,12 @@ static char	*get_env_value(const char *name, char *envp[])
 	return (NULL);
 }
 
-// TODO las variables creadas por el usuario
 /*
  * Expands an environment variable starting at index *i in t_val.
  * Looks up its value in envp and returns a duplicated string of the value.
  * Advances *i past the variable name.
  */
-char	*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c)
+char	*exp_var_at_index(const char *t_val, int *i, char *envp[])
 {
 	char	*var_name;
 	char	*value;
@@ -54,8 +53,6 @@ char	*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c)
 		len++;
 	var_name = ft_substr(t_val, start + 1, len);
 	*i += len;
-	if (t_val[*i] == '$')
-		c->end = 1;
 	if (!var_name)
 		return (NULL);
 	value = get_env_value(var_name, envp);

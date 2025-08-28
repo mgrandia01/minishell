@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/25 11:50:50 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:53:15 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void	add_outfile_name(t_cmd *cmd, const char *filename);
 int	find_mode(t_redir_type *expect_redir);
 
 //---------env_expansion.c-----------
-char			*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c);
+char			*exp_var_at_index(const char *t_val, int *i, char *envp[]);
 void			join_tokens_with_end(t_token **tokens);
 
 //----------quotes.c-----------	
@@ -175,7 +175,7 @@ void			p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
 void			finalize_expansion(t_token **n_lst, t_token *c, t_dat *data);
 
 //-----------expansion_process.c-----------------
-void			handle_exp_result(t_token **n_lst, t_token *c, char **r, int q);
+void			handle_exp_result(t_token **n_lst, t_token *c, t_dat *d, int end);//char **r, int q, int end);
 void			process_token_expansion(t_token **tokens, char *envp[], int here);
 
 //----------path.c------------------
