@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/28 10:23:15 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:46:37 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ static void	ft_cleanup_minishell(t_list **l_env, char *input, t_token *tokens)
 	return (0);
 }*/
 // readline sin normi
-int	main(int argc, char *argv[], char *envp[])
+/*int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input;
 	t_token	*tokens;
@@ -275,9 +275,9 @@ int	main(int argc, char *argv[], char *envp[])
 	return (0);
 }
 
-
+*/
 //main gnl
-/*int	main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input;
 	t_token	*tokens;
@@ -340,6 +340,7 @@ int	main(int argc, char *argv[], char *envp[])
 		print_tokens(tokens);
 		process_token_expansion(&tokens, envp_exec, 0);
 		ft_free_tab(envp_exec);
+		print_tokens(tokens);
 		//printf("\n\n---------------------\n\n");
 		//print_tokens(tokens);
 		join_tokens_with_end(&tokens);// 0 porque no hay heredoc
@@ -363,5 +364,5 @@ int	main(int argc, char *argv[], char *envp[])
 		free_tokens(tokens);
 	rl_clear_history();
 	return (0);
-}*/
+}
 

@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 10:32:54 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/28 10:23:30 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:02:38 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static char	*ft_line_expanded(t_token *tokens, char *l_exp2)
 		{
 			if (l_exp2 != NULL)
 			{
+				free(l_exp2);
 				l_exp2 = ft_strjoin_triple(l_exp1, " ", tokens->value);
 				free(l_exp1);
 			}
