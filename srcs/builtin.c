@@ -227,6 +227,7 @@ int	ft_builtin_exit(t_cmd *cmds, t_list *l_env)
 	{
 		ft_printf(STDERR_FILENO, "minishell: exit: too many arguments\n");
 		g_exit_status = 1;
+		return (g_exit_status);
 	}
 	else
 		g_exit_status = ft_atoi(cmds->argv[1]) % 256;

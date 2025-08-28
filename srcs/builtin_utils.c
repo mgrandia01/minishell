@@ -46,7 +46,8 @@ void	ft_manage_builtin_alone(t_cmd *cmd, t_list *l_env)
 	parent_stdout = dup(STDOUT_FILENO);
 	ft_manage_heredoc(cmd, l_env);
 	ft_proc_files_redir_cmd(cmd);
-	g_exit_status = ft_execute_builtin(cmd, l_env);
+	if (ft_strcmp(cmd->argv[0], "exit") != 0)
+		g_exit_status = ft_execute_builtin(cmd, l_env);
 	dup2(parent_stdin, STDIN_FILENO);
 	dup2(parent_stdout, STDOUT_FILENO);
 	close(parent_stdin);
@@ -87,14 +88,12 @@ int	ft_cd_ret_home(char **args, t_list *l_env)
 		pwd = ft_get_env_value("PWD", l_env);
 		if (!home)
 		{
-			ft_printf(STDERR_FILENO, "minishell: cd: %s: ", home);
-			ft_printf(STDERR_FILENO, "%s\n", strerror(errno));
+			ft_printf(STDERR_FILENO, "minishell: cd: HOME no set\n");
 			return (0);
 		}
 		if (chdir(home) != 0)
 		{
-			ft_printf(STDERR_FILENO, "minishell: cd: %s: ", home);
-			ft_printf(STDERR_FILENO, "%s\n", strerror(errno));
+			ft_printf(STDERR_FILENO, "minishell: cd: %s\n", strerror(errno));
 			return (0);
 		}
 		if (pwd)
