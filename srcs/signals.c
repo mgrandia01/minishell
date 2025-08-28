@@ -79,5 +79,7 @@ void	ft_setup_signals(int enable)
 	{
 	signal(SIGINT, display_new_line);
 	signal(SIGQUIT, display_new_line);
+		//signal(SIGINT, SIG_IGN);
+		//signal(SIGQUIT, SIG_IGN);
 	}
 }
