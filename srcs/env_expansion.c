@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 17:03:47 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:52:22 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,29 +38,7 @@ static char	*get_env_value(const char *name, char *envp[])
  * Looks up its value in envp and returns a duplicated string of the value.
  * Advances *i past the variable name.
  */
-/*
-void    p_tokens(t_token *tokens)
-{
-        const char *type_str;
-        while (tokens)
-        {
-        switch (tokens->type)
-        {
-                case TOKEN_WORD:                type_str = "WORD"; break;
-                case TOKEN_PIPE:                type_str = "PIPE"; break;
-                case TOKEN_REDIR_IN:            type_str = "REDIR_IN"; break;
-                case TOKEN_REDIR_OUT:           type_str = "REDIR_OUT"; break;
-                case TOKEN_REDIR_APPEND:        type_str = "REDIR_APPEND"; break;
-                case TOKEN_HEREDOC:             type_str = "HEREDOC"; break;
-                case TOKEN_EOF:                 type_str = "EOF"; break;
-                default:                        type_str = "UNKNOWN"; break;
-        }
-        printf("Token type: %s, value: '%s', end: %d\n", type_str, tokens->value, tokens->end);
-        tokens = tokens->next;
-        }
-}*/
-
-char	*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c)
+char	*exp_var_at_index(const char *t_val, int *i, char *envp[])
 {
 	char	*var_name;
 	char	*value;
@@ -75,13 +53,6 @@ char	*exp_var_at_index(const char *t_val, int *i, char *envp[], t_token *c)
 		len++;
 	var_name = ft_substr(t_val, start + 1, len);
 	*i += len;
-	(void) c;
-//	printf("\nt_val[*(i)] = %c", t_val[*(i)]);
-//	printf("\nt_val[*(i+1)] = %c", t_val[*i+1]);
-//	if (t_val[*i] == '$' && t_val[*(i+1)] != '\0') 
-//		c->end = 1;
-
-//	p_tokens(c);
 	if (!var_name)
 		return (NULL);
 	value = get_env_value(var_name, envp);

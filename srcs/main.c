@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 18:10:29 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:23:15 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,7 +253,7 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		process_token_expansion(&tokens, envp_exec, 0);
 		ft_free_tab(envp_exec);
-		join_tokens_with_end(&tokens, 0);
+		join_tokens_with_end(&tokens);
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);
 		free_tokens(tokens);
@@ -342,7 +342,7 @@ int	main(int argc, char *argv[], char *envp[])
 		ft_free_tab(envp_exec);
 		//printf("\n\n---------------------\n\n");
 		//print_tokens(tokens);
-		join_tokens_with_end(&tokens, 0);// 0 porque no hay heredoc
+		join_tokens_with_end(&tokens);// 0 porque no hay heredoc
 		//printf("\n");
 		remove_quotes_from_token_list(tokens);
 		cmds = ft_parse(tokens);

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/27 12:44:10 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:10:23 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 int	add_tok(t_token **lst, t_token_type type, char *val, int end)
 {
 	t_token	*new;
-//	printf("------add_token\n");
-//	printf("\nval = %s, end = %d\n", val, end);
+
 	new = malloc(sizeof(*new));
 	if (!new || (type == TOKEN_WORD && !val))
 		return (0);
@@ -49,10 +48,8 @@ static int	handle_end(char c)
 
 	if (((c == ' ') || (c == '\t') || (c == '\0')))
 		end = 0;
-	
 	else if ((c == '>') || (c == '<') || (c == '|'))
 		end = 0;
-	
 	else
 		end = 1;
 	return (end);
