@@ -22,7 +22,9 @@ static void	ft_parent_proc(int n_procs, pid_t *pid)
 	while (i < n_procs)
 	{
 		wstatus = 0;
+		//ft_setup_signals(1);
 		waitpid(pid[i], &wstatus, 0);
+		
 		if (i == (n_procs - 1))
 		{
 			if (WIFEXITED(wstatus))

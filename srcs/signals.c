@@ -27,6 +27,7 @@ void	cleanup_outfiles(t_cmd *cmd)
 
 void	ft_handle_sigint(int sig)
 {
+//printf("SIGNALS");
 	(void)sig;
 	rl_replace_line("", 0);
 	write(0, "\n", 1);
@@ -41,6 +42,7 @@ void	ft_handle_sigint(int sig)
 
 void	ft_handle_sigquit(int sig)
 {
+	
 	(void)sig;
 	rl_on_new_line();                        // Resetea estado interno de readline
 	write(0, "\n", 1);
@@ -50,6 +52,13 @@ void	ft_handle_sigquit(int sig)
 
 	//write(STDOUT_FILENO, "\b\b  \b\b", 6);// Borra visualmente dos caracteres
 	// cuidado con usar tgetstr(), tgoto() y tputs() pq pueden interferir con readline
+}
+
+void	display_new_line(int sig)
+{
+	(void)sig;
+	printf("\n");
+	rl_on_new_line();
 }
 
 // SIGINT CTRL + C
@@ -68,7 +77,7 @@ void	ft_setup_signals(int enable)
 	}
 	else
 	{
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, display_new_line);
+	signal(SIGQUIT, display_new_line);
 	}
 }

@@ -190,7 +190,7 @@ static void	ft_cleanup_minishell(t_list **l_env, char *input, t_token *tokens)
 	return (0);
 }*/
 // readline sin normi
-/*int	main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	char	*input;
 	t_token	*tokens;
@@ -212,7 +212,7 @@ static void	ft_cleanup_minishell(t_list **l_env, char *input, t_token *tokens)
 		return (1);
 	}
 	envp_exec = NULL;
-	disable_sigquit_echo();
+	//disable_sigquit_echo();
 	while (1)
 	{
 		input = readline("\033[1;32mminishell \u25B8\033[0m ");
@@ -274,8 +274,8 @@ static void	ft_cleanup_minishell(t_list **l_env, char *input, t_token *tokens)
 	rl_clear_history();
 	return (0);
 }
+/*
 
-*/
 //main gnl
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -288,7 +288,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 	(void) argc;
 	(void) argv;
-	ft_setup_signals(1);
+	//ft_setup_signals(1);
 	input = NULL;
 	tokens = NULL;
 	cmds = NULL;
@@ -364,5 +364,5 @@ int	main(int argc, char *argv[], char *envp[])
 		free_tokens(tokens);
 	rl_clear_history();
 	return (0);
-}
+}*/
 
