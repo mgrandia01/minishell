@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 11:09:50 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/30 11:09:56 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:05:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	return (line_expansed2);
 }
 
-void	ft_heredoc_init(struct sigaction *sa_old, t_here_norm *here_norm)
+void	heredoc_init(struct sigaction *sa_old, t_n *here_norm)
 {
 	struct sigaction	sa_heredoc;
 
@@ -86,7 +86,7 @@ void	ft_heredoc_close(struct sigaction *sa_old)
 	enable_sigquit();
 }
 
-int	ft_heredoc_error_line(struct sigaction *sa_old, int pipefd[2], t_cmd *cmd)
+int	h_err_line(struct sigaction *sa_old, int pipefd[2], t_cmd *cmd)
 {
 	int	i;
 
@@ -105,18 +105,18 @@ int	ft_heredoc_error_line(struct sigaction *sa_old, int pipefd[2], t_cmd *cmd)
 	return (-1);
 }
 
-void	ft_heredoc_manage_line_1(t_here_norm here_norm, t_cmd *cmd, int *pipefd, t_list *l_env)
+void	h_manage_1(t_n h_nor, t_cmd *cmd, int *pipefd, t_list *l_env)
 {
 	char	*line_expansed;
 
 	line_expansed = NULL;
-	if (ft_strchr(here_norm.line, '\n'))
-		*ft_strchr(here_norm.line, '\n') = '\0';
-	if (((here_norm.flag == 1) || cmd->heredoc_count == 1)
-		&&!(ft_strcmp(here_norm.line, cmd->heredocs[here_norm.i_heredoc].delimiter) == 0
-			&& (here_norm.i_heredoc == cmd->heredoc_count - 1)))
+	if (ft_strchr(h_nor.line, '\n'))
+		*ft_strchr(h_nor.line, '\n') = '\0';
+	if (((h_nor.flag == 1) || cmd->heredoc_count == 1)
+		&&!(ft_strcmp(h_nor.line, cmd->heredocs[h_nor.i_heredoc].delimiter) == 0
+			&& (h_nor.i_heredoc == cmd->heredoc_count - 1)))
 	{
-		line_expansed = ft_expanse_heredoc(here_norm.line, l_env);
+		line_expansed = ft_expanse_heredoc(h_nor.line, l_env);
 		write(pipefd[1], line_expansed, ft_strlen(line_expansed));
 		write(pipefd[1], "\n", 1);
 	}
@@ -124,20 +124,20 @@ void	ft_heredoc_manage_line_1(t_here_norm here_norm, t_cmd *cmd, int *pipefd, t_
 		free(line_expansed);
 }
 
-int	ft_heredoc_manage_line_2(t_here_norm *here_norm, t_cmd *cmd, struct sigaction *sa_old, int pipefd[2])
+int	h_mng2(t_n *h_nor, t_cmd *cmd, struct sigaction *sa_old, int pipefd[2])
 {
-	if (ft_strcmp(here_norm->line, cmd->heredocs[here_norm->i_heredoc].delimiter) == 0)
+	if (ft_strcmp(h_nor->line, cmd->heredocs[h_nor->i_heredoc].delimiter) == 0)
 	{
-		if (here_norm->i_heredoc < cmd->heredoc_count - 2)
-			(here_norm->i_heredoc)++;
-		else if (here_norm->i_heredoc == cmd->heredoc_count - 2)
+		if (h_nor->i_heredoc < cmd->heredoc_count - 2)
+			(h_nor->i_heredoc)++;
+		else if (h_nor->i_heredoc == cmd->heredoc_count - 2)
 		{
-			here_norm->flag = 1;
-			(here_norm->i_heredoc)++;
+			h_nor->flag = 1;
+			(h_nor->i_heredoc)++;
 		}
-		else if (here_norm->i_heredoc == cmd->heredoc_count - 1)
+		else if (h_nor->i_heredoc == cmd->heredoc_count - 1)
 		{
-			free(here_norm->line);
+			free(h_nor->line);
 			sigaction(SIGINT, sa_old, NULL);
 			close(pipefd[1]);
 			return (1);
