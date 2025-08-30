@@ -45,7 +45,7 @@ SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       quotes.c builtin_export_2.c heredoc.c execute_2.c\
       split.c builtin_cd.c minishell_utils_2.c\
       parse_2.c heredoc_2.c builtin_utils.c pipeline.c\
-      execute_child.c main_2.c
+      execute_child.c main_2.c heredoc_3.c heredoc_4.c
 	
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)

@@ -85,6 +85,13 @@ typedef struct s_heredoc
 	char	*delimiter;
 }	t_heredoc;
 
+typedef struct s_heredoc_norm
+{
+	char	*line;
+	int	i_heredoc;
+	int	flag;
+}	t_here_norm;
+
 typedef struct s_cmd
 {
 	char			**argv;
@@ -234,8 +241,8 @@ void			proc_pline_red(int **pline, int proc, int n_procs, t_cmd *cmd);
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);
 
 //----------- heredoc.c----------------
-int				ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env);
-int				ft_count_heredocs(t_token *tokens);
+int				ft_cr_hdoc(t_cmd *cmd, t_list *l_env);
+int     ft_count_heredocs(t_token *tokens);
 
 //-----------heredoc_2------------------
 void			ft_free_heredoc(t_cmd *cmd);
@@ -265,5 +272,14 @@ void			ft_close_pipes(int **pipeline, int n_pipes);
 //----------- execute_child.c----------------
 void			ft_child_erro_exit(t_cmd *cmd, int **pipeline, int *pid);
 void			ft_execute_process(t_cmd *cmd, t_list *l_env);
+
+//-----------heredoc_3------------------
+void	ft_heredoc_init(struct sigaction *sa_old, t_here_norm *here_norm);
+void	ft_heredoc_close(struct sigaction *sa_old);
+int	ft_heredoc_error_line(struct sigaction *sa_old, int pipefd[2], t_cmd *cmd);
+void	ft_heredoc_manage_line_1(t_here_norm here_norm, t_cmd *cmd, int pipefd[2], t_list *l_env);
+int	ft_heredoc_manage_line_2(t_here_norm *here_norm, t_cmd *cmd, struct sigaction *sa_old, int pipefd[2]);
+
+
 
 #endif
