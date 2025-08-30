@@ -42,7 +42,6 @@ void	ft_export_assign_var(char *key, char *value, t_list **l_env)
 	t_env	*existing;
 	t_env	*new;
 
-	//printf("\nkey %s value %s", key, value);fflush(0);
 	existing = ft_find_env_var(*l_env, key);
 	if (existing)
 		ft_check_exists(existing, key, value);
