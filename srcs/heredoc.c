@@ -26,6 +26,27 @@ int	ft_count_heredocs(t_token *tokens)
 	return (count);
 }
 
+static void	heredoc_init(struct sigaction *sa_old, t_n *here_norm)
+{
+	struct sigaction	sa_heredoc;
+
+	here_norm->line = NULL;
+	here_norm->flag = 0;
+	here_norm->i_heredoc = 0;
+	sigaction(SIGINT, NULL, sa_old);
+	sa_heredoc.sa_handler = sigint_handler_heredoc;
+	sigemptyset(&sa_heredoc.sa_mask);
+	sa_heredoc.sa_flags = 0;
+	sigaction(SIGINT, &sa_heredoc, NULL);
+	disable_sigquit();
+}
+
+static void	ft_heredoc_close(struct sigaction *sa_old)
+{
+	sigaction(SIGINT, sa_old, NULL);
+	enable_sigquit();
+}
+
 int	ft_cr_hdoc(t_cmd *cmd, t_list *l_env)
 {
 	int					pipefd[2];

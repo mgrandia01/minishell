@@ -45,7 +45,7 @@ char	*ft_handle_input(void)
 	size_t	len;
 
 	input = readline("\033[1;32mminishell \u25B8\033[0m ");
-	if (!input || !ft_strncmp(input, "esc", 3))
+	if (!input)
 	{
 		g_exit_status = 0;
 		ft_printf(STDOUT_FILENO, "exit\n");

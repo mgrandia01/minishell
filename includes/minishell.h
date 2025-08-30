@@ -224,7 +224,6 @@ int				ft_strcmp(const char *s1, const char *s2);
 char			*ft_join_triple(const char *s1, const char *s2, const char *s3);
 
 //----------- minishell_utils_1.c----------------
-t_list			*ft_init_env(char **envp);
 void			ft_free_env(void *content);
 void			ft_free_tab(char **tab);
 void			ft_free_argv(char **ptr);
@@ -236,6 +235,7 @@ char			*ft_get_env_value(const char *key, t_list *env);
 void			ft_proc_files_redir_cmd(t_cmd *cmd);
 int				ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env);
 void			proc_pline_red(int **pline, int proc, int n_procs, t_cmd *cmd);
+t_list			*ft_init_env(char **envp);
 
 //----------- builtin_export_2.c----------------
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);
@@ -274,8 +274,6 @@ void			ft_child_erro_exit(t_cmd *cmd, int **pipeline, int *pid);
 void			ft_execute_process(t_cmd *cmd, t_list *l_env);
 
 //-----------heredoc_3------------------
-void			heredoc_init(struct sigaction *sa_old, t_n *here_norm);
-void			ft_heredoc_close(struct sigaction *sa_old);
 int				h_err_line(struct sigaction *sa_old, int pipefd[2], t_cmd *cmd);
 void			h_manage_1(t_n h_nor, t_cmd *cmd, int pipefd[2], t_list *l_env);
 int				h_mng2(t_n *h_nor, t_cmd *cmd, struct sigaction *s, int p[2]);

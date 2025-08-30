@@ -12,6 +12,35 @@
 
 #include "../includes/minishell.h"
 
+t_list	*ft_init_env(char **envp)
+{
+	t_list	*env_list;
+	t_env	*var;
+	int		i;
+	char	*equal;
+
+	env_list = NULL;
+	i = -1;
+	while (envp[++i])
+	{
+		equal = ft_strchr(envp[i], '=');
+		if (equal)
+		{
+			var = (t_env *)malloc(sizeof(t_env));
+			if (!var)
+			{
+				ft_lstclear(&env_list, ft_free_env);
+				return (NULL);
+			}
+			var->key = ft_substr(envp[i], 0, equal - envp[i]);
+			var->kval = ft_strdup(equal + 1);
+			var->kexp = 1;
+			ft_lstadd_back(&env_list, ft_lstnew(var));
+		}
+	}
+	return (env_list);
+}
+
 char	*ft_get_env_value(const char *key, t_list *env)
 {
 	t_env	*var;

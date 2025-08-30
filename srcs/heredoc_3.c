@@ -65,27 +65,6 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 	return (line_expansed2);
 }
 
-void	heredoc_init(struct sigaction *sa_old, t_n *here_norm)
-{
-	struct sigaction	sa_heredoc;
-
-	here_norm->line = NULL;
-	here_norm->flag = 0;
-	here_norm->i_heredoc = 0;
-	sigaction(SIGINT, NULL, sa_old);
-	sa_heredoc.sa_handler = sigint_handler_heredoc;
-	sigemptyset(&sa_heredoc.sa_mask);
-	sa_heredoc.sa_flags = 0;
-	sigaction(SIGINT, &sa_heredoc, NULL);
-	disable_sigquit();
-}
-
-void	ft_heredoc_close(struct sigaction *sa_old)
-{
-	sigaction(SIGINT, sa_old, NULL);
-	enable_sigquit();
-}
-
 int	h_err_line(struct sigaction *sa_old, int pipefd[2], t_cmd *cmd)
 {
 	int	i;
