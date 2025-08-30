@@ -26,6 +26,7 @@ int	ft_count_heredocs(t_token *tokens)
 	return (count);
 }
 
+/*
 int	ft_cr_hdoc(t_cmd *cmd, t_list *l_env)
 {
 	int					pipefd[2];
@@ -100,7 +101,7 @@ static char	*ft_expanse_heredoc(char *line, t_list *l_env)
 
 int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 =======
-/*int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
+int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 >>>>>>> arcadio
 {
 	int							pipefd[2];
@@ -193,5 +194,35 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 	enable_sigquit();
 	close(pipefd[1]);
 	return (pipefd[0]);
-}*/
+}
+*/
+
+int	ft_cr_hdoc(t_cmd *cmd, t_list *l_env)
+{
+	int					pipefd[2];
+	struct sigaction	*sa_old;
+	t_here_norm			here_norm;
+
+	sa_old = NULL;
+	ft_heredoc_init(sa_old, &here_norm);
+	if (pipe(pipefd) == -1)
+	{
+		sigaction(SIGINT, sa_old, NULL);
+		return (-1);
+	}
+	while (1)
+	{
+		write(STDOUT_FILENO, "> ", 2);
+		here_norm.line = get_next_line(STDIN_FILENO);
+		if (!here_norm.line)
+			return (ft_heredoc_error_line(sa_old, pipefd, cmd));
+		ft_heredoc_manage_line_1(here_norm, cmd, pipefd, l_env);
+		if (ft_heredoc_manage_line_2(&here_norm, cmd, sa_old, pipefd))
+			return (pipefd[0]);
+		free(here_norm.line);
+	}
+	ft_heredoc_close(sa_old);
+	close(pipefd[1]);
+	return (pipefd[0]);
+}
 
