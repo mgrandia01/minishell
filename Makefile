@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/08/28 15:31:04 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/08/30 11:15:11 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,7 @@ SRC = main.c lexer.c execute.c minishell_utils.c redirections.c\
       quotes.c builtin_export_2.c heredoc.c execute_2.c\
       split.c builtin_cd.c minishell_utils_2.c\
       parse_2.c heredoc_2.c builtin_utils.c pipeline.c\
-      execute_child.c
+      execute_child.c main_2.c
 	
 OBJS = $(addprefix $(DIR_OBJS), $(SRC:%.c=%.o))
 DEP_FILES = $(OBJS:%.o=%.d)

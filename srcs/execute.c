@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 12:13:07 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 09:11:46 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:47:22 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static int	ft_cr_procs(int n_procs, int **pipeline, t_cmd *cmd, t_list *l_env)
 			return (0);
 		else if (pid[i] == 0)
 		{
-			ft_proc_pline_red(pipeline, i, n_procs, curr_cmd);
+			proc_pline_red(pipeline, i, n_procs, curr_cmd);
 			if (ft_proc_files_redir_error(curr_cmd, l_env))
 				ft_execute_process(curr_cmd, l_env);
 			ft_child_erro_exit(cmd, pipeline, pid);
@@ -107,9 +107,9 @@ void	ft_exe_pipeline(t_cmd *cmd, t_list *l_env)
 	ft_setup_signals(0);
 	n_pipes = ft_calculate_pipes(cmd);
 	if (!ft_create_pipes(&pipeline, n_pipes))
-		ft_free_mem_exe(cmd, l_env, pipeline, 1);
+		free_mem_exe(cmd, l_env, pipeline, 1);
 	if (!ft_cr_procs(n_pipes + 1, pipeline, cmd, l_env))
-		ft_free_mem_exe(cmd, l_env, pipeline, 1);
+		free_mem_exe(cmd, l_env, pipeline, 1);
 	ft_free_pipeline(pipeline);
 	ft_setup_signals(1);
 }

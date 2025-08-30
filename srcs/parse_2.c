@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 08:56:32 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 09:02:06 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:32:03 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* Checks for errors when opening redirection files.
  * Prints an error message if a file descriptor is invalid.
  */
-void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v)
+void	handle_errfile(t_cmd *cmd, t_redir_type *expect_redir, char *v)
 {
 	int	fd;
 

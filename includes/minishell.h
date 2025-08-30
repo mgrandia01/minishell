@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/30 10:18:46 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:50:01 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,14 +87,14 @@ typedef struct s_heredoc
 
 typedef struct s_cmd
 {
-	char			**argv;			// Lista de argumentos: [""ls"", "-l", NULL]
-	int				infile;		// fd a archivo de entrada si hay redirección: "< input.txt" si hay -1 hay errores
-	int				outfile;	// fd 1:STDOUT, 2: STDERR, >=3 a archivo de salida: "> out.txt" o ">> out.txt" 
+	char			**argv;
+	int				infile;
+	int				outfile;
 	char			**outfile_name;
 	int				outfile_count;
-	t_heredoc		*heredocs; //array dinamico
-	int				heredoc_count;// cuantos hay
-	struct s_cmd	*next;				// siguiente comando en el pipe
+	t_heredoc		*heredocs;
+	int				heredoc_count;
+	struct s_cmd	*next;
 	int				error;
 }	t_cmd;
 
@@ -105,7 +105,11 @@ typedef struct s_env
 	int		kexp;
 }	t_env;
 
-void	disable_sigquit_echo(void);
+//-------------main_2.c----------------
+void			disable_sigquit_echo(void);
+t_list			*ft_init_minishell(char *envp[], int *exit_code);
+char			*ft_handle_input(void);
+void			ft_cln_minishell(t_list **l_env, char *input, t_token *tokens);
 
 //-------------redirections.c--------------------
 void			handle_operators(char *input, t_token **list, t_pos_data *data);
@@ -137,11 +141,11 @@ t_cmd			*init_comand(void);
 struct s_cmd	*ft_parse(t_token *tokens);
 
 //----------parse_2.c----------------
-void	handle_error_file(t_cmd *cmd, t_redir_type *expect_redir, char *v);
-void	open_redir_file(int *fd, const char *filename, int mode);
-void	create_outfile_name(t_cmd *cmd, const char *filename);
-void	add_outfile_name(t_cmd *cmd, const char *filename);
-int	find_mode(t_redir_type *expect_redir);
+void			handle_errfile(t_cmd *cmd, t_redir_type *expect_redir, char *v);
+void			open_redir_file(int *fd, const char *filename, int mode);
+void			create_outfile_name(t_cmd *cmd, const char *filename);
+void			add_outfile_name(t_cmd *cmd, const char *filename);
+int				find_mode(t_redir_type *expect_redir);
 
 //---------env_expansion.c-----------
 char			*exp_var_at_index(const char *t_val, int *i, char *envp[]);
@@ -173,12 +177,12 @@ void			handle_literal_ch(const char *t_val, int *i, char **r, int *s);
 
 void			init_exp_data(t_dat *data, char first_char, char *env[]);
 void			p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
-void			p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
+void			p_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d);
 void			finalize_expansion(t_token **n_lst, t_token *c, t_dat *data);
 
 //-----------expansion_process.c-----------------
-void			handle_exp_result(t_token **n_lst, t_token *c, t_dat *d, int end);//char **r, int q, int end);
-void			process_token_expansion(t_token **tokens, char *envp[], int here);
+void			handle_exp_res(t_token **n_lst, t_token *c, t_dat *d, int end);
+void			process_token_exp(t_token **tokens, char *envp[], int here);
 
 //----------path.c------------------
 char			*find_path(char *cmd, char *env[]);
@@ -210,7 +214,7 @@ char			**ft_build_envp_array(t_list *l_env);
 int				ft_is_numeric(const char *str);
 int				ft_is_valid_key(const char *key);
 int				ft_strcmp(const char *s1, const char *s2);
-char	*ft_strjoin_triple(const char *s1, const char *s2, const char *s3);
+char			*ft_join_triple(const char *s1, const char *s2, const char *s3);
 
 //----------- minishell_utils_1.c----------------
 t_list			*ft_init_env(char **envp);
@@ -221,47 +225,45 @@ void			ft_cmdclear(t_cmd **lst, void (*del)(char **));
 void			ft_cmddelone(t_cmd *lst, void (*del)(char **));
 
 //----------- minishell_utils_2.c----------------
-char	*ft_get_env_value(const char *key, t_list *env);
+char			*ft_get_env_value(const char *key, t_list *env);
 void			ft_proc_files_redir_cmd(t_cmd *cmd);
-int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env);
-void	ft_proc_pline_red(int **pipeline, int proc, int n_procs, t_cmd *cmd);
+int				ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env);
+void			proc_pline_red(int **pline, int proc, int n_procs, t_cmd *cmd);
 
 //----------- builtin_export_2.c----------------
 void			ft_export_assign_var(char *key, char *value, t_list **l_env);
 
 //----------- heredoc.c----------------
-int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env);
-
-int     ft_count_heredocs(t_token *tokens);
+int				ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env);
+int				ft_count_heredocs(t_token *tokens);
 
 //-----------heredoc_2------------------
-void	ft_free_heredoc(t_cmd *cmd);
-void	sigint_handler_heredoc(int sig);
-void	disable_sigquit(void);
-void	enable_sigquit(void);
-void	sigquit_handler_heredoc(int sig);
+void			ft_free_heredoc(t_cmd *cmd);
+void			sigint_handler_heredoc(int sig);
+void			disable_sigquit(void);
+void			enable_sigquit(void);
+void			sigquit_handler_heredoc(int sig);
 
 //----------- execute_2.c----------------
 void			ft_handle_single_builtin(t_cmd *cmd, t_list *l_env);
-int			ft_manage_heredoc(t_cmd *cmd, t_list *l_env);
-void			ft_manage_mshell_level(char *path, t_list *l_env, char ***envp_exec);
+int				ft_manage_heredoc(t_cmd *cmd, t_list *l_env);
+void			manage_level(char *path, t_list *l_env, char ***envp_exec);
 
 //----------- builtin_utils.c----------------
-void	ft_manage_builtin_alone(t_cmd *cmd, t_list *l_env);
-int	ft_execute_builtin(t_cmd *cmd, t_list *l_env);
-int	ft_is_builtin(char *cmd);
-int	ft_cd_ret_home(char **args, t_list *l_env);
-
+void			ft_manage_builtin_alone(t_cmd *cmd, t_list *l_env);
+int				ft_execute_builtin(t_cmd *cmd, t_list *l_env);
+int				ft_is_builtin(char *cmd);
+int				ft_cd_ret_home(char **args, t_list *l_env);
 
 //----------- pipeline.c----------------
-int	ft_create_pipes(int ***pipeline, int n_pipes);
-int	ft_calculate_pipes(t_cmd *cmd);
-void	ft_free_pipeline(int **pipeline);
-void	ft_free_mem_exe(t_cmd *cmd, t_list *l_env, int **pline, int ex_v);
-void	ft_close_pipes(int **pipeline, int n_pipes);
+int				ft_create_pipes(int ***pipeline, int n_pipes);
+int				ft_calculate_pipes(t_cmd *cmd);
+void			ft_free_pipeline(int **pipeline);
+void			free_mem_exe(t_cmd *cmd, t_list *l_env, int **pline, int ex_v);
+void			ft_close_pipes(int **pipeline, int n_pipes);
 
 //----------- execute_child.c----------------
-void	ft_child_erro_exit(t_cmd *cmd, int **pipeline, int *pid);
-void	ft_execute_process(t_cmd *cmd, t_list *l_env);
+void			ft_child_erro_exit(t_cmd *cmd, int **pipeline, int *pid);
+void			ft_execute_process(t_cmd *cmd, t_list *l_env);
 
 #endif

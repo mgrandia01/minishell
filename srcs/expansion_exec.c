@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/28 15:43:07 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:38:34 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			{
 				d->result = exp_var_at_index(t_val, &(d->i), d->env);
 				end = end_value(t_val, d->i);
-				handle_exp_result(n_lst, c, d, end);
+				handle_exp_res(n_lst, c, d, end);
 				d->s = 0;
 			}
 		}
@@ -81,7 +81,7 @@ void	p_exp(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 	}
 }
 
-void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
+void	p_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 {
 	char	*literal;
 	int		end;
@@ -101,7 +101,7 @@ void	p_exp_all(const char *t_val, t_token **n_lst, t_token *c, t_dat *d)
 			{
 				d->result = exp_var_at_index(t_val, &(d->i), d->env);
 				end = end_value(t_val, d->i);
-				handle_exp_result(n_lst, c, d, end);
+				handle_exp_res(n_lst, c, d, end);
 				d->s = 0;
 			}
 		}

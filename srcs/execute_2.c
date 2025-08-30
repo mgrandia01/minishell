@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 11:12:33 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/18 16:16:04 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:50:32 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 	return (1);
 }
 
-void	ft_manage_mshell_level(char *path, t_list *l_env, char ***envp_exec)
+void	manage_level(char *path, t_list *l_env, char ***envp_exec)
 {
 	char	*c_shell;
 	char	*a_shell;

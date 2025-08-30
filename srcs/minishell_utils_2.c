@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:30:33 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/19 18:30:36 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:46:26 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,14 @@ int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env)
 // function to redirect input and output to the correspoding to process
 //  it is taking into account if input is heredoc and also
 // is managed signals in this fucntion due to norminette restrictions
-void	ft_proc_pline_red(int **pipeline, int proc, int n_procs, t_cmd *cmd)
+void	proc_pline_red(int **pline, int proc, int n_procs, t_cmd *cmd)
 {
 	ft_setup_signals(2);
-	if (!pipeline || n_procs < 2)
+	if (!pline || n_procs < 2)
 		return ;
 	if (proc > 0 && cmd->heredoc_count == 0)
-		dup2(pipeline[proc - 1][0], STDIN_FILENO);
+		dup2(pline[proc - 1][0], STDIN_FILENO);
 	if (proc < (n_procs - 1))
-		dup2(pipeline[proc][1], STDOUT_FILENO);
-	ft_close_pipes(pipeline, n_procs - 1);
+		dup2(pline[proc][1], STDOUT_FILENO);
+	ft_close_pipes(pline, n_procs - 1);
 }

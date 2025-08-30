@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 13:25:55 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/22 14:01:39 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:41:24 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_is_valid_key(const char *key)
 	return (1);
 }
 
-char	*ft_strjoin_triple(const char *s1, const char *s2, const char *s3)
+char	*ft_join_triple(const char *s1, const char *s2, const char *s3)
 {
 	char	*tmp;
 	char	*res;
@@ -57,7 +57,7 @@ char	**ft_build_envp_array(t_list *l_env)
 		var = (t_env *)l_env->content;
 		if (var->kexp && var->key && var->kval)
 		{
-			envp[i] = ft_strjoin_triple(var->key, "=", var->kval);
+			envp[i] = ft_join_triple(var->key, "=", var->kval);
 			i++;
 		}
 		l_env = l_env->next;

@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 08:58:37 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:33:17 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 		if (cmd->error)
 			return ;
 		open_redir_file(&cmd->infile, tokens->value, 1);
-		handle_error_file(cmd, expect_redir, tokens->value);
+		handle_errfile(cmd, expect_redir, tokens->value);
 	}
 	else if (*expect_redir == OUTFILE || *expect_redir == APPEND)
 	{
@@ -78,7 +78,7 @@ static void	handle_word(t_cmd *cmd, t_token *tokens, t_redir_type *expect_redir)
 		if (cmd->error)
 			return ;
 		open_redir_file(&cmd->outfile, tokens->value, mode);
-		handle_error_file(cmd, expect_redir, tokens->value);
+		handle_errfile(cmd, expect_redir, tokens->value);
 		add_outfile_name(cmd, tokens->value);
 	}
 	else if (*expect_redir == HEREDOC)

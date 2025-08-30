@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 14:08:46 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/25 12:06:09 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:50:55 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	ft_execute_command(t_cmd *cmd, t_list *l_env)
 		path = find_path(cmd->argv[0], envp_exec);
 	else
 		path = NULL;
-	ft_manage_mshell_level(path, l_env, &envp_exec);
+	manage_level(path, l_env, &envp_exec);
 	ft_lstclear(&l_env, ft_free_env);
 	if (ft_search_cmd(path, cmd))
 	{

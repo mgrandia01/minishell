@@ -6,14 +6,14 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 14:08:16 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/25 11:36:25 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:43:31 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // function to free memomry if error creating pipeline or childs processes
-void	ft_free_mem_exe(t_cmd *cmd, t_list *l_env, int **pline, int ex_v)
+void	free_mem_exe(t_cmd *cmd, t_list *l_env, int **pline, int ex_v)
 {
 	perror("minishell: error executing pipeline");
 	g_exit_status = ex_v;

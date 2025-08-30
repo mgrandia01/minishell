@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/28 10:51:59 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:39:14 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	init_exp_data(t_dat *data, char first_char, char *env[])
 }
 
 // Process the result of a variable expansion: split if needed or clean quotes
-void	handle_exp_result(t_token **n_lst, t_token *c, t_dat *d, int end)
+void	handle_exp_res(t_token **n_lst, t_token *c, t_dat *d, int end)
 {
 	if (ft_strchr(d->result, ' ') && d->quote == 0)
 	{
@@ -50,12 +50,12 @@ static void	exp_tok_her(const char *val, t_token **n_l, t_token *c, char *env[])
 	t_dat	data;
 
 	init_exp_data(&data, val[0], env);
-	p_exp_all(val, n_l, c, &data);
+	p_all(val, n_l, c, &data);
 	finalize_expansion(n_l, c, &data);
 }
 
 // Go through all tokens and expand variables when needed
-void	process_token_expansion(t_token **tokens, char *envp[], int here)
+void	process_token_exp(t_token **tokens, char *envp[], int here)
 {
 	t_token		*new_list;
 	t_token		*c;
