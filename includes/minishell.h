@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 15:00:23 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/28 10:53:15 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 10:18:46 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ typedef struct s_env
 	char	*kval;
 	int		kexp;
 }	t_env;
+
+void	disable_sigquit_echo(void);
 
 //-------------redirections.c--------------------
 void			handle_operators(char *input, t_token **list, t_pos_data *data);

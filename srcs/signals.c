@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:03:55 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/28 11:23:22 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 10:34:04 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,36 @@ void	ft_handle_sigint(int sig)
 
 void	ft_handle_sigquit(int sig)
 {
+	//disable_sigquit_echo();
+	
+	(void)sig;
+	rl_replace_line("", 0);
+//	write(0, "\n", 1);
+	rl_on_new_line();                        // Resetea estado interno de readline
+	rl_redisplay();                          // Vuelve a mostrar el prompt	
+
+
+//	write(STDOUT_FILENO, "\b\b  \b\b", 6);// Borra visualmente dos caracteres
+	// cuidado con usar tgetstr(), tgoto() y tputs() pq pueden interferir con readline
+}
+
+/*
+void	ft_handle_sigquit(int sig)
+{
+	//disable_sigquit_echo();
+	printf("slash\n");fflush(0);
 	
 	(void)sig;
 	rl_on_new_line();                        // Resetea estado interno de readline
-	write(0, "\n", 1);
+//	write(0, "\n", 1);
 	rl_replace_line("", 0);
 	rl_redisplay();                          // Vuelve a mostrar el prompt	
 
 
-	//write(STDOUT_FILENO, "\b\b  \b\b", 6);// Borra visualmente dos caracteres
+//	write(STDOUT_FILENO, "\b\b  \b\b", 6);// Borra visualmente dos caracteres
 	// cuidado con usar tgetstr(), tgoto() y tputs() pq pueden interferir con readline
 }
-
+*/
 void	display_new_line(int sig)
 {
 	(void)sig;
@@ -68,7 +86,9 @@ void	ft_setup_signals(int enable)
 	if (enable ==  1)
 	{
 		signal(SIGINT, ft_handle_sigint);
+		disable_sigquit_echo();
 		signal(SIGQUIT, ft_handle_sigquit);
+
 	}
 	else if (enable == 2)
 	{
@@ -80,6 +100,6 @@ void	ft_setup_signals(int enable)
 	signal(SIGINT, display_new_line);
 	signal(SIGQUIT, display_new_line);
 		//signal(SIGINT, SIG_IGN);
-		//signal(SIGQUIT, SIG_IGN);
+	//	signal(SIGQUIT, SIG_IGN);
 	}
 }
