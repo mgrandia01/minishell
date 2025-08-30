@@ -26,61 +26,36 @@ int	ft_count_heredocs(t_token *tokens)
 	return (count);
 }
 
-static char	*ft_line_expanded(t_token *tokens, char *l_exp2)
+int	ft_cr_hdoc(t_cmd *cmd, t_list *l_env)
 {
-	char	*l_exp1;
+	int					pipefd[2];
+	struct sigaction	*sa_old;
+	t_here_norm			here_norm;
 
-	l_exp1 = NULL;
-	while (tokens && ft_strncmp(tokens->value, "EOF", 3))
+	sa_old = NULL;
+	ft_heredoc_init(sa_old, &here_norm);
+	if (pipe(pipefd) == -1)
 	{
-		if (tokens->value)
-		{
-			if (l_exp2 != NULL)
-			{
-				free(l_exp2);
-				l_exp2 = ft_strjoin_triple(l_exp1, " ", tokens->value);
-				free(l_exp1);
-			}
-			else
-				l_exp2 = ft_strdup(tokens->value);
-			l_exp1 = ft_strdup(l_exp2);
-		}
-		tokens = tokens->next;
+		sigaction(SIGINT, sa_old, NULL);
+		return (-1);
 	}
-	if (l_exp1)
-		free(l_exp1);
-	if (!l_exp2)
-		l_exp2 = ft_calloc(1, sizeof(char));	//l_exp2 = (char *)malloc(sizeof(char));
-	return (l_exp2);
+	while (1)
+	{
+		write(STDOUT_FILENO, "> ", 2);
+		here_norm.line = get_next_line(STDIN_FILENO);
+		if (!here_norm.line)
+			return (ft_heredoc_error_line(sa_old, pipefd, cmd));
+		ft_heredoc_manage_line_1(here_norm, cmd, pipefd, l_env);
+		if (ft_heredoc_manage_line_2(&here_norm, cmd, sa_old, pipefd))
+			return (pipefd[0]);
+		free(here_norm.line);
+	}
+	ft_heredoc_close(sa_old);
+	close(pipefd[1]);
+	return (pipefd[0]);
 }
 
-static char	*ft_expanse_heredoc(char *line, t_list *l_env)
-{
-	t_token	*tokens;
-	char	**envp_exec;
-	char	*line_expansed2;
-
-	tokens = ft_tokenize(line, 1);
-	line_expansed2 = NULL;
-	if (!tokens)
-		return (line);
-	envp_exec = ft_build_envp_array(l_env);
-	if (!envp_exec)
-	{
-		free_tokens(tokens);
-		tokens = NULL;
-		return (line);
-	}
-	process_token_expansion(&tokens, envp_exec, 1);
-	join_tokens_with_end(&tokens);
-	line_expansed2 = ft_line_expanded(tokens, line_expansed2);
-	ft_free_tab(envp_exec);
-	free_tokens(tokens);
-	return (line_expansed2);
-}
-
-
-int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
+/*int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 {
 	int							pipefd[2];
 	char						*line;
@@ -96,7 +71,6 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 	flag = 0;
 	i_heredoc = 0;
 	i = 0;
-	(void)cmd;//TODO finalmente, se puede borrar?
 	
 	sigaction(SIGINT, NULL, &sa_old);
 	sa_heredoc.sa_handler = sigint_handler_heredoc;
@@ -109,7 +83,7 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 	sigemptyset(&sa_heredoc_quit.sa_mask);
 	sa_heredoc_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_heredoc_quit, NULL);
-	disable_sigquit();// aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii xxxxxx
+	disable_sigquit();
 	
 	if (pipe(pipefd) == -1)
 	{
@@ -137,7 +111,6 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 			}
 			return (-1);
 		}
-		
 		if (ft_strchr(line, '\n'))
 			*ft_strchr(line, '\n') = '\0';
 		if ((flag == 1 || heredoc_count == 1)
@@ -174,81 +147,5 @@ int	ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
 	enable_sigquit();
 	close(pipefd[1]);
 	return (pipefd[0]);
-}
-/*
-int ft_cr_hdoc(t_heredoc *delim, int heredoc_count, t_cmd *cmd, t_list *l_env)
-{
-    int     pipefd[2];
-    pid_t   pid;
-    int     status;
+}*/
 
-
-    (void)cmd;
-    if (pipe(pipefd) == -1)
-        return (-1);
-
-    pid = fork();
-    
-    if (pid == -1)
-        return (-1);
-
-    if (pid == 0)
-    {
-        // Proceso hijo: escribe en el pipe
-        char    *line;
-        char    *line_expansed;
-        int     i_heredoc = 0;
-        int     flag = 0;
-
-        
-  
-        close(pipefd[0]); // Cerramos lectura
-
-        while (1)
-        {
-            write(STDOUT_FILENO, "> ", 2);
-            line = get_next_line(STDIN_FILENO);
-            if (!line)
-                break;
-
-            if (ft_strchr(line, '\n'))
-                *ft_strchr(line, '\n') = '\0';
-
-            if ((flag == 1 || heredoc_count == 1)
-                && !(ft_strcmp(line, delim[i_heredoc].delimiter) == 0
-                    && (i_heredoc == heredoc_count - 1)))
-            {
-                line_expansed = ft_expanse_heredoc(line, l_env);
-                write(pipefd[1], line_expansed, ft_strlen(line_expansed));
-                write(pipefd[1], "\n", 1);
-                free(line_expansed);
-            }
-
-            if (ft_strcmp(line, delim[i_heredoc].delimiter) == 0)
-            {
-                if (i_heredoc < heredoc_count - 2)
-                    i_heredoc++;
-                else if (i_heredoc == heredoc_count - 2)
-                {
-                    flag = 1;
-                    i_heredoc++;
-                }
-                else if (i_heredoc == heredoc_count - 1)
-                {
-                    free(line);
-                    break;
-                }
-            }
-            free(line);
-        }
-        close(pipefd[1]); // Cerramos escritura
-        exit(0);
-    }
-
-    // Proceso padre
-    close(pipefd[1]); // Cerramos escritura en el padre
-    waitpid(pid, &status, 0);
-    
-    return pipefd[0]; // Devuelve descriptor de lectura
-}
-*/

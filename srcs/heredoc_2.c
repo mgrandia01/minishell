@@ -53,13 +53,15 @@ void	enable_sigquit(void)
 		return ;
 	if (term.c_cc[VQUIT] == _POSIX_VDISABLE)
 		term.c_cc[VQUIT] = 28;
+	//term.c_cc[VQUIT] = '\\' & 0x1F;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
 void	sigquit_handler_heredoc(int sig)
 {
 	(void)sig;
-	write(STDOUT_FILENO, "\n", 1);
+	//write(STDOUT_FILENO, "\n", 1);
 	write(STDOUT_FILENO, "\b\b  \b\b", 6);
 	printf("ssssss");fflush(0);
+	disable_sigquit();
 }

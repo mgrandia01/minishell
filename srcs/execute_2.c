@@ -82,7 +82,7 @@ int	ft_manage_heredoc(t_cmd *cmd, t_list *l_env)
 {
 	if (cmd->heredoc_count > 0 && cmd->heredocs)
 	{
-		cmd->infile = ft_cr_hdoc(cmd->heredocs, cmd->heredoc_count, cmd, l_env);
+		cmd->infile = ft_cr_hdoc(cmd, l_env);
 		ft_free_heredoc(cmd);
 		if (cmd->infile == -1)
 			return (0);
