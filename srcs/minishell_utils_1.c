@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 15:31:17 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/07/27 15:31:21 by arcmarti         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:14:02 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,9 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 		{
 			ptr_next = (*lst)->next;
 			del((*lst)->argv);
-			//if ((*lst)->heredoc_delim)
-			//	free((*lst)->heredoc_delim);
-			if ((*lst)->infile > 2) //anyadido a raiz del superpipe
+			if ((*lst)->infile > 2)
 				close((*lst)->infile);
-			if ((*lst)->outfile > 2) //anyadido a raiz del superpipe
+			if ((*lst)->outfile > 2)
 				close((*lst)->outfile);
 			i = 0;
 			if ((*lst)->outfile_count > 0)
@@ -95,7 +93,7 @@ void	ft_cmdclear(t_cmd **lst, void (*del)(char **))
 				{
 					free((*lst)->outfile_name[i]);
 					i++;
-				}	
+				}
 				free((*lst)->outfile_name);
 			}
 			free(*lst);
@@ -108,8 +106,6 @@ void	ft_cmddelone(t_cmd *lst, void (*del)(char **))
 {
 	del((lst)->argv);
 	ft_free_heredoc(lst);
-	//if ((lst)->heredoc_delim)
-	//	free((lst)->heredoc_delim);
 	free (lst);
 }
 

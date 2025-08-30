@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 09:28:59 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 13:38:35 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:16:55 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,12 @@ void	enable_sigquit(void)
 		return ;
 	if (term.c_cc[VQUIT] == _POSIX_VDISABLE)
 		term.c_cc[VQUIT] = 28;
-	//term.c_cc[VQUIT] = '\\' & 0x1F;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
 void	sigquit_handler_heredoc(int sig)
 {
 	(void)sig;
-	//write(STDOUT_FILENO, "\n", 1);
 	write(STDOUT_FILENO, "\b\b  \b\b", 6);
-	printf("ssssss");fflush(0);
 	disable_sigquit();
 }

@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:30:33 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/30 11:46:26 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:18:13 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,9 @@ int	ft_proc_files_redir_error(t_cmd *cmd, t_list *l_env)
 
 	ret_val = 1;
 	if (cmd->infile == -1)
-	{
-		//close(STDIN_FILENO);
 		ret_val = 0;
-	}
 	if (cmd->outfile == -1)
-	{
-		//close(STDOUT_FILENO);
 		ret_val = 0;
-	}
 	if (ret_val == 0)
 		ft_lstclear(&l_env, ft_free_env);
 	return (ret_val);

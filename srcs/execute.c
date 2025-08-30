@@ -6,7 +6,7 @@
 /*   By: arcmarti <arcmarti@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 12:13:07 by arcmarti          #+#    #+#             */
-/*   Updated: 2025/08/30 11:47:22 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:17:37 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ static void	ft_parent_proc(int n_procs, pid_t *pid)
 	while (i < n_procs)
 	{
 		wstatus = 0;
-		//ft_setup_signals(1);
 		waitpid(pid[i], &wstatus, 0);
-		
 		if (i == (n_procs - 1))
 		{
 			if (WIFEXITED(wstatus))
