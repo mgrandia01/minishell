@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/30 11:39:39 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/31 11:24:39 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	ft_expand_and_prepare(t_token **tokens, t_list *l_env)
 	{
 		free_tokens(*tokens);
 		*tokens = NULL;
-		ft_printf(STDERR_FILENO, "Error: falló la creación de envp\n");
+		ft_printf(STDERR_FILENO, "Error: the creation of envp failed\n");
 		return (0);
 	}
 	process_token_exp(tokens, envp_exec, 0);
@@ -62,7 +62,7 @@ static void	ft_parse_and_execute(t_token *tokens, t_list *l_env)
 	tokens = NULL;
 	if (!cmds)
 	{
-		ft_printf(STDERR_FILENO, "Error: falló el parseo\n");
+		ft_printf(STDERR_FILENO, "Error: parsing failed\n");
 		return ;
 	}
 	ft_exe_pipeline(cmds, l_env);
