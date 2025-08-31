@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 14:59:40 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/31 11:24:39 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/31 11:57:04 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	ft_process_tokens(t_token **tokens, char *input)
 	*tokens = ft_tokenize(input, 0);
 	free(input);
 	if (!*tokens)
-		return (0);
+		return (1);
 	if (ft_count_heredocs(*tokens) > 16)
 	{
 		ft_printf(STDERR_FILENO, "minishell: ");
