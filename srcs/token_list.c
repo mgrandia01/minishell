@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:56:11 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/28 10:10:23 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/31 11:06:37 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ int	handle_quotes(char *input, t_token **list, t_pos_data *data)
 	quote = input[data->pos];
 	data->pos++;
 	start = process_q_cont(input, &data->pos, quote, list);
-	if (start == -1)
-		return (-1);
+//	if (start == -1)
+//		return (-1);
 	if (input[data->pos] == quote)
 		data->pos++;
 	val = ft_substr(input, (start - 1), (data->pos + 1 - start));

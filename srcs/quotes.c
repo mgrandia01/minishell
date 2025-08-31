@@ -6,7 +6,7 @@
 /*   By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 11:41:57 by mgrandia          #+#    #+#             */
-/*   Updated: 2025/08/22 09:17:36 by mgrandia         ###   ########.fr       */
+/*   Updated: 2025/08/31 11:06:18 by mgrandia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	process_q_cont(char *i, int *pos, char quote, t_token **tokens)
 		(*pos)++;
 	if (!i[*pos])
 	{
-		ft_printf(STDERR_FILENO, "quotes not closed");
+		ft_printf(STDERR_FILENO, "quotes not closed\n");
 		free_tokens(*tokens);
 		return (-1);
 	}
