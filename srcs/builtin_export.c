@@ -21,16 +21,24 @@ void	ft_print_exp_vars(void *content)
 	{
 		ft_putstr_fd("declare -x ", STDOUT_FILENO);
 		ft_putstr_fd(var->key, STDOUT_FILENO);
-		ft_putstr_fd("=\"", STDOUT_FILENO);
-		ft_putstr_fd(var->kval, STDOUT_FILENO);
-		ft_putstr_fd("\"\n", STDOUT_FILENO);
+		if (var->kval && ft_strncmp(var->kval, "", 1))
+		{
+			ft_putstr_fd("=\"", STDOUT_FILENO);
+			ft_putstr_fd(var->kval, STDOUT_FILENO);
+			ft_putstr_fd("\"", STDOUT_FILENO);
+		}
+		ft_putstr_fd("\n", STDOUT_FILENO);
 	}
 }
 
 static void	ft_free_invalid_key(char *key, char *value)
 {
-	ft_putstr_fd("export: not a valid identifier\n", STDERR_FILENO);
-	free(key);
+	if (key)
+	{
+		ft_printf(STDERR_FILENO, "minishell: export: %s ", key);
+		ft_printf(STDERR_FILENO, "not a valid identifier\n", key);
+		free (key);
+	}
 	if (value)
 		free(value);
 }
@@ -74,6 +82,7 @@ int	ft_builtin_export(char **args, t_list *l_env)
 		if (!ft_is_valid_key(key))
 		{
 			ft_free_invalid_key(key, value);
+			return (1);
 		}
 		else
 			ft_export_assign_var(key, value, &l_env);
